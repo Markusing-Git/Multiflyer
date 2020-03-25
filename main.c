@@ -4,35 +4,64 @@
 #include <SDL_net.h>
 #include <stdbool.h>
 
+bool init();
+void close();
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+SDL_Window* gWindow = NULL;
+SDL_Surface* gScreenSurface = NULL;
 
 int main(int argc, char* args[]) {
-
-	bool quit = false;
-
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-		return 1;
+	
+	bool running = false;
+	
+	if (!init()) {
+		printf("Failed to initialize!\n");
 	}
 
-	SDL_Window* gWindow = SDL_CreateWindow("SDL Example",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-		SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
-
-
-	SDL_UpdateWindowSurface(gWindow);
-
-	while (!quit) {
-		//här lägger vi alla events
-
+	while (!running) {
+		//Här lägger vi allt som anropas när spelet körs
+		SDL_UpdateWindowSurface(gWindow);
+		
 	}
 
-	SDL_DestroyWindow(gWindow);
-
-	SDL_Quit();
+	close();
 
 	return 0;
+}
+
+bool init(void) {
+	bool success = true;
+
+	//Initialize SDL
+	if (SDL_Init(SDL_INIT_VIDEO != 0)) {
+		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		success = false;
+	}
+	else{
+		//Create window
+		gWindow = SDL_CreateWindow("SDL Example",
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		if (gWindow == NULL){
+			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+			success = false;
+		}
+		else{
+			//Get window surface
+			gScreenSurface = SDL_GetWindowSurface(gWindow);
+		}
+	}
+	return success;
+}
+
+void close(void){
+	//Destroy window
+	SDL_DestroyWindow(gWindow);
+	gWindow = NULL;
+
+	//Quit SDL subsystems
+	SDL_Quit();
 }
