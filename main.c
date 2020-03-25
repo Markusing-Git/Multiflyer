@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-//#include <SDL2/SDL_net.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_net.h>
 #include <stdbool.h>
 
 bool init();
@@ -24,9 +24,8 @@ int main(int argc, char* args[]) {
 
 
 	while (!running) {
-		//H�r l�gger vi allt som anropas n�r spelet k�rs
+		// här anropas allt när spelet körs
 		SDL_UpdateWindowSurface(gWindow);
-		
 	}
 
 	close();
