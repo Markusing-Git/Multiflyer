@@ -21,6 +21,7 @@ int main(int argc, char* args[]) {
 		printf("Failed to initialize!\n");
 		printf("Hej");
 		//Hoang
+		//jacob
 	}
 
 
