@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_net.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+//#include <SDL2/SDL_net.h>
 #include <stdbool.h>
 
 bool init();
@@ -19,11 +19,12 @@ int main(int argc, char* args[]) {
 	
 	if (!init()) {
 		printf("Failed to initialize!\n");
+		printf("Hej");
 	}
 
 
 	while (!running) {
-		//Här lägger vi allt som anropas när spelet körs
+		//Hï¿½r lï¿½gger vi allt som anropas nï¿½r spelet kï¿½rs
 		SDL_UpdateWindowSurface(gWindow);
 		
 	}
