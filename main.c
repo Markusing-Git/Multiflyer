@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_timer.h>
 #include <stdbool.h>
 
 bool init();
@@ -28,6 +29,8 @@ int main(int argc, char* args[]) {
 
 	while (!running) {
 		//H�r l�gger vi allt som anropas n�r spelet k�rs
+		SDL_Delay(5000);
+		running = true;
 		SDL_UpdateWindowSurface(gWindow);
 		
 	}
