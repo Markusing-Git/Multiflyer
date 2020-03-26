@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_net.h>
+#include <SDL_timer.h>
 #include <stdbool.h>
 
 bool init();
@@ -24,9 +25,11 @@ int main(int argc, char* args[]) {
 
 	while (!running) {
 		// här anropas allt när spelet körs
-		SDL_UpdateWindowSurface(gWindow);
+		SDL_Delay(5000);
+		running = true;
 	}
 
+	SDL_UpdateWindowSurface(gWindow);
 	close();
 
 	return 0;
