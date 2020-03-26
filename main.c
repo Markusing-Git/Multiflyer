@@ -31,10 +31,11 @@ int main(int argc, char* args[]) {
 		//H�r l�gger vi allt som anropas n�r spelet k�rs
 		SDL_Delay(5000);
 		running = true;
-		SDL_UpdateWindowSurface(gWindow);
+		
 		
 	}
-
+	
+	SDL_UpdateWindowSurface(gWindow);
 	close();
 
 	return 0;
