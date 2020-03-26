@@ -29,7 +29,7 @@ int main(int argc, char* args[]) {
 
 	while (!running) {
 		//H�r l�gger vi allt som anropas n�r spelet k�rs
-		SDL_Delay(5000);
+		SDL_Delay(10000);
 		running = true;
 		
 		
