@@ -17,6 +17,7 @@ int main(void)
     {
         // Create a SDL window
         window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
+        bool running = true;
         SDL_Event event;
         while(running)
         {
