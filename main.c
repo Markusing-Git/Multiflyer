@@ -22,6 +22,7 @@ int main(void)
         while(running)
         {
             // Process events
+            //HEJ
             while(SDL_PollEvent(&event))
             {
                 if(event.type == SDL_QUIT)
