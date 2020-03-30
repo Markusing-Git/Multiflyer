@@ -54,7 +54,6 @@ void initRandomGeneratior(void) {
 
 int rndNumber(int screenHeight) {
 
-    initRandomGeneratior();
     int nbr;
 
     nbr = (rand() % ((screenHeight / 2) - (screenHeight / 4) + 1)) + (screenHeight / 4);
