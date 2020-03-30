@@ -10,9 +10,9 @@
 
 typedef struct obstacle_type* Obstacle;
 
-//createObstacleTop skapar den övredelen av ett hinder, tar screen width, detta för att göra den dynamisk till
+//createObstacleTop skapar den övredelen av ett hinder, tar screen width och height som parametrar, detta för att göra den dynamisk till
 //hur stor skärmen kommer att vara.
-Obstacle createObstacleTop(int screenWidth);
+Obstacle createObstacleTop(int screenWidth, int screenHeight);
 
 //createObstacleBottom skapar den nedre delen av ett hinder, tar ett tophinder som parameter samt höjden på skrärmen.
 Obstacle createObstacleBottom(Obstacle topObstacle, int screenHeight);

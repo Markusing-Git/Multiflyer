@@ -7,13 +7,13 @@ struct obstacle_type {
     int height;
 };
 
-Obstacle createObstacleTop(int screenWidth) {
+Obstacle createObstacleTop(int screenWidth, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     if (aObs == NULL) {
         printf("Error in create: Obstacle could not be created.\n");
     }
     aObs->width = screenWidth / 15;
-    aObs->height = rndNumber();
+    aObs->height = rndNumber(screenHeight);
     aObs->x = (screenWidth - aObs->width);
     aObs->y = OBSTACLE_TOP;
     return aObs;
@@ -52,12 +52,12 @@ void initRandomGeneratior(void) {
     srand((unsigned)time(NULL));
 }
 
-int rndNumber(void) {
+int rndNumber(int screenHeight) {
 
     initRandomGeneratior();
     int nbr;
 
-    nbr = (rand() % (400 - 200 + 1)) + 200;
+    nbr = (rand() % ((screenHeight / 2) - (screenHeight / 4) + 1)) + (screenHeight / 4);
     return nbr;
 }
 
