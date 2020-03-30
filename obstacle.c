@@ -9,6 +9,9 @@ struct obstacle_type {
 
 Obstacle createObstacleTop(int screenWidth) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
+    if (aObs == NULL) {
+        printf("Error in create: Obstacle could not be created.\n");
+    }
     aObs->width = screenWidth / 15;
     aObs->height = rndNumber();
     aObs->x = (screenWidth - aObs->width);
@@ -19,6 +22,9 @@ Obstacle createObstacleTop(int screenWidth) {
 //param höjden på obstacl1 och adderar en offset
 Obstacle createObstacleBottom(Obstacle topObstacle, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
+    if (aObs == NULL) {
+        printf("Error in create: Obstacle could not be created.\n");
+    }
     aObs->width = topObstacle->width;
     aObs->height = screenHeight;
     aObs->x = topObstacle->x;
