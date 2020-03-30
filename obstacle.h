@@ -30,6 +30,6 @@ void obstacleTick(Obstacle aObs);
 
 //random generator
 void initRandomGeneratior(void);
-int rndNumber(void);
+int rndNumber(int screenHeight);
 
 #endif /*obstacle_h*/
