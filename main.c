@@ -1,40 +1,49 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#define width 640
-#define height 480
+#include "game_engine.h"
 
-SDL_Window* window = NULL;
-int main(void)
-{
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 750
+
+int main(void) {
+
+    SDL_Window* window = NULL;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+
     // Initialize SDL
-    //Joel
-    bool running = true;
-    if (SDL_Init(SDL_INIT_VIDEO != 0)) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-        running = false;
     }
     else
     {
         // Create a SDL window
-        window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
-        bool running = true;
-        SDL_Event event;
-        while (running)
-        {
-            // Process events
-            while (SDL_PollEvent(&event))
-            {
-                if (event.type == SDL_QUIT)
-                {
-                    running = false;
-                }
-            }
-
+        window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        if (!window) {
+            printf("error creating window: %s\n", SDL_GetError());
+            SDL_Quit();
+            return 1;
         }
+
+        // Create a renderer
+        SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
+        if (!renderer){
+
+            printf("error creating renderer: %s\n", SDL_GetError());
+            SDL_DestroyWindow(window);
+            SDL_Quit();
+            return 1;
+        }
+        else {
+
+            //Starts game engine
+            startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+            
+            SDL_DestroyRenderer(renderer);
+        }
+   
     }
+
     SDL_DestroyWindow(window);
     SDL_Quit();
-
-    return 0;
 }
