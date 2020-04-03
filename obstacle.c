@@ -7,8 +7,8 @@ struct obstacle_type {
 };
 
 
-Obstacle* createObstacle(int screenWidth, int screenHeight) {
-    Obstacle* aObs = malloc(sizeof(struct obstacle_type));
+Obstacle createObstacle(int screenWidth, int screenHeight) {
+    Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top.x = screenWidth;
     aObs->top.y = 0;
     aObs->top.w = 100;
@@ -23,7 +23,7 @@ Obstacle* createObstacle(int screenWidth, int screenHeight) {
 }
 
 //param a obstacle, true for top false for bot, x:y:w:h for cordinates
-int getObstacleValue(Obstacle* aObs, bool topOrBot, char value) {
+int getObstacleValue(Obstacle aObs, bool topOrBot, char value) {
     if (topOrBot) {
         switch (value) {
         case 'x':
@@ -56,7 +56,7 @@ int getObstacleValue(Obstacle* aObs, bool topOrBot, char value) {
     }
 }
 
-SDL_Rect getRectfromObstacle(Obstacle* aObs, bool topOrBot) {
+SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot) {
     if (topOrBot) {
         return aObs->top;
     }
@@ -69,7 +69,7 @@ void initRandomGeneratior(void) {
     srand((unsigned)time(NULL));
 }
 
-void rndOpening(Obstacle* aObs, int screenHeight) {
+void rndOpening(Obstacle aObs, int screenHeight) {
 
     int obsCenter = screenHeight / 2;
     int opening = screenHeight / 7;
@@ -97,8 +97,8 @@ void rndOpening(Obstacle* aObs, int screenHeight) {
 }
 
 
-bool  destroyObstacle(Obstacle* head) {
-    Obstacle* current, * prev;
+bool  destroyObstacle(Obstacle head) {
+    Obstacle current,  prev;
     current = head;
     current = current->next;
     prev = current;
@@ -115,8 +115,8 @@ bool  destroyObstacle(Obstacle* head) {
 }
 
 
-void* newObstacle(Obstacle* head, int screenWidth, int screenHeight) {
-    Obstacle* newNode;
+void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
+    Obstacle newNode;
 
     newNode = createObstacle(screenWidth, screenHeight);
 
@@ -124,8 +124,8 @@ void* newObstacle(Obstacle* head, int screenWidth, int screenHeight) {
     head->next = newNode;
 }
 
-void obsteclesTick(Obstacle* head) {
-    Obstacle* obs;
+void obsteclesTick(Obstacle head) {
+    Obstacle obs;
     obs = head;
     obs = obs->next;
     while (obs != NULL) {
@@ -135,8 +135,8 @@ void obsteclesTick(Obstacle* head) {
     }
 }
 
-void renderObstacles(Obstacle* head, SDL_Renderer* renderer, SDL_Texture* texture) {
-    Obstacle* obs;
+void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture) {
+    Obstacle obs;
     obs = head;
     obs = obs->next;
     while (obs != NULL) {
