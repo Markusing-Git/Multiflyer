@@ -4,7 +4,7 @@
 #include "game_engine.h"
 
 #define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 750
+#define WINDOW_HEIGHT 600
 
 int main(void) {
 
