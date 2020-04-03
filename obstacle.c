@@ -101,7 +101,7 @@ bool  destroyObstacle(Obstacle* head) {
     Obstacle* current, * prev;
     current = head;
     current = current->next;
-    prev = NULL;
+    prev = current;
     while (current != NULL) {
         if (current->top.x + current->top.w == 0) {
             prev->next = current->next;
