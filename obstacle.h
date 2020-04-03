@@ -8,7 +8,7 @@
 #include <stdbool.h>
 
 /*Obstacles are created in list form by first initating a pointer to typ Obstacle and initiating head with createObstacle.
-  creatiotion can be automated with help of a delay funktion in game engine,
+  creatiotion can be automated with help of a delay function in game engine,
   destroy each obstacle that reaches out of screen with destroyObstacle()*/
 
 typedef struct obstacle_type Obstacle;
@@ -23,7 +23,7 @@ int getObstacleValue(Obstacle* aObs, bool topOrBot, char value);
 SDL_Rect getRectfromObstacle(Obstacle* aObs, bool topOrBot);
 
 //param a obstacle front of list
-bool  destroyObstacle(Obstacle* head);
+bool destroyObstacle(Obstacle* head);
 
 //initates random generator seed
 void initRandomGeneratior(void);
