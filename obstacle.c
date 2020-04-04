@@ -10,12 +10,12 @@ struct obstacle_type {
 Obstacle createObstacle(int screenWidth, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top.x = screenWidth;
-    aObs->top.y = 0;
-    aObs->top.w = 100;
+    aObs->top.w = 65;
+    aObs->top.h = screenHeight/2;
 
     aObs->bottom.x = screenWidth;
-    aObs->bottom.w = 100;
-    aObs->bottom.h = screenHeight;
+    aObs->bottom.w = 65;
+    aObs->bottom.h = screenHeight/2;
     aObs->next = NULL;
 
     rndOpening(aObs, screenHeight);
@@ -80,15 +80,15 @@ void rndOpening(Obstacle aObs, int screenHeight) {
 
     switch (nbr) {
     case 1:
-        aObs->top.h = pipe1 - opening;
+        aObs->top.y = pipe1 - opening - aObs->top.h;
         aObs->bottom.y = pipe1 + opening;
         break;
     case 2:
-        aObs->top.h = obsCenter - opening;
+        aObs->top.y = obsCenter - opening - aObs->top.h;
         aObs->bottom.y = obsCenter + opening;
         break;
     case 3:
-        aObs->top.h = pipe2 - opening;
+        aObs->top.y = pipe2 - opening - aObs->top.h;
         aObs->bottom.y = pipe2 + opening;
         break;
     default:
