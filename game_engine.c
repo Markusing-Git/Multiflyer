@@ -39,16 +39,36 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     //Starting game engine
     while (running)
     {
-
-        // Polling events
-        while (SDL_PollEvent(&event))
+        //polling events
+        while (SDL_PollEvent(&event)) //När något händer
         {
-            if (event.type == SDL_QUIT)
+            switch (event.type)
             {
+            case SDL_QUIT: //Om du trycker på X:et
                 running = false;
+                break;
+            case SDL_KEYDOWN: //Trycker på en knapp
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_UP:
+                    playerPos.y -= 5;
+                    break;
+                case SDLK_DOWN:
+                    playerPos.y += 5;
+                    break;
+                case SDLK_LEFT:
+                    playerPos.x -= 5;
+                    break;
+                case SDLK_RIGHT:
+                    playerPos.x += 5;
+                    break;
+                case SDLK_ESCAPE:
+                    running = false;
+                    break;
+                }
+                break;
             }
         }
-
         //updating positions,inputs,multiplayer sends and receives.
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
