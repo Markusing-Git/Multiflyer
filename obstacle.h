@@ -11,6 +11,12 @@
   creatiotion can be automated with help of a delay function in game engine,
   destroy each obstacle that reaches out of screen with destroyObstacle()*/
 
+struct obstacle_type {
+    SDL_Rect top;
+    SDL_Rect bottom;
+    struct obstacle_type* next;
+};
+
 typedef struct obstacle_type *Obstacle;
 
 //param screen width, screen height, creates obstacle and two SDL_Rects with random opening.

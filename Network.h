@@ -42,16 +42,16 @@ typedef struct UDP_Config_Type* UDP_Config;
 typedef	struct Game_State_Type* Game_State;
 typedef	struct Player_Name_Type* Player_Name;
 
-int create_Game_state(int Player_position_x, int Player_position_y, Game_State* Gupd);
-int sendAndRecive(Game_State* Gupd, UDP_Config* setup);
-int int_network(char IP_input[IP_LENGHT], int port, UDP_Config* setup);
-int Close_SDLNet(UDP_Config* setup);
-int SetPlayerPosX(Game_State* Gupd, long int Player_posX);
-int SetPlayerPosY(Game_State* Gupd, long int Player_posY);
-int getOpponentPosX(Game_State* Gupd);
-int getOpponentPosY(Game_State* Gupd);
-int getPlayerPosX(Game_State* Gupd);
-int getPlayerPosY(Game_State* Gupd);
+int create_Game_state(int Player_position_x, int Player_position_y, Game_State Gupd);
+int sendAndRecive(Game_State Gupd, UDP_Config setup);
+int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup);
+int Close_SDLNet(UDP_Config setup);
+int SetPlayerPosX(Game_State Gupd, long int Player_posX);
+int SetPlayerPosY(Game_State Gupd, long int Player_posY);
+int getOpponentPosX(Game_State Gupd);
+int getOpponentPosY(Game_State Gupd);
+int getPlayerPosX(Game_State Gupd);
+int getPlayerPosY(Game_State Gupd);
 
 
 #endif /*Network_h*/

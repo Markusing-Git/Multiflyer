@@ -3,13 +3,6 @@
 static int playerHeight = 64;
 static int playerWidth = 100;
 
-struct playerType {
-	int x;
-	int y;
-	int h;
-	int w;
-};
-
 Player createPlayer(int x, int y) {
 	Player aPlayer = malloc(sizeof(struct playerType));
 	aPlayer->x = x;

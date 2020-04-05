@@ -10,6 +10,13 @@
 //getPlayerPositionY returnerar spelarens y cordinat
 //drawPlayer ritar ut spelaren på skärmen (Kanske borde tillhöra annan source fil t.ex en som heter game??)
 
+struct playerType {
+	int x;
+	int y;
+	int h;
+	int w;
+};
+
 typedef struct playerType *Player;
 
 int getPlayerPositionX(Player aPlayer);

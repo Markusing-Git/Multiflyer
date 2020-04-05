@@ -1,12 +1,5 @@
 #include "Obstacle.h"
 
-struct obstacle_type {
-    SDL_Rect top;
-    SDL_Rect bottom;
-    struct obstacle_type* next;
-};
-
-
 Obstacle createObstacle(int screenWidth, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top.x = screenWidth;
