@@ -1,6 +1,28 @@
 #ifndef Network_h
 #define Network_h
 
+#ifndef _MSC_VER
+
+#define scanf_s( fmt, ... ) scanf( scanf_validate( fmt, __FILE__, __LINE__ ), __VA_ARGS__ )
+
+const char* scanf_validate(const char* fmt, const char* file, long line)
+{
+    const char* p = fmt;
+    while (1)
+    {
+        p = strstr(p, "%s");
+        if (p == NULL) break;
+        if ((p == fmt) || (*(p - 1) != '%'))
+        {
+            fprintf(stderr, "Hey, you used \"%%s\" in %s: line %d!\n", file, line);
+            abort();
+        }
+    }
+    return fmt;
+}
+
+#endif 
+
 #define NAME_LENGTH 100
 #define IP_LENGHT 16
 

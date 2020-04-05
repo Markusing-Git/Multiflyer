@@ -2,9 +2,6 @@
 
 int create_Game_state(int Player_position_x, int Player_position_y, Game_State Gupd) {
 
-    if (Gupd == NULL) {
-        printf("Update Error: Update could not be allocated.\n");
-    }
     Gupd-> Player_position_x = Player_position_x;
     Gupd-> Player_position_y = Player_position_y;
 
@@ -85,8 +82,8 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
         if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
 
-        int a, b;
-        sscanf_s((char*)setup->p2->data, "%d %d\n", &a, &b);
+        int a = 0, b = 0;
+        scanf_s((char*)setup->p2->data, "%d %d", &a, &b);
         //printf("%d %d\n", a, b);
         Gupd->opponent_position_x = a;
         Gupd->opponent_position_y = b;
