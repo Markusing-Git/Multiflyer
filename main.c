@@ -3,7 +3,7 @@
 #include <SDL2/SDL.h>
 #include "game_engine.h"
 #include "LoadMenu.h"
-
+#include "Network.h"
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
 
@@ -50,7 +50,6 @@ int main(void) {
         }
 
     }
-
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
