@@ -52,7 +52,7 @@ int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
     imageQ_pos.w = 150;
     imageQ_pos.h = 50;
     SDL_FreeSurface(imageQ);
-    bool running = true;
+    running = true;
     int x,y;
 
     SDL_Event event;
