@@ -1,6 +1,8 @@
 #include "game_engine.h"
+#include "player.h"
 
 #define nrOfFrames 3 //Antal frames i spritesheet
+
 
 bool loadMedia(SDL_Renderer* renderer);
 
@@ -12,11 +14,13 @@ static SDL_Rect spriteClips[nrOfFrames];
 bool startGame(SDL_Renderer* renderer, int w, int h) {
 
     int frame = 0; //Den frame som ska visas
-    SDL_Rect currentClip; //Tillfällig rect för att visa sprite:n. Ska ersättas med player
-    currentClip.x = 50;
-    currentClip.y = 50;
-    currentClip.w = 64;
-    currentClip.h = 205;
+
+    int fps = 60;
+    int delayTime = 1000 / fps;
+    Uint32 frameStart, frameTime; //fram rate
+
+    Player player = createPlayer(50, 50);
+    SDL_Rect playerPos = { getPlayerPositionX(player), getPlayerPositionY(player), getPlayerHeight(player), getPlayerWidth(player) };
 
     //Create Envoirment
     bool running = true;
@@ -30,6 +34,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     //Starting game engine
     while (running)
     {
+
+        frameStart = SDL_GetTicks();
+
         // Polling events
         while (SDL_PollEvent(&event))
         {
@@ -49,11 +56,15 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 
         // clear the window and render updates
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &currentClip, 0, NULL, SDL_FLIP_NONE); //Visar spriten
+        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &playerPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
 
         // 60 FPS
-        SDL_Delay(1000 / 60); 
+        frameTime = SDL_GetTicks() - frameStart;
+        if (frameTime < delayTime)
+        {
+            SDL_Delay(delayTime - frameTime);
+        }
     }
     return true;
 }
