@@ -133,8 +133,8 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
     obs = head;
     obs = obs->next;
     while (obs != NULL) {
-        SDL_RenderCopyEx(renderer, texture, NULL, &obs->top, 0, NULL, SDL_FLIP_NONE);
-        SDL_RenderCopyEx(renderer, texture, NULL, &obs->bottom, 0, NULL, SDL_FLIP_VERTICAL);
+        SDL_RenderCopyEx(renderer, texture, NULL, &obs->top, 0, NULL, SDL_FLIP_VERTICAL);
+        SDL_RenderCopyEx(renderer, texture, NULL, &obs->bottom, 0, NULL, SDL_FLIP_NONE);
         obs = obs->next;
     }
 }

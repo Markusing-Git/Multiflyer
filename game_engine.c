@@ -1,7 +1,10 @@
 #include "game_engine.h"
 #include "player.h"
+#include "obstacle.h"
 
 #define nrOfFrames 3 //Antal frames i spritesheet
+#define TIME_DELAY 200
+
 
 
 bool loadMedia(SDL_Renderer* renderer);
@@ -16,6 +19,10 @@ static SDL_Rect spriteClips[nrOfFrames];
 bool startGame(SDL_Renderer* renderer, int w, int h) {
 
     int frame = 0; //Den frame som ska visas
+    int delay = TIME_DELAY;
+
+    // struct to hold the position and size of the sprite
+    Obstacle obstacles = createObstacle(w, h); //innitate start node
 
     Player player = createPlayer(50, 50);
     SDL_Rect playerPos = { getPlayerPositionX(player), getPlayerPositionY(player), getPlayerHeight(player), getPlayerWidth(player) };
@@ -50,11 +57,26 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
             frame = 0;
         }
 
+        //Creates a new obstacle every time delay hits 0
+        delay--;
+        if (delay <= 0) {
+            newObstacle(obstacles, w, h);
+            delay = TIME_DELAY;
+        }
+
+        //advance obstacles
+        obsteclesTick(obstacles);
+
+        //free used obstacles
+        if (destroyObstacle(obstacles)) {
+            printf("destroyed\n");
+        }
+
         // clear the window and render updates
         SDL_RenderClear(renderer);
+        renderObstacles(obstacles, renderer, flyTrapTex);
         SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &playerPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
-
     }
     return true;
 }
