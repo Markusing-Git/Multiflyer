@@ -6,6 +6,8 @@
 
 bool loadMedia(SDL_Renderer* renderer);
 
+static SDL_Texture* flyTrapTex = NULL;
+static SDL_Surface* flyTrapSurface = NULL;
 static SDL_Texture* flyTex = NULL;
 static SDL_Surface* flySurface = NULL;
 static SDL_Rect spriteClips[nrOfFrames];
@@ -60,15 +62,24 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 bool loadMedia(SDL_Renderer* renderer) {
     bool noError = true;
     flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
+    flyTrapSurface = IMG_Load("bilder/flytrapSpriteSheet.png"); //Laddar in spritesheet
     if (flySurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         noError = false;
     }
+    else if  (flyTrapSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        noError = false;
+        }
     else {
         flyTex = SDL_CreateTextureFromSurface(renderer, flySurface); //skapar en texture från spritesheet
+        flyTrapTex = SDL_CreateTextureFromSurface(renderer, flyTrapSurface);
         if (flyTex == NULL)
         {
-            flyTex = SDL_CreateTextureFromSurface(renderer, flySurface); //skapar en texture från spritesheet 
+            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+            noError = false;
+        }
+        else if (flyTrapTex == NULL) {
             printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
             noError = false;
         }
