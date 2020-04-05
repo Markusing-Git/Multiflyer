@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include "game_engine.h"
+#include "LoadMenu.h"
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
@@ -39,10 +40,13 @@ int main(void) {
         else {
             loadBackground(renderer); //Laddar bakgrunden
 
-            //Starts game engine
-            startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-            SDL_DestroyRenderer(renderer);
+            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT)) {
+                //Starts game engine
+                startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+            }
+            else {
+                SDL_DestroyRenderer(renderer);
+            }
         }
 
     }

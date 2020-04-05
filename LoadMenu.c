@@ -109,4 +109,5 @@ int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
     SDL_DestroyTexture(imageQ_texture);
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
+    return 0;
 }
