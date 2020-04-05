@@ -72,7 +72,7 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
     if (Gupd-> change_flag == 1) {
 
-        sprintf_s((char*)setup->p1->data,sizeof(Gupd->Player_position_x)+ sizeof(Gupd->Player_position_y) + 2, "%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
+        snprintf((char*)setup->p1->data,sizeof(Gupd->Player_position_x)+ sizeof(Gupd->Player_position_y) + 2, "%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
         setup->p1->address.host = setup->ip.host;	/* Set the destination host */
         setup->p1->address.port = setup->ip.port;	/* And destination port */
         setup->p1->len = strlen((char*)setup->p1->data) + 1;
