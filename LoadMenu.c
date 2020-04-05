@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-int LoadMenu(SDL_renderer *renderer, SDL_window *window, int w,int h)
+int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
 {
     SDL_Texture* imageS_texture = NULL;
     SDL_Texture* imageM_texture = NULL;

@@ -7,6 +7,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-int LoadMenu(SDL_renderer *renderer, SDL_window *window, int w, int h);
+int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w, int h);
 
 #endif 
