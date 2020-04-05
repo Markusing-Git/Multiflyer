@@ -59,7 +59,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 
 bool loadMedia(SDL_Renderer* renderer) {
     bool noError = true;
-    flySurface = IMG_Load("flySpriteSheet.png"); //Laddar in spritesheet
+    flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
     if (flySurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         noError = false;

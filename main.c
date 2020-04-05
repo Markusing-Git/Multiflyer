@@ -38,10 +38,10 @@ int main(void) {
             return 1;
         }
         else {
-            loadBackground(renderer); //Laddar bakgrunden
 
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT)) {
                 //Starts game engine
+                loadBackground(renderer); //Laddar bakgrunden
                 startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
             }
             else {
