@@ -22,12 +22,12 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         //updating positions,inputs,multiplayer sends and receives.
 
 
-        // clear the window
+        // clear the window and render updates
         SDL_RenderClear(renderer);
         SDL_RenderPresent(renderer);
 
-        // wait 1/60th of a second
-        SDL_Delay(1000 / 60); //Här kan vi skala rendern ifall vill annars kan den tas bort.
+        // 60 FPS
+        SDL_Delay(1000 / 60); 
     }
     return true;
 }
