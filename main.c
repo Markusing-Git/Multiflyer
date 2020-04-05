@@ -11,7 +11,7 @@ void loadBackground(SDL_Renderer* renderer);
 int main(void) {
 
     SDL_Window* window = NULL;
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {

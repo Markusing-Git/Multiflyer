@@ -1,7 +1,7 @@
 #include "player.h"
 
 static int playerHeight = 64;
-static int playerWidth = 205;
+static int playerWidth = 100;
 
 struct playerType {
 	int x;
