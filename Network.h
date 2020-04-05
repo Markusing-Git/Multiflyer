@@ -1,30 +1,11 @@
 #ifndef Network_h
 #define Network_h
 
-#ifndef _MSC_VER
-
-#define scanf_s( fmt, ... ) scanf( scanf_validate( fmt, __FILE__, __LINE__ ), __VA_ARGS__ )
-
-const char* scanf_validate(const char* fmt, const char* file, long line)
-{
-    const char* p = fmt;
-    while (1)
-    {
-        p = strstr(p, "%s");
-        if (p == NULL) break;
-        if ((p == fmt) || (*(p - 1) != '%'))
-        {
-            fprintf(stderr, "Hey, you used \"%%s\" in %s: line %d!\n", file, line);
-            abort();
-        }
-    }
-    return fmt;
-}
-
-#endif 
 
 #define NAME_LENGTH 100
 #define IP_LENGHT 16
+#define _CRT_SECURE_NO_DEPRECATE
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,8 +49,8 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 int sendAndRecive(Game_State Gupd, UDP_Config setup);
 int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup);
 int Close_SDLNet(UDP_Config setup);
-int SetPlayerPosX(Game_State Gupd, long int Player_posX);
-int SetPlayerPosY(Game_State Gupd, long int Player_posY);
+int SetPlayerPosX(Game_State Gupd,int Player_posX);
+int SetPlayerPosY(Game_State Gupd,int Player_posY);
 int getOpponentPosX(Game_State Gupd);
 int getOpponentPosY(Game_State Gupd);
 int getPlayerPosX(Game_State Gupd);

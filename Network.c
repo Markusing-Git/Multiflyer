@@ -4,6 +4,8 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 
     Gupd-> Player_position_x = Player_position_x;
     Gupd-> Player_position_y = Player_position_y;
+    Gupd->opponent_position_x = Player_position_x;
+    Gupd->opponent_position_y = Player_position_y;
 
     Gupd->change_flag = 0;
 
@@ -33,7 +35,7 @@ int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup)
     if (!(setup->sd2 = (SDLNet_UDP_Open(2000))))
     {
         setup->sd2 = (SDLNet_UDP_Open(2001));
-        printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+        //printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
         SDLNet_ResolveHost(&setup->ip, "127.0.0.1", 2000);
         //exit(EXIT_FAILURE);
     }else if(SDLNet_ResolveHost(&setup->ip, "127.0.0.1", 2001) == -1)
@@ -69,7 +71,11 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
     if (Gupd-> change_flag == 1) {
 
-        snprintf((char*)setup->p1->data,sizeof(Gupd->Player_position_x)+ sizeof(Gupd->Player_position_y) + 2, "%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
+        printf("sending\n");
+
+        printf("%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
+
+        sprintf((char*)setup->p1->data, "%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
         setup->p1->address.host = setup->ip.host;	/* Set the destination host */
         setup->p1->address.port = setup->ip.port;	/* And destination port */
         setup->p1->len = strlen((char*)setup->p1->data) + 1;
@@ -82,9 +88,11 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
         if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
 
+            printf("recive\n");
+
         int a = 0, b = 0;
-        scanf_s((char*)setup->p2->data, "%d %d", &a, &b);
-        //printf("%d %d\n", a, b);
+        sscanf((char*)setup->p2->data, "%d %d", &a, &b);
+        printf("%d %d\n", a, b);
         Gupd->opponent_position_x = a;
         Gupd->opponent_position_y = b;
          }
@@ -132,7 +140,7 @@ int getOpponentPosY(Game_State Gupd)
 
 
 
-int SetPlayerPosX(Game_State Gupd, long int Player_posX)
+int SetPlayerPosX(Game_State Gupd, int Player_posX)
 {
     
     if (Gupd->Player_position_x != Player_posX) {
@@ -143,7 +151,7 @@ int SetPlayerPosX(Game_State Gupd, long int Player_posX)
     return 0;
 }
 
-int SetPlayerPosY(Game_State Gupd, long int Player_posY)
+int SetPlayerPosY(Game_State Gupd, int Player_posY)
 {
     if (Gupd->Player_position_y != Player_posY) {
 

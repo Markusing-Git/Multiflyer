@@ -1,6 +1,7 @@
 #include "game_engine.h"
 #include "player.h"
 #include "obstacle.h"
+#include "Network.h"
 
 #define nrOfFrames 3 //Antal frames i spritesheet
 #define TIME_DELAY 200
@@ -24,8 +25,12 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     // struct to hold the position and size of the sprite
     Obstacle obstacles = createObstacle(w, h); //innitate start node
 
-    Player player = createPlayer(50, 50);
-    SDL_Rect playerPos = { getPlayerPositionX(player), getPlayerPositionY(player), getPlayerHeight(player), getPlayerWidth(player) };
+    Player player1 = createPlayer(50, 50);
+    Player player2 = createPlayer(50, 50);
+    SDL_Rect playerPos = { getPlayerPositionX(player1), getPlayerPositionY(player1), getPlayerHeight(player1), getPlayerWidth(player1) };
+    SDL_Rect opponentPos = { getPlayerPositionX(player2), getPlayerPositionY(player2), getPlayerHeight(player2), getPlayerWidth(player2) };
+    UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
+    Game_State current = malloc(sizeof(struct Game_State_Type));
 
     //Create Envoirment
     bool running = true;
@@ -35,6 +40,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     if (!loadMedia(renderer)) {
         running = false; //Spelet stängs ner ifall det skett ett error i loadMedia
     }
+
+    //Starting network
+
+    int_network("127.0.0.1", 2000, setup);
+    create_Game_state(50, 50, current);
 
     //Starting game engine
     while (running)
@@ -71,6 +81,16 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         }
         //updating positions,inputs,multiplayer sends and receives.
 
+        
+        SetPlayerPosX(current, playerPos.x);
+        SetPlayerPosY(current, playerPos.y);
+
+        sendAndRecive(current, setup);
+
+        opponentPos.x = current ->opponent_position_x;
+        opponentPos.y = current->opponent_position_y;
+
+
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
         frame++;
         if (frame / 3 == nrOfFrames) {
@@ -95,7 +115,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         // clear the window and render updates
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
-        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &playerPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
+        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &playerPos, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }
     return true;
