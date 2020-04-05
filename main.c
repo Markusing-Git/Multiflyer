@@ -4,12 +4,14 @@
 #include "game_engine.h"
 
 #define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 750
+#define WINDOW_HEIGHT 600
+
+void loadBackground(SDL_Renderer* renderer);
 
 int main(void) {
 
     SDL_Window* window = NULL;
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
@@ -35,6 +37,7 @@ int main(void) {
             return 1;
         }
         else {
+            loadBackground(renderer); //Laddar bakgrunden
 
             //Starts game engine
             startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -46,4 +49,11 @@ int main(void) {
 
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+//Sätter färgen till ish ljusblå och sedan fyller hela window med färgen
+void loadBackground(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0); 
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
 }

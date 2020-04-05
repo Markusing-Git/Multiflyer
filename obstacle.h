@@ -1,35 +1,43 @@
-#ifndef obstacle_h
-#define obstacle_h
+#ifndef Obstacle_h
+#define Obstacle_h
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-#define OBSTACLE_TOP 0
+/*Obstacles are created in list form by first initating a pointer to typ Obstacle and initiating head with createObstacle.
+  creatiotion can be automated with help of a delay function in game engine,
+  destroy each obstacle that reaches out of screen with destroyObstacle()*/
 
-typedef struct obstacle_type* Obstacle;
+typedef struct obstacle_type *Obstacle;
 
-//createObstacleTop skapar den övredelen av ett hinder, tar screen width och height som parametrar, detta för att göra den dynamisk till
-//hur stor skärmen kommer att vara.
-Obstacle createObstacleTop(int screenWidth, int screenHeight);
+//param screen width, screen height, creates obstacle and two SDL_Rects with random opening.
+Obstacle createObstacle(int screenWidth, int screenHeight);
 
-//createObstacleBottom skapar den nedre delen av ett hinder, tar ett tophinder som parameter samt höjden på skrärmen.
-Obstacle createObstacleBottom(Obstacle topObstacle, int screenHeight);
+//param a obstacle, true for top false for bot, x:y:w:h for cordinates
+int getObstacleValue(Obstacle aObs, bool topOrBot, char value);
 
-int getObstacleX(Obstacle aObs);
-int getObstacleY(Obstacle aObs);
-int getObstacleWidth(Obstacle aObs);
-int getObstacleHeight(Obstacle aObs);
+//param a obstacle, true for top false for bot
+SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot);
 
-//raderar hinder från heap.
-void destroyObstacle(Obstacle aObs);
+//param a obstacle front of list
+bool destroyObstacle(Obstacle head);
 
-//tick flyttar hinder åt vänster måste användas på både top och bottom hinder. går att ändra hastigheten.
-void obstacleTick(Obstacle aObs);
-
-//random generator
+//initates random generator seed
 void initRandomGeneratior(void);
-int rndNumber(int screenHeight);
 
-#endif /*obstacle_h*/
+//param a abstacle, screen height, creates random opening in obstacles.
+void rndOpening(Obstacle aObs, int screenHeight);
+
+//param obstacle list head, screenwidth, screenHeigt. Adds new obstacle to the list,
+void newObstacle(Obstacle head, int screenWidth, int screenHeight);
+
+//param obstacle list head, advances obstacles from right to left.
+void obsteclesTick(Obstacle head);
+
+//param obstacle list head, a raenderer, a texture. renders obstacles to the screen.
+void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture);
+
+#endif /*Obstacle_h*/

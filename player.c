@@ -1,17 +1,21 @@
 #include "player.h"
 
-#define PLAYER_HEIGHT 15
-#define PLAYER_WIDTH 15
+static int playerHeight = 64;
+static int playerWidth = 100;
 
 struct playerType {
 	int x;
 	int y;
+	int h;
+	int w;
 };
 
-Player createPlayer(int x, int y){
+Player createPlayer(int x, int y) {
 	Player aPlayer = malloc(sizeof(struct playerType));
 	aPlayer->x = x;
 	aPlayer->y = y;
+	aPlayer->h = playerHeight;
+	aPlayer->w = playerWidth;
 	return aPlayer;
 }
 
@@ -24,9 +28,11 @@ int getPlayerPositionY(Player aPlayer) {
 	return aPlayer->y;
 }
 
-void drawPlayer(SDL_Surface* screen, int x, int y) {
-	/* Blits the player to the screen */
-	SDL_Rect playerRect = { x, y, 25, 25 };
-	Uint8 playerColor = SDL_MapRGB(screen->format, 255, 255, 255);
-	SDL_FillRect(screen, &playerRect, playerColor);
+int getPlayerWidth(Player aPlayer) {
+	return aPlayer->w;
 }
+
+int getPlayerHeight(Player aPlayer) {
+	return aPlayer->h;
+}
+

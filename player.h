@@ -14,7 +14,8 @@ typedef struct playerType *Player;
 
 int getPlayerPositionX(Player aPlayer);
 int getPlayerPositionY(Player aPlayer);
+int getPlayerWidth(Player aPlayer);
+int getPlayerHeight(Player aPlayer);
 Player createPlayer(int x, int y);
-void drawPlayer(SDL_Surface* screen, int x, int y);
 
 #endif /* player_h */
