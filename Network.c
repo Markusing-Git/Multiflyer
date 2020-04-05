@@ -71,8 +71,6 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
     if (Gupd-> change_flag == 1) {
 
-        printf("sending\n");
-
         printf("%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
 
         sprintf((char*)setup->p1->data, "%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
@@ -88,11 +86,9 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
 
         if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
 
-            printf("recive\n");
-
         int a = 0, b = 0;
         sscanf((char*)setup->p2->data, "%d %d", &a, &b);
-        printf("%d %d\n", a, b);
+        //printf("%d %d\n", a, b);
         Gupd->opponent_position_x = a;
         Gupd->opponent_position_y = b;
          }
