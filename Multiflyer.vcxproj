@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game_engine.c" />
+    <ClCompile Include="LoadMenu.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Network.c" />
     <ClCompile Include="obstacle.c" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_engine.h" />
+    <ClInclude Include="LoadMenu.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
