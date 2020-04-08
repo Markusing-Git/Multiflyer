@@ -122,8 +122,8 @@ void obsteclesTick(Obstacle head) {
     obs = head;
     obs = obs->next;
     while (obs != NULL) {
-        obs->top.x--;
-        obs->bottom.x--;
+        obs->top.x -= 2;
+        obs->bottom.x -=2;
         obs = obs->next;
     }
 }
@@ -135,6 +135,18 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
     while (obs != NULL) {
         SDL_RenderCopyEx(renderer, texture, NULL, &obs->top, 0, NULL, SDL_FLIP_VERTICAL);
         SDL_RenderCopyEx(renderer, texture, NULL, &obs->bottom, 0, NULL, SDL_FLIP_NONE);
+        obs = obs->next;
+    }
+}
+
+void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
+    Obstacle obs;
+    obs = head;
+    obs = obs->next;
+    while (obs != NULL) {
+        if (SDL_HasIntersection(aPlayerPos, &obs->top) || SDL_HasIntersection(aPlayerPos, &obs->bottom)) {
+            aPlayer->alive = false;
+        }
         obs = obs->next;
     }
 }

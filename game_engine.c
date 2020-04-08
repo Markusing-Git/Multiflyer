@@ -1,25 +1,21 @@
 #include "game_engine.h"
-#include "player.h"
-#include "obstacle.h"
-#include "Network.h"
-
-#define nrOfFrames 3 //Antal frames i spritesheet
-#define TIME_DELAY 200
-
-
 
 bool loadMedia(SDL_Renderer* renderer);
 
 static SDL_Texture* flyTrapTex = NULL;
-static SDL_Surface* flyTrapSurface = NULL;
 static SDL_Texture* flyTex = NULL;
+static SDL_Texture* flySplashTex = NULL;
+static SDL_Surface* flyTrapSurface = NULL;
 static SDL_Surface* flySurface = NULL;
-static SDL_Rect spriteClips[nrOfFrames];
+static SDL_Surface* flySplashSurface = NULL;
+static SDL_Rect playerSprites[PLAYER_FRAMES];
+static SDL_Rect splashSprites[SPLASH_FRAMES];
 
 
 bool startGame(SDL_Renderer* renderer, int w, int h) {
 
-    int frame = 0; //Den frame som ska visas
+    int playerFrame = 0; //Den frame som ska visas
+    int splashFrame = 0;
     int delay = TIME_DELAY;
 
     // struct to hold the position and size of the sprite
@@ -58,65 +54,72 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
                 running = false;
                 break;
             case SDL_KEYDOWN: //Trycker på en knapp
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_UP:
-                    playerPos.y -= 5;
-                    break;
-                case SDLK_DOWN:
-                    playerPos.y += 5;
-                    break;
-                case SDLK_LEFT:
-                    playerPos.x -= 5;
-                    break;
-                case SDLK_RIGHT:
-                    playerPos.x += 5;
-                    break;
-                case SDLK_ESCAPE:
-                    running = false;
-                    break;
+                if (player1->alive == true) {
+                    switch (event.key.keysym.sym)
+                    {
+                    case SDLK_UP:
+                        playerPos.y -= 5;
+                        break;
+                    case SDLK_DOWN:
+                        playerPos.y += 5;
+                        break;
+                    case SDLK_LEFT:
+                        playerPos.x -= 5;
+                        break;
+                    case SDLK_RIGHT:
+                        playerPos.x += 5;
+                        break;
+                    case SDLK_ESCAPE:
+                        running = false;
+                        break;
+                    }
                 }
                 break;
             }
         }
         //updating positions,inputs,multiplayer sends and receives.
 
-        
+
         SetPlayerPosX(current, playerPos.x);
         SetPlayerPosY(current, playerPos.y);
 
         sendAndRecive(current, setup);
 
-        opponentPos.x = current ->opponent_position_x;
+        opponentPos.x = current->opponent_position_x;
         opponentPos.y = current->opponent_position_y;
 
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
-        frame++;
-        if (frame / 3 == nrOfFrames) {
-            frame = 0;
+        playerFrame++;
+        if (playerFrame / 3 == PLAYER_FRAMES) {
+            playerFrame = 0;
         }
 
-        //Creates a new obstacle every time delay hits 0
+        if (splashFrame != SPLASH_FRAMES * 11 && player1->alive == false) {
+            splashFrame++;
+            if (splashFrame / 13 == SPLASH_FRAMES) {
+                splashFrame = 0;
+            }
+        }
+
+        //handles obstacles
         delay--;
         if (delay <= 0) {
             newObstacle(obstacles, w, h);
             delay = TIME_DELAY;
         }
-
-        //advance obstacles
         obsteclesTick(obstacles);
-
-        //free used obstacles
         if (destroyObstacle(obstacles)) {
             printf("destroyed\n");
         }
+        obstacleCollision(&playerPos, player1, obstacles);
+
 
         // clear the window and render updates
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
-        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &playerPos, 0, NULL, SDL_FLIP_NONE);
-        SDL_RenderCopyEx(renderer, flyTex, &spriteClips[frame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
+        renderPlayer(renderer, flyTex, flySplashTex, &playerPos, player1, playerSprites, splashSprites, playerFrame, splashFrame);
+        SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }
     return true;
@@ -124,44 +127,130 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 
 bool loadMedia(SDL_Renderer* renderer) {
     bool noError = true;
+
     flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
     flyTrapSurface = IMG_Load("bilder/flytrapSpriteSheet.png"); //Laddar in spritesheet
+    flySplashSurface = IMG_Load("bilder/bloodsplat.png");
+
     if (flySurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         noError = false;
+        return noError;
     }
-    else if  (flyTrapSurface == NULL) {
+    if (flyTrapSurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         noError = false;
-        }
-    else {
-        flyTex = SDL_CreateTextureFromSurface(renderer, flySurface); //skapar en texture från spritesheet
-        flyTrapTex = SDL_CreateTextureFromSurface(renderer, flyTrapSurface);
-        if (flyTex == NULL)
-        {
-            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
-            noError = false;
-        }
-        else if (flyTrapTex == NULL) {
-            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
-            noError = false;
-        }
-        else {
-            spriteClips[0].x = 0;   //Skapar de olika rect för frames:en i spritesheet, vår spritesheet har 3 frames därav 3 rects
-            spriteClips[0].y = 0;
-            spriteClips[0].w = 117;
-            spriteClips[0].h = 150;
-
-            spriteClips[1].x = 117;
-            spriteClips[1].y = 0;
-            spriteClips[1].w = 117;
-            spriteClips[1].h = 150;
-
-            spriteClips[2].x = 234;
-            spriteClips[2].y = 0;
-            spriteClips[2].w = 117;
-            spriteClips[2].h = 150;
-        }
+        return noError;
     }
+    if (flySplashSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        noError = false;
+        return noError;
+    }
+
+    flyTex = SDL_CreateTextureFromSurface(renderer, flySurface); //skapar en texture från spritesheet
+    flyTrapTex = SDL_CreateTextureFromSurface(renderer, flyTrapSurface);
+    flySplashTex = SDL_CreateTextureFromSurface(renderer, flySplashSurface);
+
+    if (flyTex == NULL)
+    {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        noError = false;
+        return noError;
+    }
+    if (flyTrapTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        noError = false;
+        return noError;
+    }
+    if (flySplashTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        noError = false;
+        return noError;
+    }
+
+    //SPRITES
+    playerSprites[0].x = 0;   //Skapar de olika rect för frames:en i spritesheet, vår spritesheet har 3 frames därav 3 rects
+    playerSprites[0].y = 0;
+    playerSprites[0].w = 117;
+    playerSprites[0].h = 150;
+
+    playerSprites[1].x = 117;
+    playerSprites[1].y = 0;
+    playerSprites[1].w = 117;
+    playerSprites[1].h = 150;
+
+    playerSprites[2].x = 234;
+    playerSprites[2].y = 0;
+    playerSprites[2].w = 117;
+    playerSprites[2].h = 150;
+
+    //splash sprites by https://opengameart.org/users/pwl artist: PWL
+
+    splashSprites[0].x = 960;
+    splashSprites[0].y = 0;
+    splashSprites[0].w = 480;
+    splashSprites[0].h = 480;
+
+    splashSprites[1].x = 1440;
+    splashSprites[1].y = 0;
+    splashSprites[1].w = 480;
+    splashSprites[1].h = 480;
+
+    splashSprites[2].x = 1920;
+    splashSprites[2].y = 0;
+    splashSprites[2].w = 480;
+    splashSprites[2].h = 480;
+
+    splashSprites[3].x = 2400;
+    splashSprites[3].y = 0;
+    splashSprites[3].w = 480;
+    splashSprites[3].h = 480;
+
+    splashSprites[4].x = 2880;
+    splashSprites[4].y = 0;
+    splashSprites[4].w = 480;
+    splashSprites[4].h = 480;
+
+    splashSprites[5].x = 3360;
+    splashSprites[5].y = 0;
+    splashSprites[5].w = 480;
+    splashSprites[5].h = 480;
+
+    splashSprites[6].x = 3840;
+    splashSprites[6].y = 0;
+    splashSprites[6].w = 480;
+    splashSprites[6].h = 480;
+
+    splashSprites[7].x = 4320;
+    splashSprites[7].y = 0;
+    splashSprites[7].w = 480;
+    splashSprites[7].h = 480;
+
+    splashSprites[8].x = 4800;
+    splashSprites[8].y = 0;
+    splashSprites[8].w = 480;
+    splashSprites[8].h = 480;
+
+    splashSprites[9].x = 5280;
+    splashSprites[9].y = 0;
+    splashSprites[9].w = 480;
+    splashSprites[9].h = 480;
+
+    splashSprites[10].x = 5760;
+    splashSprites[10].y = 0;
+    splashSprites[10].w = 480;
+    splashSprites[10].h = 480;
+
+    splashSprites[12].x = 6240;
+    splashSprites[12].y = 0;
+    splashSprites[12].w = 480;
+    splashSprites[12].h = 480;
+
+    splashSprites[13].x = 6720;
+    splashSprites[13].y = 0;
+    splashSprites[13].w = 480;
+    splashSprites[13].h = 480;
+
     return noError; //Returnerar errorchecken
 }

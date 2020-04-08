@@ -6,6 +6,13 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "player.h"
+#include "obstacle.h"
+#include "Network.h"
+
+#define PLAYER_FRAMES 3 //Antal frames i spritesheet
+#define SPLASH_FRAMES 14
+#define TIME_DELAY 100
 
 //params a renderer, screen width, screen height
 bool startGame(SDL_Renderer* renderer, int w, int h);

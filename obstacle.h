@@ -6,6 +6,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "player.h"
 
 /*Obstacles are created in list form by first initating a pointer to typ Obstacle and initiating head with createObstacle.
   creatiotion can be automated with help of a delay function in game engine,
@@ -45,5 +46,8 @@ void obsteclesTick(Obstacle head);
 
 //param obstacle list head, a raenderer, a texture. renders obstacles to the screen.
 void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture);
+
+//Checks if player has colided with obstacle
+void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head);
 
 #endif /*Obstacle_h*/
