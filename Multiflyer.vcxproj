@@ -152,6 +152,7 @@
     <ClCompile Include="Network.c" />
     <ClCompile Include="obstacle.c" />
     <ClCompile Include="player.c" />
+    <ClCompile Include="world.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_engine.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

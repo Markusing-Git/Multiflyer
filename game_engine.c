@@ -14,6 +14,8 @@ static SDL_Rect splashSprites[SPLASH_FRAMES];
 
 bool startGame(SDL_Renderer* renderer, int w, int h) {
 
+    //************************************CREATE ENVOIRMENT**************************************************************************
+
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
     int delay = TIME_DELAY;
@@ -28,7 +30,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
 
-    //Create Envoirment
     bool running = true;
     SDL_Event event;
 
@@ -42,7 +43,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     int_network("127.0.0.1", 2000, setup);
     create_Game_state(50, 50, current);
 
-    //Starting game engine
+    //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
         //polling events
@@ -77,9 +78,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
                 break;
             }
         }
-        //updating positions,inputs,multiplayer sends and receives.
 
-
+    //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
+        
         SetPlayerPosX(current, playerPos.x);
         SetPlayerPosY(current, playerPos.y);
 
@@ -88,6 +89,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         opponentPos.x = current->opponent_position_x;
         opponentPos.y = current->opponent_position_y;
 
+        worldCollision(&playerPos, player1, w, h);
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
         playerFrame++;
@@ -115,7 +117,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         obstacleCollision(&playerPos, player1, obstacles);
 
 
-        // clear the window and render updates
+    //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
         renderPlayer(renderer, flyTex, flySplashTex, &playerPos, player1, playerSprites, splashSprites, playerFrame, splashFrame);
@@ -124,6 +126,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     }
     return true;
 }
+
+
+
 
 bool loadMedia(SDL_Renderer* renderer) {
     bool noError = true;
