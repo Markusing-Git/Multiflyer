@@ -2,9 +2,9 @@
 #define Network_h
 
 
-#define NAME_LENGTH 100
 #define IP_LENGHT 16
 #define _CRT_SECURE_NO_DEPRECATE
+#define MAX_TEXT_LENGHT 100
 
 
 #include <stdio.h>
@@ -17,18 +17,13 @@
 struct UDP_Config_Type{
     UDPsocket sd1;
     UDPsocket sd2;
-    UDPsocket sd3;
     IPaddress ip;
     UDPpacket *p1;
     UDPpacket *p2;
     int port;
-    int port_Set_Flag;
 
 };
 
-struct Player_Name_Type {
-    char Player_name[NAME_LENGTH]; //Namnet som kommer att skickas
-};
 
 struct Game_State_Type
 {
@@ -37,7 +32,6 @@ struct Game_State_Type
     int opponent_position_x;
     int opponent_position_y; //De nuvarande Positionerna som
     int change_flag;
-    int setup_flag;
 }; 
 
 
