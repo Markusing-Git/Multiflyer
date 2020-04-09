@@ -117,6 +117,13 @@ void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
     head->next = newNode;
 }
 
+void newClientObstacle(Obstacle receivedObstacle) {
+    Obstacle newNode;
+    newNode = receivedObstacle;
+    newNode->next = receivedObstacle->next;
+    receivedObstacle->next = newNode;
+}
+
 void obsteclesTick(Obstacle head) {
     Obstacle obs;
     obs = head;

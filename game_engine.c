@@ -108,6 +108,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         delay--;
         if (delay <= 0) {
             newObstacle(obstacles, w, h);
+            newClientObstacle(ReciveObstacle(current));
             delay = TIME_DELAY;
         }
         obsteclesTick(obstacles);

@@ -50,4 +50,7 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
 //Checks if player has colided with obstacle
 void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head);
 
+//Creates a client obstacle list
+void newClientObstacle(Obstacle receivedObstacle);
+
 #endif /*Obstacle_h*/
