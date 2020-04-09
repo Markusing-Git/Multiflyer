@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool *hostOrClient)
 {
     SDL_Texture* imageS_texture = NULL;
     SDL_Texture* imageM_texture = NULL;
@@ -81,7 +81,7 @@ int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
                 }
                 else if(x>=imageM_pos.x && x<=imageM_pos.x+imageM_pos.w && y>imageM_pos.y && y<=imageM_pos.y+imageM_pos.h)//Multiplayer
                 {
-                    running = false;
+                    getHostOrClient(renderer, hostOrClient);
                 }
                 else if(x>=imageS_pos.x && x<=imageS_pos.x+imageS_pos.w && y>imageS_pos.y && y<=imageS_pos.y+imageS_pos.h)//Start
                 {                   
@@ -110,4 +110,63 @@ int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w,int h)
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     return 0;
+}
+
+void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {
+    SDL_Event e;
+    int done = true;
+    int x, y;
+
+    SDL_Texture* imageH_texture = NULL;
+    SDL_Texture* imageC_texture = NULL;
+
+    SDL_Surface* imageH = IMG_Load("bilder/Host.png");
+    imageH_texture = SDL_CreateTextureFromSurface(renderer, imageH);
+    //Define position for Multiplayer
+    SDL_Rect imageH_pos;
+    imageH_pos.x = 100;
+    imageH_pos.y = 200;
+    imageH_pos.w = 354;
+    imageH_pos.h = 185;
+    SDL_FreeSurface(imageH);
+
+    SDL_Surface* imageC = IMG_Load("bilder/Client.png");
+    imageC_texture = SDL_CreateTextureFromSurface(renderer, imageC);
+    //Define position for Multiplayer
+    SDL_Rect imageC_pos;
+    imageC_pos.x = 520;
+    imageC_pos.y = 200;
+    imageC_pos.w = 354;
+    imageC_pos.h = 185;
+    SDL_FreeSurface(imageC);
+
+    while (done) {
+
+        while (SDL_PollEvent(&e))
+            if (e.type == SDL_QUIT)
+            {
+                done = false;
+            }
+            else if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                x = e.button.x;
+                y = e.button.y;
+                if (x >= imageH_pos.x && x <= imageH_pos.x + imageH_pos.w && y > imageH_pos.y && y <= imageH_pos.y + imageH_pos.h)
+                {
+                    *hostOrClient = true;
+                    done = false;
+                }
+                else if (x >= imageC_pos.x && x <= imageC_pos.x + imageC_pos.w && y > imageC_pos.y && y <= imageC_pos.y + imageC_pos.h)
+                {
+                    *hostOrClient = false;
+                    done = false;
+                }
+            }
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, imageH_texture, NULL, &imageH_pos);
+        SDL_RenderCopy(renderer, imageC_texture, NULL, &imageC_pos);
+        SDL_RenderPresent(renderer);
+    }
+    SDL_DestroyTexture(imageH_texture);
+    SDL_DestroyTexture(imageC_texture);
 }
