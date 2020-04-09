@@ -12,6 +12,7 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
+#include "obstacle.h"
 
 
 struct UDP_Config_Type{
@@ -32,6 +33,9 @@ struct Game_State_Type
     int opponent_position_x;
     int opponent_position_y; //De nuvarande Positionerna som
     int change_flag;
+    int obstacle_change_flag;
+    SDL_Rect obstacle_top;
+    SDL_Rect obstacle_bottom;
 }; 
 
 
@@ -49,6 +53,8 @@ int getOpponentPosX(Game_State Gupd);
 int getOpponentPosY(Game_State Gupd);
 int getPlayerPosX(Game_State Gupd);
 int getPlayerPosY(Game_State Gupd);
+int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
+Obstacle ReciveObstacle(Game_State Gupd);
 
 
 #endif /*Network_h*/
