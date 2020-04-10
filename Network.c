@@ -16,8 +16,6 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 
 int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup)
 {
-    
-
 
     if (SDLNet_Init() < 0)
     {
@@ -44,7 +42,6 @@ int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup)
 
             printf("SDLNet_ResolveHost(%s %d): %s\n", IP_input, port, SDLNet_GetError());
             exit(EXIT_FAILURE);
-
         }
 
         //kollar om port 2000 är upptagen och tar 2001 om den är det. 
@@ -60,28 +57,39 @@ int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup)
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-
-
     setup->port = port;
 
 
     return 0;
     //initierar en socket och returnerar den
-
-
 }
 
 
-
-int sendAndRecive(Game_State Gupd, UDP_Config setup)
+int sendAndRecive(Game_State Gupd, UDP_Config setup, SDL_Rect *local_player, SDL_Rect *local_opponent)
 {
+    updateGameSending(Gupd, local_player);
+    networkCommunication(Gupd, setup);
+    updateGameReciving(Gupd, local_opponent);
+
+    return 0;
+}
+
+int updateGameSending(Game_State Gupd, SDL_Rect* local_player)
+{
+    SetPlayerPosX(Gupd, local_player->x);
+    SetPlayerPosY(Gupd, local_player->y);
     
+    return 0;
+}
+
+int networkCommunication(Game_State Gupd, UDP_Config setup)
+{
     Game_State Gupd_Recive = malloc(sizeof(struct Game_State_Type));
 
-    if (Gupd-> change_flag == 1) {
+    if (Gupd->change_flag == 1) {
 
         //printf("%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
-        
+
         Gupd->change_flag = 0;
 
         memcpy(setup->p1->data, Gupd, sizeof(struct Game_State_Type));
@@ -90,26 +98,31 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup)
         setup->p1->address.port = setup->ip.port;	/* And destination port */
         SDLNet_UDP_Send(setup->sd1, -1, setup->p1);
 
-        
     }
 
-        if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
+    if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
 
-            memcpy(Gupd_Recive, setup->p2->data, sizeof(struct Game_State_Type));
-            Gupd->opponent_position_x = Gupd_Recive->Player_position_x;
-            Gupd->opponent_position_y = Gupd_Recive->Player_position_y;
-            
-            
-            Gupd->obstacle_bottom = Gupd_Recive->obstacle_bottom;
-            Gupd->obstacle_top = Gupd_Recive->obstacle_top;
-            printf("Reciving Obstacle: %d\n", Gupd->obstacle_bottom.y);
-            
-         }
+        memcpy(Gupd_Recive, setup->p2->data, sizeof(struct Game_State_Type));
+        Gupd->opponent_position_x = Gupd_Recive->Player_position_x;
+        Gupd->opponent_position_y = Gupd_Recive->Player_position_y;
+        Gupd->opponent_alive = Gupd_Recive->player_alive;
 
+        Gupd->obstacle_bottom = Gupd_Recive->obstacle_bottom;
+        Gupd->obstacle_top = Gupd_Recive->obstacle_top;
+       // printf("Reciving Obstacle: %d\n", Gupd->obstacle_bottom.y);
 
-    return 0; 
+    }
 
+    return 0;
 
+}
+
+int updateGameReciving(Game_State Gupd, SDL_Rect *Local_opponent)
+{
+    Local_opponent->x = Gupd->opponent_position_x;
+    Local_opponent->y = Gupd->opponent_position_y;
+
+    return 0;
 }
 
 int Send_Text(char Text[MAX_TEXT_LENGHT], UDP_Config setup)
@@ -129,8 +142,6 @@ int Send_Text(char Text[MAX_TEXT_LENGHT], UDP_Config setup)
         }
     } while (!client);
     SDLNet_TCP_Close(server);
-
-
     return 0;
 }
 
@@ -187,6 +198,16 @@ int SetPlayerPosY(Game_State Gupd, int Player_posY)
 
         Gupd->change_flag = 1;
         Gupd->Player_position_y = Player_posY;
+    }
+    return 0;
+}
+
+int SetPlayerAlive(Game_State Gupd, bool Alive_Local)
+{
+    if (Gupd->player_alive != Alive_Local) {
+
+        Gupd->change_flag = 1;
+        Gupd->player_alive = Alive_Local;
     }
     return 0;
 }

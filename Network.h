@@ -13,6 +13,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
 #include "obstacle.h"
+#include "player.h"
 
 
 struct UDP_Config_Type{
@@ -32,6 +33,8 @@ struct Game_State_Type
     int Player_position_y;
     int opponent_position_x;
     int opponent_position_y; //De nuvarande Positionerna som
+    bool player_alive;
+    bool opponent_alive;
     int change_flag;
     int obstacle_change_flag;
     SDL_Rect obstacle_top;
@@ -44,7 +47,11 @@ typedef	struct Game_State_Type* Game_State;
 typedef	struct Player_Name_Type* Player_Name;
 
 int create_Game_state(int Player_position_x, int Player_position_y, Game_State Gupd);
-int sendAndRecive(Game_State Gupd, UDP_Config setup);
+int sendAndRecive(Game_State Gupd, UDP_Config setup, SDL_Rect *local_player, SDL_Rect *local_opponent);
+int SetPlayerAlive(Game_State Gupd, bool Alive_Local);
+int updateGameSending(Game_State Gupd, SDL_Rect* local_player);
+int networkCommunication(Game_State Gupd, UDP_Config setup);
+int updateGameReciving(Game_State Gupd, SDL_Rect* Local_opponent);
 int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup);
 int Close_SDLNet(UDP_Config setup);
 int SetPlayerPosX(Game_State Gupd,int Player_posX);

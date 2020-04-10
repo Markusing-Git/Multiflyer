@@ -29,6 +29,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     SDL_Rect opponentPos = { getPlayerPositionX(player2), getPlayerPositionY(player2), getPlayerHeight(player2), getPlayerWidth(player2) };
     UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
+    SDL_Rect* pPlayerPos = &playerPos;
+    SDL_Rect* pOpponentPos = &opponentPos;
 
     bool running = true;
     SDL_Event event;
@@ -81,13 +83,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 
     //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
         
-        SetPlayerPosX(current, playerPos.x);
-        SetPlayerPosY(current, playerPos.y);
+        SetPlayerAlive(current, player1->alive);
 
-        sendAndRecive(current, setup);
+        sendAndRecive(current, setup, pPlayerPos, pOpponentPos);
 
-        opponentPos.x = current->opponent_position_x;
-        opponentPos.y = current->opponent_position_y;
+        player2->alive = current->opponent_alive;
 
         worldCollision(&playerPos, player1, w, h);
 
@@ -109,7 +109,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         if (delay <= 0) {
             newObstacle(obstacles, w, h);
             SetObstacle(current, obstacles);
-            sendAndRecive(current, setup);
             delay = TIME_DELAY;
         }
         obsteclesTick(obstacles);
@@ -123,7 +122,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
         renderPlayer(renderer, flyTex, flySplashTex, &playerPos, player1, playerSprites, splashSprites, playerFrame, splashFrame);
-        SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
+        renderPlayer(renderer, flyTex, flySplashTex, &opponentPos, player2, playerSprites, splashSprites, playerFrame, splashFrame);
+        //SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }
     return true;
