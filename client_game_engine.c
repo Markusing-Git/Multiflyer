@@ -21,14 +21,13 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
 
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
-    Player player1 = createPlayer(50, 50);
-    Player player2 = createPlayer(50, 50);
-    SDL_Rect playerPos = { getPlayerPositionX(player1), getPlayerPositionY(player1), getPlayerHeight(player1), getPlayerWidth(player1) };
-    SDL_Rect opponentPos = { getPlayerPositionX(player2), getPlayerPositionY(player2), getPlayerHeight(player2), getPlayerWidth(player2) };
+    Player players[3];
+    players[0] = createPlayer(50, 50);
+    players[1] = createPlayer(50, 50);
     UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
-    SDL_Rect* pPlayerPos = &playerPos;
-    SDL_Rect* pOpponentPos = &opponentPos;
+    SDL_Rect* pPlayerPos = &players[0]->playerPos;
+    SDL_Rect* pOpponentPos = &players[1]->playerPos;
 
 
     bool running = true;
@@ -56,20 +55,20 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
                 running = false;
                 break;
             case SDL_KEYDOWN: //Trycker på en knapp
-                if (player1->alive == true) {
+                if (players[0]->alive == true) {
                     switch (event.key.keysym.sym)
                     {
                     case SDLK_UP:
-                        playerPos.y -= 5;
+                        players[0]->playerPos.y -= 5;
                         break;
                     case SDLK_DOWN:
-                        playerPos.y += 5;
+                        players[0]->playerPos.y += 5;
                         break;
                     case SDLK_LEFT:
-                        playerPos.x -= 5;
+                        players[0]->playerPos.x -= 5;
                         break;
                     case SDLK_RIGHT:
-                        playerPos.x += 5;
+                        players[0]->playerPos.x += 5;
                         break;
                     case SDLK_ESCAPE:
                         running = false;
@@ -82,13 +81,13 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
-        SetPlayerAlive(current, player1->alive);
+        SetPlayerAlive(current, players[0]->alive);
 
         sendAndRecive(current, setup, pPlayerPos, pOpponentPos);
 
-        player2->alive = current->opponent_alive;
+        players[1]->alive = current->opponent_alive;
 
-        worldCollision(&playerPos, player1, w, h);
+        worldCollision(&players[0]->playerPos, players[0], w, h);
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
         playerFrame++;
@@ -96,7 +95,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
             playerFrame = 0;
         }
 
-        if (splashFrame != SPLASH_FRAMES * 11 && player1->alive == false) {
+        if (splashFrame != SPLASH_FRAMES * 11 && players[0]->alive == false) {
             splashFrame++;
             if (splashFrame / 13 == SPLASH_FRAMES) {
                 splashFrame = 0;
@@ -113,15 +112,15 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
         if (destroyObstacle(obstacles)) {
             printf("destroyed\n");
         }
-        obstacleCollision(&playerPos, player1, obstacles);
+        obstacleCollision(&players[0]->playerPos, players[0], obstacles);
 
 
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
-        renderPlayer(renderer, flyTex, flySplashTex, &playerPos, player1, playerSprites, splashSprites, playerFrame, splashFrame);
-        renderPlayer(renderer, flyTex, flySplashTex, &opponentPos, player2, playerSprites, splashSprites, playerFrame, splashFrame);
+        renderPlayer(renderer, flyTex, flySplashTex, &players[0]->playerPos, players[0], playerSprites, splashSprites, playerFrame, splashFrame);
+        renderPlayer(renderer, flyTex, flySplashTex, &players[1]->playerPos, players[1], playerSprites, splashSprites, playerFrame, splashFrame);
         //SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }

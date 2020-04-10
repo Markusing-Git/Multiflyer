@@ -15,19 +15,11 @@
 //drawPlayer ritar ut spelaren på skärmen (Kanske borde tillhöra annan source fil t.ex en som heter game??)
 
 struct playerType {
-	int x;
-	int y;
-	int h;
-	int w;
+	SDL_Rect playerPos;
 	bool alive;
 };
 
 typedef struct playerType* Player;
-
-int getPlayerPositionX(Player aPlayer);
-int getPlayerPositionY(Player aPlayer);
-int getPlayerWidth(Player aPlayer);
-int getPlayerHeight(Player aPlayer);
 
 //creates a player struct
 Player createPlayer(int x, int y);
