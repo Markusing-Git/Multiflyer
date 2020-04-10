@@ -51,6 +51,6 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
 void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head);
 
 //Creates a client obstacle list
-void newClientObstacle(Obstacle receivedObstacle);
+void newClientObstacle(Obstacle receivedObstacle, Obstacle head);
 
 #endif /*Obstacle_h*/

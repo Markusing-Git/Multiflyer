@@ -17,5 +17,6 @@
 
 //params a renderer, screen width, screen height
 bool startGame(SDL_Renderer* renderer, int w, int h);
+bool startClientGame(SDL_Renderer* renderer, int w, int h);
 
 #endif /*game_engine_h*/

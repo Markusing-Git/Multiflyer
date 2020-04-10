@@ -195,10 +195,9 @@ int SetObstacle(Game_State Gupd, Obstacle Send_obstacles)
 {
     Gupd->change_flag = 1;
     Gupd->obstacle_change_flag = 1;
-    Gupd->obstacle_top = Send_obstacles->top;
-    Gupd->obstacle_bottom = Send_obstacles->bottom;
+    Gupd->obstacle_top = Send_obstacles->next->top;
+    Gupd->obstacle_bottom = Send_obstacles->next->bottom;
     
-
     return 0;
 }
 

@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="client_game_engine.c" />
     <ClCompile Include="game_engine.c" />
     <ClCompile Include="LoadMenu.c" />
     <ClCompile Include="main.c" />

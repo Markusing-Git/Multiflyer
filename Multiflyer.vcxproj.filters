@@ -36,6 +36,9 @@
     <ClCompile Include="world.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="client_game_engine.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">

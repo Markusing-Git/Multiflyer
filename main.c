@@ -43,7 +43,10 @@ int main(void) {
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient)) {
                 //Starts game engine
                 loadBackground(renderer); //Laddar bakgrunden
-                startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+                if (hostOrClient)
+                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+                else
+                    startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
             }
             else {
                 SDL_DestroyRenderer(renderer);

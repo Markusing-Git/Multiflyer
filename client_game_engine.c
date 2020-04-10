@@ -1,6 +1,6 @@
 #include "game_engine.h"
 
-bool loadMedia(SDL_Renderer* renderer);
+bool loadClientMedia(SDL_Renderer* renderer);
 
 static SDL_Texture* flyTrapTex = NULL;
 static SDL_Texture* flyTex = NULL;
@@ -12,17 +12,15 @@ static SDL_Rect playerSprites[PLAYER_FRAMES];
 static SDL_Rect splashSprites[SPLASH_FRAMES];
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
-    int delay = TIME_DELAY;
 
-    // struct to hold the position and size of the sprite
-    Obstacle obstacles = createObstacle(w, h); //innitate start node
 
+    Obstacle obstacles = createObstacle(w, h);;
     Player player1 = createPlayer(50, 50);
     Player player2 = createPlayer(50, 50);
     SDL_Rect playerPos = { getPlayerPositionX(player1), getPlayerPositionY(player1), getPlayerHeight(player1), getPlayerWidth(player1) };
@@ -30,18 +28,20 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
 
+
+
     bool running = true;
     SDL_Event event;
 
     //Laddar in spritesheet och skapar de olika frames:en för spritesheetet
-    if (!loadMedia(renderer)) {
+    if (!loadClientMedia(renderer)) {
         running = false; //Spelet stängs ner ifall det skett ett error i loadMedia
     }
 
     //Starting network
-
     int_network("127.0.0.1", 2000, setup);
     create_Game_state(50, 50, current);
+
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
@@ -79,8 +79,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
             }
         }
 
-    //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
-        
+        //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
+
         SetPlayerPosX(current, playerPos.x);
         SetPlayerPosY(current, playerPos.y);
 
@@ -105,13 +105,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         }
 
         //handles obstacles
-        delay--;
-        if (delay <= 0) {
-            newObstacle(obstacles, w, h);
-            SetObstacle(current, obstacles);
-            sendAndRecive(current, setup);
-            delay = TIME_DELAY;
+        if (current->obstacle_change_flag) {
+            newClientObstacle(ReciveObstacle(current), obstacles);
+            printf("new");
         }
+
         obsteclesTick(obstacles);
         if (destroyObstacle(obstacles)) {
             printf("destroyed\n");
@@ -119,7 +117,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         obstacleCollision(&playerPos, player1, obstacles);
 
 
-    //*********************************  RENDERING  ***********************************************************************************
+
+        //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
         renderPlayer(renderer, flyTex, flySplashTex, &playerPos, player1, playerSprites, splashSprites, playerFrame, splashFrame);
@@ -129,10 +128,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     return true;
 }
 
-
-
-
-bool loadMedia(SDL_Renderer* renderer) {
+bool loadClientMedia(SDL_Renderer* renderer) {
     bool noError = true;
 
     flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
