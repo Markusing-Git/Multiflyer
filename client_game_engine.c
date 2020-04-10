@@ -20,7 +20,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
     int splashFrame = 0;
 
 
-    Obstacle obstacles = createObstacle(w, h);;
+    Obstacle obstacles = createObstacle(w, h); //dummy obstacle
     Player player1 = createPlayer(50, 50);
     Player player2 = createPlayer(50, 50);
     SDL_Rect playerPos = { getPlayerPositionX(player1), getPlayerPositionY(player1), getPlayerHeight(player1), getPlayerWidth(player1) };
