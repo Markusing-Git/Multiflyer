@@ -98,6 +98,8 @@ int networkCommunication(Game_State Gupd, UDP_Config setup)
         setup->p1->address.port = setup->ip.port;	/* And destination port */
         SDLNet_UDP_Send(setup->sd1, -1, setup->p1);
 
+        Gupd->obstacle_change_flag = 0;
+
     }
 
     if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
@@ -109,7 +111,8 @@ int networkCommunication(Game_State Gupd, UDP_Config setup)
 
         Gupd->obstacle_bottom = Gupd_Recive->obstacle_bottom;
         Gupd->obstacle_top = Gupd_Recive->obstacle_top;
-       // printf("Reciving Obstacle: %d\n", Gupd->obstacle_bottom.y);
+        Gupd->obstacle_change_flag = Gupd_Recive->obstacle_change_flag;
+        //printf("Reciving Obstacle: %d\n", Gupd->obstacle_bottom.y);
 
     }
 

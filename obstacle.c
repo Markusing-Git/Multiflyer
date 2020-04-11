@@ -147,6 +147,7 @@ void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
 
 void newClientObstacle(Obstacle receivedObstacle, Obstacle head) {
     Obstacle newNode;
+   
 
     newNode = receivedObstacle;
 
