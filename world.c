@@ -1,7 +1,7 @@
 #include "world.h"
 
 void worldCollision(SDL_Rect* aPlayerPos, Player aPlayer, int screenWidth, int screenHeight) {
-	if (aPlayer->alive == true) {
+	if (getPlayerStatus(aPlayer) == true) {
 		if (aPlayerPos->x <= 0) {
 			aPlayerPos->x = 0;
 		}

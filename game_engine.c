@@ -19,17 +19,18 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
     int delay = TIME_DELAY;
+    int playerCount = 0;
 
     // struct to hold the position and size of the sprite
     Obstacle obstacles = createObstacle(w, h); //innitate start node
 
     Player players[MAX_PLAYERS];
-    players[0] = createPlayer(50, 50);
-    players[1] = createPlayer(50, 50);
+    newPlayer(players, createPlayer(50, 50), &playerCount);
+    newPlayer(players, createPlayer(50, 50), &playerCount);
     UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
-    SDL_Rect* pPlayerPos = &players[0]->playerPos;
-    SDL_Rect* pOpponentPos = &players[1]->playerPos;
+    SDL_Rect* pPlayerPos = getPlayerPosAdr(players[0]);
+    SDL_Rect* pOpponentPos = getPlayerPosAdr(players[1]);
 
     bool running = true;
     SDL_Event event;
@@ -56,20 +57,20 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
                 running = false;
                 break;
             case SDL_KEYDOWN: //Trycker på en knapp
-                if (players[0]->alive == true) {
+                if (getPlayerStatus(players[0]) == true) {
                     switch (event.key.keysym.sym)
                     {
                     case SDLK_UP:
-                        players[0]->playerPos.y -= 5;
+                        movePlayerUp(players[0], 5);
                         break;
                     case SDLK_DOWN:
-                        players[0]->playerPos.y += 5;
+                        movePlayerDown(players[0], 5);
                         break;
                     case SDLK_LEFT:
-                        players[0]->playerPos.x -= 5;
+                        movePlayerLeft(players[0], 5);
                         break;
                     case SDLK_RIGHT:
-                        players[0]->playerPos.x += 5;
+                        movePlayerRight(players[0], 5);
                         break;
                     case SDLK_ESCAPE:
                         running = false;
@@ -80,15 +81,15 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
             }
         }
 
-    //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
-        
-        SetPlayerAlive(current, players[0]->alive);
+        //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
+
+        SetPlayerAlive(current, getPlayerStatus(players[0]));
 
         sendAndRecive(current, setup, pPlayerPos, pOpponentPos);
 
-        players[1]->alive = current->opponent_alive;
+        setPlayerStatus(players[1], current->opponent_alive);
 
-        worldCollision(&players[0]->playerPos, players[0], w, h);
+        worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
         playerFrame++;
@@ -96,7 +97,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
             playerFrame = 0;
         }
 
-        if (splashFrame != SPLASH_FRAMES * 11 && players[0]->alive == false) {
+        if (splashFrame != SPLASH_FRAMES * 11 && getPlayerStatus(players[0]) == false) {
             splashFrame++;
             if (splashFrame / 13 == SPLASH_FRAMES) {
                 splashFrame = 0;
@@ -114,14 +115,14 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
         if (destroyObstacle(obstacles)) {
             printf("destroyed\n");
         }
-        obstacleCollision(&players[0]->playerPos, players[0], obstacles);
+        obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
 
-    //*********************************  RENDERING  ***********************************************************************************
+        //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
         renderObstacles(obstacles, renderer, flyTrapTex);
-        renderPlayer(renderer, flyTex, flySplashTex, &players[0]->playerPos, players[0], playerSprites, splashSprites, playerFrame, splashFrame);
-        renderPlayer(renderer, flyTex, flySplashTex, &players[1]->playerPos, players[1], playerSprites, splashSprites, playerFrame, splashFrame);
+        renderPlayer(renderer, flyTex, flySplashTex, getPlayerPosAdr(players[0]), players[0], playerSprites, splashSprites, playerFrame, splashFrame);
+        renderPlayer(renderer, flyTex, flySplashTex, getPlayerPosAdr(players[1]), players[1], playerSprites, splashSprites, playerFrame, splashFrame);
         //SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }

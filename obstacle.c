@@ -154,7 +154,7 @@ void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
     obs = obs->next;
     while (obs != NULL) {
         if (SDL_HasIntersection(aPlayerPos, &obs->top) || SDL_HasIntersection(aPlayerPos, &obs->bottom)) {
-            aPlayer->alive = false;
+            setPlayerStatus(aPlayer, false);
         }
         obs = obs->next;
     }
