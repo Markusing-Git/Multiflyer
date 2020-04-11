@@ -108,11 +108,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
             newClientObstacle(ReciveObstacle(current), obstacles);
             printf("new");
         }
-
         obsteclesTick(obstacles);
-        if (destroyObstacle(obstacles)) {
-            printf("destroyed\n");
-        }
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
 

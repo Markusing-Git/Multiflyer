@@ -1,17 +1,31 @@
 #include "Obstacle.h"
 
+struct obstacle_type {
+    SDL_Rect top;
+    SDL_Rect bottom;
+    struct obstacle_type* next;
+};
+
 Obstacle createObstacle(int screenWidth, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top.x = screenWidth;
     aObs->top.w = 65;
-    aObs->top.h = screenHeight/2;
+    aObs->top.h = screenHeight / 2;
 
     aObs->bottom.x = screenWidth;
     aObs->bottom.w = 65;
-    aObs->bottom.h = screenHeight/2;
+    aObs->bottom.h = screenHeight / 2;
     aObs->next = NULL;
 
     rndOpening(aObs, screenHeight);
+    return aObs;
+}
+
+Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom) {
+    Obstacle aObs = malloc(sizeof(struct obstacle_type));
+    aObs->top = top;
+    aObs->bottom = bottom;
+    aObs->next = NULL;
     return aObs;
 }
 
@@ -58,6 +72,19 @@ SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot) {
     }
 }
 
+void setRectfromObstacle(Obstacle aObs, SDL_Rect aRect, bool topOrBot) {
+    if (topOrBot) {
+        aObs->top = aRect;
+    }
+    else {
+        aObs->bottom = aRect;
+    }
+}
+
+Obstacle getNextObsFromList(Obstacle aObs) {
+    return aObs->next;
+}
+
 void initRandomGeneratior(void) {
     srand((unsigned)time(NULL));
 }
@@ -68,6 +95,7 @@ void rndOpening(Obstacle aObs, int screenHeight) {
     int opening = screenHeight / 7;
     int pipe1 = obsCenter - screenHeight / 8;
     int pipe2 = obsCenter + screenHeight / 8;
+
 
     int nbr = (rand() % 3 - 0) + 1;
 
@@ -90,8 +118,8 @@ void rndOpening(Obstacle aObs, int screenHeight) {
 }
 
 
-bool  destroyObstacle(Obstacle head) {
-    Obstacle current,  prev;
+static bool destroyObstacle(Obstacle head) {
+    Obstacle current, prev;
     current = head;
     current = current->next;
     prev = current;
@@ -132,9 +160,10 @@ void obsteclesTick(Obstacle head) {
     obs = obs->next;
     while (obs != NULL) {
         obs->top.x -= 2;
-        obs->bottom.x -=2;
+        obs->bottom.x -= 2;
         obs = obs->next;
     }
+    destroyObstacle(head);
 }
 
 void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture) {

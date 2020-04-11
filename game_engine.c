@@ -20,8 +20,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
     int splashFrame = 0;
     int delay = TIME_DELAY;
     int playerCount = 0;
-
+    
     // struct to hold the position and size of the sprite
+    initRandomGeneratior();
     Obstacle obstacles = createObstacle(w, h); //innitate start node
 
     Player players[MAX_PLAYERS];
@@ -112,9 +113,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
             delay = TIME_DELAY;
         }
         obsteclesTick(obstacles);
-        if (destroyObstacle(obstacles)) {
-            printf("destroyed\n");
-        }
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
 

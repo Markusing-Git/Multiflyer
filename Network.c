@@ -216,19 +216,15 @@ int SetObstacle(Game_State Gupd, Obstacle Send_obstacles)
 {
     Gupd->change_flag = 1;
     Gupd->obstacle_change_flag = 1;
-    Gupd->obstacle_top = Send_obstacles->next->top;
-    Gupd->obstacle_bottom = Send_obstacles->next->bottom;
+    Gupd->obstacle_top = getRectfromObstacle(getNextObsFromList(Send_obstacles), true);
+    Gupd->obstacle_bottom = getRectfromObstacle(getNextObsFromList(Send_obstacles), false);
     
     return 0;
 }
 
 Obstacle ReciveObstacle(Game_State Gupd)
 {
-    Obstacle recive_obstacle = malloc(sizeof(struct obstacle_type));
-
-    recive_obstacle->top = Gupd->obstacle_top;
-    recive_obstacle->bottom = Gupd->obstacle_bottom;
-    recive_obstacle->next = NULL; 
+    Obstacle recive_obstacle = createClientObstacle(Gupd->obstacle_top, Gupd->obstacle_bottom);
 
     Gupd->obstacle_change_flag = 0;
 
