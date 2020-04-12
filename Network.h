@@ -61,6 +61,8 @@ int getOpponentPosY(Game_State Gupd);
 int getPlayerPosX(Game_State Gupd);
 int getPlayerPosY(Game_State Gupd);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
+int waitForConnection();
+int establishConnection();
 Obstacle ReciveObstacle(Game_State Gupd);
 
 

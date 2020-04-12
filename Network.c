@@ -128,25 +128,50 @@ int updateGameReciving(Game_State Gupd, SDL_Rect *Local_opponent)
     return 0;
 }
 
-int Send_Text(char Text[MAX_TEXT_LENGHT], UDP_Config setup)
+int waitForConnection()
 {
 
-    TCPsocket server = SDLNet_TCP_Open(&setup->ip);
+    SDLNet_Init();
+
+    IPaddress ip1;
+
+    SDLNet_ResolveHost(&ip1, NULL, 1234);
+
+    TCPsocket server = SDLNet_TCP_Open(&ip1);
     TCPsocket client;
+
+    int connection_flag = 1;
 
     do
     {
         client = SDLNet_TCP_Accept(server);
-        if (client)
-        {
-            SDLNet_TCP_Send(client, Text, strlen(Text) + 1);
-            SDLNet_TCP_Close(client);
-            break;
-        }
+        connection_flag++;
+
     } while (!client);
-    SDLNet_TCP_Close(server);
+    SDLNet_TCP_Close(client);
     return 0;
 }
+
+int establishConnection()
+{
+    SDLNet_Init();
+
+    IPaddress ip1;
+
+    SDLNet_ResolveHost(&ip1, "127.0.0.1", 1234);
+
+    TCPsocket client = SDLNet_TCP_Open(&ip1);
+    
+
+
+    int connection_flag = 0;
+
+    SDLNet_TCP_Close(client);
+
+    return 0;
+
+}
+
 
 int Close_SDLNet(UDP_Config setup)
 {
