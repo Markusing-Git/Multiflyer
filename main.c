@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-//#include <SDL2/SDL_net.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include "game_engine.h"
@@ -63,7 +60,7 @@ int main(void) {
 
 //Sätter färgen till ish ljusblå och sedan fyller hela window med färgen
 void loadBackground(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0); 
+    SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 }
