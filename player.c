@@ -73,7 +73,6 @@ void setPlayerPoint(Player aPlayer, char cord, int value) {
 		break;
 	default:
 		printf("Error invalid cordinates");
-		return 0;
 	}
 }
 
