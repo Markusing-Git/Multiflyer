@@ -4,6 +4,7 @@
 #include "game_engine.h"
 #include "LoadMenu.h"
 #include "Network.h"
+
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
 
@@ -14,6 +15,9 @@ int main(void) {
     SDL_Window* window = NULL;
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     bool hostOrClient = true;
+
+    char playerName[NAME_LENGTH] = "No-alias";
+    char playerIp[IP_LENGTH] = "127.0.0.1";
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
@@ -40,7 +44,7 @@ int main(void) {
         }
         else {
 
-            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient)) {
+            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, &playerName, &playerIp)) {
                 //Starts game engine
                 loadBackground(renderer); //Laddar bakgrunden
                 if (hostOrClient)
