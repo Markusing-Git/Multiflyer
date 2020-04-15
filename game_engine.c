@@ -43,7 +43,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h) {
 
     //Starting network
 
-    waitForConnection();
+    //waitForConnection();
     int_network("127.0.0.1", 2000, setup);
     create_Game_state(50, 50, current);
     
