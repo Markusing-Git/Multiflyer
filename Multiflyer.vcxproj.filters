@@ -39,6 +39,9 @@
     <ClCompile Include="client_game_engine.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="loadMedia.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="loadMedia.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
