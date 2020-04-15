@@ -1,71 +1,70 @@
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-//#include <SDL_net.h>
 #include <stdbool.h>
+#include <SDL2/SDL.h>
+#include "game_engine.h"
+#include "LoadMenu.h"
+#include "Network.h"
 
-bool init();
-void close();
+#define WINDOW_WIDTH 1000
+#define WINDOW_HEIGHT 600
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+void loadBackground(SDL_Renderer* renderer);
 
-SDL_Window* gWindow = NULL;
-SDL_Surface* gScreenSurface = NULL;
+int main(void) {
 
-int main(int argc, char* args[]) {
-	
-	bool running = false;
-	
-	if (!init()) {
-		printf("Failed to initialize!\n");
-		printf("Hej");
-		//Hoang
-		//jacob
-		//Test
-	}
+    SDL_Window* window = NULL;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    bool hostOrClient = true;
 
+    char playerName[NAME_LENGTH] = "No-alias";
+    char playerIp[IP_LENGTH] = "127.0.0.1";
 
-	while (!running) {
-		//Hï¿½r lï¿½gger vi allt som anropas nï¿½r spelet kï¿½rs
-		SDL_UpdateWindowSurface(gWindow);
-		
-	}
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
+        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+    }
+    else
+    {
+        // Create a SDL window
+        window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        if (!window) {
+            printf("error creating window: %s\n", SDL_GetError());
+            SDL_Quit();
+            return 1;
+        }
 
-	close();
+        // Create a renderer
+        SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, render_flags);
+        if (!renderer) {
 
-	return 0;
+            printf("error creating renderer: %s\n", SDL_GetError());
+            SDL_DestroyWindow(window);
+            SDL_Quit();
+            return 1;
+        }
+        else {
+
+            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, &playerName, &playerIp)) {
+                //Starts game engine
+                loadBackground(renderer); //Laddar bakgrunden
+                if (hostOrClient)
+                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+                else
+                    startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+            }
+            else {
+                SDL_DestroyRenderer(renderer);
+            }
+        }
+
+    }
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
-bool init(void) {
-	bool success = true;
-
-	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO != 0)) {
-		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-		success = false;
-	}
-	else{
-		//Create window
-		gWindow = SDL_CreateWindow("SDL Example",
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-		if (gWindow == NULL){
-			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-			success = false;
-		}
-		else{
-			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface(gWindow);
-		}
-	}
-	return success;
-}
-
-void close(void){
-	//Destroy window
-	SDL_DestroyWindow(gWindow);
-	gWindow = NULL;
-
-	//Quit SDL subsystems
-	SDL_Quit();
+//Sätter färgen till ish ljusblå och sedan fyller hela window med färgen
+void loadBackground(SDL_Renderer* renderer) {
+    SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
 }

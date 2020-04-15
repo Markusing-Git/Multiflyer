@@ -71,10 +71,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Development\SDL2_net\include;C:\Development\SDL2_image\include;C:\Development\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Development\SDL2_ttf\include;C:\Development\SDL2_image\include;C:\Development\SDL2\include;C:\Development\SDL2_net\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Development\SDL2_net\lib\x86;C:\Development\SDL2_image\lib\x86;C:\Development\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Development\SDL2_net\include;C:\Development\SDL2_image\include;C:\Development\SDL2\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -92,8 +94,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Development\SDL2_net\lib\x86;C:\Development\SDL2_image\lib\x86;C:\Development\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Development\SDL2_ttf\lib\x86;C:\Development\SDL2_net\lib\x86;C:\Development\SDL2_image\lib\x86;C:\Development\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <PerUserRedirection>true</PerUserRedirection>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,6 +109,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Development\SDL2_net\lib\x86;C:\Development\SDL2_image\lib\x86;C:\Development\SDL2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,7 +146,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="client_game_engine.c" />
+    <ClCompile Include="game_engine.c" />
+    <ClCompile Include="LoadMenu.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Network.c" />
+    <ClCompile Include="obstacle.c" />
+    <ClCompile Include="player.c" />
+    <ClCompile Include="world.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game_engine.h" />
+    <ClInclude Include="LoadMenu.h" />
+    <ClInclude Include="Network.h" />
+    <ClInclude Include="obstacle.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
