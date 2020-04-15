@@ -77,7 +77,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool *hos
                 }
                 else if(x>=imageC_pos.x && x<=imageC_pos.x+imageC_pos.w && y>imageC_pos.y && y<=imageC_pos.y+imageC_pos.h)//Controls
                 {
-                    running = false;
+                    control(renderer);
                 }
                 else if(x>=imageM_pos.x && x<=imageM_pos.x+imageM_pos.w && y>imageM_pos.y && y<=imageM_pos.y+imageM_pos.h)//Multiplayer
                 {
@@ -110,6 +110,45 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool *hos
     IMG_Quit();
     SDL_DestroyRenderer(renderer);
     return 0;
+}
+
+void control(SDL_Renderer* renderer)
+{
+    bool running = true;
+    SDL_Event e;
+
+    SDL_Texture* controls_texture = NULL;
+    SDL_Surface* controls = IMG_Load("bilder/instruction.png");
+    controls_texture = SDL_CreateTextureFromSurface(renderer,controls);
+    //Define positonen for Controls
+
+    SDL_Rect controls_pos;
+    controls_pos.x = 0;
+    controls_pos.y = 0;
+    controls_pos.w = 1000;
+    controls_pos.h = 600;
+    SDL_FreeSurface(controls);
+
+    while(running){
+        
+        while(SDL_PollEvent(&e))
+            if(e.type == SDL_QUIT)
+            {
+                running = false;
+            }
+            else if(e.type == SDL_KEYDOWN)
+            {
+                if(e.key.keysym.sym == SDLK_ESCAPE)
+                {
+                    running = false;
+                }
+            }
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, controls_texture, NULL, &controls_pos);
+            SDL_RenderPresent(renderer);
+    }
+    SDL_DestroyTexture(controls_texture);
+
 }
 
 void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {

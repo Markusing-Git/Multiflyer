@@ -9,5 +9,6 @@
 
 int LoadMenu(SDL_Renderer *renderer, SDL_Window *window, int w, int h, bool *hostOrClient);
 void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient);
+void control(SDL_Renderer* renderer);
 
 #endif 
