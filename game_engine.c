@@ -136,7 +136,7 @@ bool loadMedia(SDL_Renderer* renderer) {
     bool noError = true;
 
     flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
-    flyTrapSurface = IMG_Load("bilder/flytrapSpriteSheet.png"); //Laddar in spritesheet
+    flyTrapSurface = IMG_Load("bilder/electricTrap.png"); //Laddar in spritesheet
     flySplashSurface = IMG_Load("bilder/bloodsplat.png");
 
     if (flySurface == NULL) {
