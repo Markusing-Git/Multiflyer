@@ -16,5 +16,6 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
 void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient);
 void enterName(SDL_Renderer* renderer, char name[]);
 void enterIp(SDL_Renderer* renderer, char ip[]);
+void control(SDL_Renderer* renderer);
 
 #endif 

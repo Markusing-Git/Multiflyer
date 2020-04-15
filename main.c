@@ -62,7 +62,7 @@ int main(void) {
     SDL_Quit();
 }
 
-//Sätter färgen till ish ljusblå och sedan fyller hela window med färgen
+//Sï¿½tter fï¿½rgen till ish ljusblï¿½ och sedan fyller hela window med fï¿½rgen
 void loadBackground(SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0);
     SDL_RenderClear(renderer);
