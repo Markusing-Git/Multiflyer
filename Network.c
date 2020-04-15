@@ -152,7 +152,7 @@ int waitForConnection()
     return 0;
 }
 
-int establishConnection()
+int establishConnection(void)
 {
     SDLNet_Init();
 
