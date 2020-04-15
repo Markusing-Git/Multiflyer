@@ -249,7 +249,7 @@ void enterName(SDL_Renderer* renderer, char* name) {
                     renderText = true;
                 }
                 else if (event.key.keysym.sym >= 97 && event.key.keysym.sym <= 123 && strlen(name) < 20) {
-                    strcat_s(name, strlen(name) + 2, SDL_GetScancodeName(event.key.keysym.scancode));
+                    strlcat(name, strlen(name) + 2, SDL_GetScancodeName(event.key.keysym.scancode));
                     renderText = true;
                 }
             }
@@ -351,7 +351,7 @@ void enterIp(SDL_Renderer* renderer, char* ip) {
                     renderText = true;
                 }
                 else if (event.key.keysym.sym >= 46 && event.key.keysym.sym <= 58 && strlen(ip) < 20) {
-                    strcat_s(ip, strlen(ip) + 2, SDL_GetScancodeName(event.key.keysym.scancode));
+                    strlcat(ip, strlen(ip) + 2, SDL_GetScancodeName(event.key.keysym.scancode));
                     renderText = true;
                 }
             }
