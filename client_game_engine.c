@@ -108,7 +108,6 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
         //handles obstacles
         if (current->obstacle_change_flag) {
             newClientObstacle(ReciveObstacle(current), obstacles);
-            printf("new");
         }
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
