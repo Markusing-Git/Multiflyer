@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char* name, char* ip)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[])
 {
     SDL_Texture* imageS_texture = NULL;
     SDL_Texture* imageM_texture = NULL;
@@ -179,7 +179,7 @@ void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {
 }
 
 
-void enterName(SDL_Renderer* renderer, char* name) {
+void enterName(SDL_Renderer* renderer, char name[]) {
 
     SDL_Event event;
     bool done = false;
@@ -282,7 +282,7 @@ void enterName(SDL_Renderer* renderer, char* name) {
 
 
 
-void enterIp(SDL_Renderer* renderer, char* ip) {
+void enterIp(SDL_Renderer* renderer, char ip[]) {
 
     SDL_Event event;
     bool done = false;
@@ -310,7 +310,6 @@ void enterIp(SDL_Renderer* renderer, char* ip) {
     txRect_pos.h = 65;
     SDL_FreeSurface(textboxSurface);
 
-    //Name:
     SDL_Color textColor = { 144, 77, 255, 255 };
     SDL_Color initColor = { 255,255,255, 0 };
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, ip, textColor);

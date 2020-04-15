@@ -44,7 +44,7 @@ int main(void) {
         }
         else {
 
-            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, &playerName, &playerIp)) {
+            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
                 //Starts game engine
                 loadBackground(renderer); //Laddar bakgrunden
                 if (hostOrClient)
