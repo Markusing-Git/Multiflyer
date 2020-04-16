@@ -19,6 +19,8 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     SDL_Rect* pPlayerPos = getPlayerPosAdr(players[0]);
     SDL_Rect* pOpponentPos = getPlayerPosAdr(players[1]);
 
+    //Key pushdown
+    bool push[4]={0,0,0,0};
 
     bool running = true;
     SDL_Event event;
@@ -30,34 +32,32 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int_network(playerIp, setup);
     create_Game_state(50, 50, current);
     
-
-
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
         //polling events
-        while (SDL_PollEvent(&event)) //När något händer
+        while (SDL_PollEvent(&event)) //Nï¿½r nï¿½got hï¿½nder
         {
             switch (event.type)
             {
-            case SDL_QUIT: //Om du trycker på X:et
+            case SDL_QUIT: //Om du trycker pï¿½ X:et
                 running = false;
                 break;
-            case SDL_KEYDOWN: //Trycker på en knapp
+            case SDL_KEYDOWN: //Trycker pï¿½ en knapp
                 if (getPlayerStatus(players[0]) == true) {
                     switch (event.key.keysym.sym)
                     {
                     case SDLK_UP:
-                        movePlayerUp(players[0], 5);
+                        push[0]=1;
                         break;
                     case SDLK_DOWN:
-                        movePlayerDown(players[0], 5);
+                        push[1]=1;
                         break;
                     case SDLK_LEFT:
-                        movePlayerLeft(players[0], 5);
+                        push[2]=1;
                         break;
                     case SDLK_RIGHT:
-                        movePlayerRight(players[0], 5);
+                        push[3]=1;
                         break;
                     case SDLK_ESCAPE:
                         running = false;
@@ -65,7 +65,43 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
                     }
                 }
                 break;
+            case SDL_KEYUP: //SlÃ¤pper knappen
+                if (getPlayerStatus(players[0]) == true) {
+                    switch (event.key.keysym.sym)
+                    {
+                    case SDLK_UP:
+                        push[0]=0;
+                        break;
+                    case SDLK_DOWN:
+                        push[1]=0;
+                        break;
+                    case SDLK_LEFT:
+                        push[2]=0;
+                        break;
+                    case SDLK_RIGHT:
+                        push[3]=0;
+                        break;
+                    }
+                }
+                break;
             }
+        }
+        //************************* MOVES PLAYER AND SETS PLAYER SPEED *****************************
+        if(push[0])
+        {
+            movePlayerUp(players[0], 5);
+        }
+        if(push[1])
+        {
+            movePlayerDown(players[0], 5);
+        }
+        if(push[2])
+        {
+            movePlayerLeft(players[0], 5);
+        }
+        if(push[3])
+        {
+           movePlayerRight(players[0], 5);
         }
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
