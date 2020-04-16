@@ -1,7 +1,7 @@
 # A simple Makefile for compiling small SDL projects
 
-theGame: main.o game_engine.o LoadMenu.o Network.o obstacle.o player.o world.o client_game_engine.o 
-	gcc -o theGame main.o game_engine.o LoadMenu.o Network.o obstacle.o player.o world.o client_game_engine.o -lSDL2 -lSDL2_image -lSDL2_net -lSDL2_ttf
+theGame: main.o game_engine.o LoadMenu.o Network.o obstacle.o player.o world.o client_game_engine.o LoadMedia.o
+	gcc -o theGame main.o game_engine.o LoadMenu.o Network.o obstacle.o player.o world.o client_game_engine.o LoadMedia.o -lSDL2 -lSDL2_image -lSDL2_net -lSDL2_ttf
 main.o: main.c
 	gcc -c main.c
 game_engine.o: game_engine.c
@@ -18,4 +18,5 @@ world.o: world.c
 	gcc -c world.c
 client_game_engine.o: client_game_engine.c
 	gcc -c client_game_engine.c
-
+LoadMedia.o: LoadMedia.c
+	gcc -c LoadMedia.c
