@@ -3,9 +3,8 @@
 
 
 #define IP_LENGHT 16
+#define NAME_LENGHT 100
 #define _CRT_SECURE_NO_DEPRECATE
-#define MAX_TEXT_LENGHT 100
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +51,7 @@ int SetPlayerAlive(Game_State Gupd, bool Alive_Local);
 int updateGameSending(Game_State Gupd, SDL_Rect* local_player);
 int networkCommunication(Game_State Gupd, UDP_Config setup);
 int updateGameReciving(Game_State Gupd, SDL_Rect* Local_opponent);
-int int_network(char IP_input[IP_LENGHT], int port, UDP_Config setup);
+int int_network(char IP_input[IP_LENGHT], UDP_Config setup);
 int Close_SDLNet(UDP_Config setup);
 int SetPlayerPosX(Game_State Gupd,int Player_posX);
 int SetPlayerPosY(Game_State Gupd,int Player_posY);
@@ -61,8 +60,8 @@ int getOpponentPosY(Game_State Gupd);
 int getPlayerPosX(Game_State Gupd);
 int getPlayerPosY(Game_State Gupd);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
-int waitForConnection(void);
-int establishConnection(void);
+int serverConnection();
+int clientConnection(char playerIp[], char playerName[]);
 
 Obstacle ReciveObstacle(Game_State Gupd);
 

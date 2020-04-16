@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startClientGame(SDL_Renderer* renderer, int w, int h) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[]) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -26,8 +26,8 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h) {
     LoadMedia media = loadMedia(renderer, &running);
 
     //Starting network
-    //establishConnection();
-    int_network("127.0.0.1", 2000, setup);
+    //clientConnection(playerIp, playerName);
+    int_network(playerIp, setup);
     create_Game_state(50, 50, current);
     
 

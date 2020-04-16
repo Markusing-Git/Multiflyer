@@ -45,9 +45,9 @@ int main(void) {
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
                 //Starts game engine
                 if (hostOrClient)
-                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp);
                 else
-                    startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
+                    startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp);
             }
             else {
                 SDL_DestroyRenderer(renderer);
