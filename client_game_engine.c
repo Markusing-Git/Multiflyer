@@ -87,21 +87,23 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
             }
         }
         //************************* MOVES PLAYER AND SETS PLAYER SPEED *****************************
-        if(push[0])
-        {
-            movePlayerUp(players[0], 5);
-        }
-        if(push[1])
-        {
-            movePlayerDown(players[0], 5);
-        }
-        if(push[2])
-        {
-            movePlayerLeft(players[0], 5);
-        }
-        if(push[3])
-        {
-           movePlayerRight(players[0], 5);
+        if (getPlayerStatus(players[0]) == true) {
+            if (push[0])
+            {
+                movePlayerUp(players[0], 5);
+            }
+            if (push[1])
+            {
+                movePlayerDown(players[0], 5);
+            }
+            if (push[2])
+            {
+                movePlayerLeft(players[0], 5);
+            }
+            if (push[3])
+            {
+                movePlayerRight(players[0], 5);
+            }
         }
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
