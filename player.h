@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 
 #define PLAYER_FRAMES 3 //Antal frames i spritesheet
@@ -21,7 +22,7 @@ Player createPlayer(int x, int y);
 
 //renders player dead or alive
 void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
-	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame);
+	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, int* nrOfSoundEffects);
 
 //creates a new player and adds to the list of players
 void newPlayer(Player playerList[], Player aPlayer, int* playerCount);

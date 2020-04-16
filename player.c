@@ -19,13 +19,17 @@ Player createPlayer(int x, int y) {
 }
 
 void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
-	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame) {
+	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, int* nrOfSoundEffects) {
 	if (aPLayer->alive) {
 		SDL_RenderCopyEx(renderer, playerTex, &playerSprites[playerFrame / PLAYER_FRAMES], playerPos, 0, NULL, SDL_FLIP_NONE);
 	}
 	else {
 		SDL_RenderCopyEx(renderer, splashTex, &splashSprites[splashFrame / SPLASH_FRAMES], playerPos, 0, NULL, SDL_FLIP_NONE);
 		playerPos->x -= 2;
+		if (*nrOfSoundEffects == 0) {
+			Mix_PlayChannel(-1, electricShock, 0);
+			(*nrOfSoundEffects) = 1;
+		}
 	}
 }
 

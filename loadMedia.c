@@ -130,5 +130,18 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->splashSprites[13].w = 480;
     media->splashSprites[13].h = 480;
 
+    //*****************************************AUDIO********************************************************
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
+        *running = false;
+    }
+
+    //Sound effect https://opengameart.org/content/electric-buzz artist: themightyglider
+    media->electricShock = Mix_LoadWAV("audio/buzz.ogg");
+    if (media->electricShock == NULL) {
+        printf("Could not load sound effect. Error: %s", Mix_GetError());
+        *running = false;
+    }
+
     return media;
 }

@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #define PLAYER_FRAMES 3 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
@@ -22,6 +23,7 @@ struct loadMedia {
 	SDL_Rect splashSprites[SPLASH_FRAMES];
 	SDL_Texture* backgroundTex;
 	SDL_Surface* backgroundSurface;
+	Mix_Chunk* electricShock;
 };
 typedef struct loadMedia* LoadMedia;
 

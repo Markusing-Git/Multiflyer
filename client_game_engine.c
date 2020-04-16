@@ -8,6 +8,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
     int playerCount = 0;
+    int nrOfSoundEffects = 0;
 
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
@@ -142,8 +143,8 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         SDL_RenderClear(renderer);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
-        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[0]), players[0], media->playerSprites, media->splashSprites, playerFrame, splashFrame);
-        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[1]), players[1], media->playerSprites, media->splashSprites, playerFrame, splashFrame);
+        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[0]), players[0], media->playerSprites, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);
+        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[1]), players[1], media->playerSprites, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);
         //SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
         SDL_RenderPresent(renderer);
     }
