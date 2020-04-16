@@ -8,8 +8,6 @@
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
 
-void loadBackground(SDL_Renderer* renderer);
-
 int main(void) {
 
     SDL_Window* window = NULL;
@@ -46,7 +44,6 @@ int main(void) {
 
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
                 //Starts game engine
-                loadBackground(renderer); //Laddar bakgrunden
                 if (hostOrClient)
                     startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
                 else
@@ -60,11 +57,4 @@ int main(void) {
     }
     SDL_DestroyWindow(window);
     SDL_Quit();
-}
-
-//S�tter f�rgen till ish ljusbl� och sedan fyller hela window med f�rgen
-void loadBackground(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 100, 50, 255, 0);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
 }
