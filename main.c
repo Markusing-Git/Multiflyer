@@ -7,7 +7,7 @@
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
-
+//Joel test
 int main(void) {
 
     SDL_Window* window = NULL;
