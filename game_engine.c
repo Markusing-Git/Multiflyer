@@ -33,7 +33,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     //Starting network
 
-    //serverConnection(setup);
+    //serverConnection(playerIp);
     int_network(playerIp, setup);
     create_Game_state(50, 50, current);
 
