@@ -24,7 +24,7 @@ int main(void) {
     else
     {
         // Create a SDL window
-        window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        window = SDL_CreateWindow("SDL2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         if (!window) {
             printf("error creating window: %s\n", SDL_GetError());
             SDL_Quit();
@@ -41,6 +41,8 @@ int main(void) {
             return 1;
         }
         else {
+            //scales all rendering on renderer
+            SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
                 //Starts game engine
@@ -56,5 +58,6 @@ int main(void) {
 
     }
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
 }
