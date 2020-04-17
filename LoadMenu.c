@@ -412,7 +412,6 @@ void enterIp(SDL_Renderer* renderer, char ip[]) {
         }
     }
 
-    printf("%s\n", ip);
 
     SDL_FreeSurface(textSurface);
     SDL_DestroyTexture(textboxTex);

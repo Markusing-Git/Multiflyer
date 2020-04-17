@@ -1,5 +1,8 @@
 #include "Network.h"
 
+
+
+//Creates Gamestate for sending over network
 int create_Game_state(int Player_position_x, int Player_position_y, Game_State Gupd) {
 
     Gupd-> Player_position_x = Player_position_x;
@@ -9,11 +12,16 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 
     Gupd->change_flag = 0;
     Gupd->obstacle_change_flag = 0;
+    Gupd->opponent_alive = true;
+    Gupd->player_alive = true;
+
 
     return 0;
     //Skapar en Game state struct med startvärden och returnerar den
 }
 
+
+// int netowrk and check what port free
 int int_network(char IP_input[IP_LENGHT], UDP_Config setup)
 {
 
@@ -67,6 +75,7 @@ int int_network(char IP_input[IP_LENGHT], UDP_Config setup)
 }
 
 
+//sends and recives game data over the network
 int sendAndRecive(Game_State Gupd, UDP_Config setup, SDL_Rect *local_player, SDL_Rect *local_opponent)
 {
     updateGameSending(Gupd, local_player);
@@ -76,6 +85,8 @@ int sendAndRecive(Game_State Gupd, UDP_Config setup, SDL_Rect *local_player, SDL
     return 0;
 }
 
+
+//Updates the Gamestate with information that is going to be sent
 int updateGameSending(Game_State Gupd, SDL_Rect* local_player)
 {
     SetPlayerPosX(Gupd, local_player->x);
@@ -84,6 +95,7 @@ int updateGameSending(Game_State Gupd, SDL_Rect* local_player)
     return 0;
 }
 
+//
 int networkCommunication(Game_State Gupd, UDP_Config setup)
 {
     Game_State Gupd_Recive = malloc(sizeof(struct Game_State_Type));
@@ -130,7 +142,7 @@ int updateGameReciving(Game_State Gupd, SDL_Rect *Local_opponent)
     return 0;
 }
 
-int serverConnection()
+int serverConnection(UDP_Config setup)
 {
 
     SDLNet_Init();
@@ -138,7 +150,7 @@ int serverConnection()
     IPaddress ip1;
     char text[100];
 
-    SDLNet_ResolveHost(&ip1, NULL, 2005);
+  SDLNet_ResolveHost(&ip1, NULL, 2005);
 
     TCPsocket server = SDLNet_TCP_Open(&ip1);
     TCPsocket client;
@@ -176,7 +188,7 @@ int clientConnection(char playerIp[], char playerName[])
     SDLNet_ResolveHost(&ip1, playerIp,2005);
 
     TCPsocket client = SDLNet_TCP_Open(&ip1);
-    
+
     SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1);
 
     int connection_flag = 0;
