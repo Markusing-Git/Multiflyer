@@ -48,4 +48,7 @@ void movePlayerDown(Player aPlayer, int speed);
 void movePlayerLeft(Player aPlayer, int speed);
 void movePlayerRight(Player aPlayer, int speed);
 
+//frees player structs from heap, params: list of players and amount
+void freePlayers(Player playerList[], int playerCount);
+
 #endif /* player_h */

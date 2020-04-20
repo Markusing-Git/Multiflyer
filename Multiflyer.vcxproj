@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="client_game_engine.c" />
     <ClCompile Include="game_engine.c" />
+    <ClCompile Include="input.c" />
     <ClCompile Include="loadMedia.c" />
     <ClCompile Include="LoadMenu.c" />
     <ClCompile Include="main.c" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_engine.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="loadMedia.h" />
     <ClInclude Include="LoadMenu.h" />
     <ClInclude Include="Network.h" />
