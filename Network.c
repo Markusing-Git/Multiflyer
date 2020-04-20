@@ -22,18 +22,12 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 
 
 // int netowrk and check what port free
-int int_network(char playerIp[IP_LENGHT], UDP_Config setup)
+int int_network(char playerIp[], UDP_Config setup, int port1, int port2)
 {
 
     int port = 2000;
 
     printf("%s\n", playerIp);
-
-    if (SDLNet_Init() < 0)
-    {
-        printf("SDLNet_Init: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
 
 
     if (!(setup->sd1 = (SDLNet_UDP_Open(0))))
@@ -43,23 +37,23 @@ int int_network(char playerIp[IP_LENGHT], UDP_Config setup)
     }
    
   
-    if (!(setup->sd2 = (SDLNet_UDP_Open(2000))))
+    if (!(setup->sd2 = (SDLNet_UDP_Open(port1))))
     {
-        if (!(setup->sd2 = (SDLNet_UDP_Open(2001)))) {
+        if (!(setup->sd2 = (SDLNet_UDP_Open(port2)))) {
             printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
             exit(EXIT_FAILURE);
         }
 
-        if (SDLNet_ResolveHost(&setup->ip, playerIp, 2000) == -1) {
+        if (SDLNet_ResolveHost(&setup->ip, playerIp, port1) == -1) {
 
-            printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port, SDLNet_GetError());
+            printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port1, SDLNet_GetError());
             exit(EXIT_FAILURE);
         }
 
         //kollar om port 2000 är upptagen och tar 2001 om den är det. 
-    }else if(SDLNet_ResolveHost(&setup->ip, playerIp, 2001) == -1)
+    }else if(SDLNet_ResolveHost(&setup->ip, playerIp, port2) == -1)
     {
-        printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port, SDLNet_GetError());
+        printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port2, SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
 
@@ -144,67 +138,91 @@ int updateGameReciving(Game_State Gupd, SDL_Rect *Local_opponent)
     return 0;
 }
 
-int serverConnection(char playerIp[])
+int serverConnection(char playerIp[], UDP_Config setup, int sync)
 {
 
-    SDLNet_Init();
-
     IPaddress ip1;
-    IPaddress *ip_Recive;
+    IPaddress ip_Recive;
     char text[100];
 
-  SDLNet_ResolveHost(&ip1, NULL, 2005);
-
-    TCPsocket server = SDLNet_TCP_Open(&ip1);
-    TCPsocket client;
-
-    int connection_flag = 1;
-
-    do
+    if (SDLNet_Init() < 0)
     {
-        client = SDLNet_TCP_Accept(server);
+        printf("SDLNet_Init: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
 
-        if (client)
+    if (sync == 1)
+    {
+        SDLNet_ResolveHost(&ip1, NULL, 2005);
+
+        TCPsocket server = SDLNet_TCP_Open(&ip1);
+        TCPsocket client;
+
+        int connection_flag = 1;
+
+        do
         {
-            printf("Recived\n");
-            SDLNet_TCP_Recv(client, text, 100);
-            ip_Recive = SDLNet_TCP_GetPeerAddress(client);
-        }
+            client = SDLNet_TCP_Accept(server);
 
-        connection_flag++;
-    }while (!client);
+            if (client)
+            {
+                printf("Recived\n");
+                SDLNet_TCP_Recv(client, text, 100);
+                ip_Recive = *SDLNet_TCP_GetPeerAddress(client);
+            }
 
-    playerIp = SDLNet_ResolveIP(&ip_Recive);
+            connection_flag++;
+        } while (!client);
 
-    printf("%s\n", playerIp);
+        playerIp = SDLNet_ResolveIP(&ip_Recive);
 
-    printf("%s\n", text);
+        printf("%s\n", playerIp);
 
-    SDLNet_TCP_Close(client);
-    SDLNet_Quit();
+        printf("%s\n", text);
+
+        SDLNet_TCP_Close(client);
+
+    }
+        int_network(playerIp, setup, 2001, 2000);
+
+    
+
     return 0;
 }
 
 
 //
-int clientConnection(char playerIp[], char playerName[])
+int clientConnection(UDP_Config setup,char playerIp[], char playerName[], int sync)
 {
-    SDLNet_Init();
+    
+    if (SDLNet_Init() < 0)
+    {
+        printf("SDLNet_Init: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    int_network(playerIp, setup, 2000, 2001);
 
-    IPaddress ip1;
+    if (sync == 1)
+    {
+        IPaddress ip1;
 
-    printf("%s\n", playerIp);
+        printf("%s\n", playerIp);
 
-    SDLNet_ResolveHost(&ip1, playerIp,2005);
+        SDLNet_ResolveHost(&ip1, playerIp, 2005);
 
-    TCPsocket client = SDLNet_TCP_Open(&ip1);
+        TCPsocket client = SDLNet_TCP_Open(&ip1);
 
-    SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1);
+        SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1);
 
-    int connection_flag = 0;
+        int connection_flag = 0;
 
-    SDLNet_TCP_Close(client);
+        SDLNet_TCP_Close(client);
 
+    }
+
+    
     return 0;
 
 }

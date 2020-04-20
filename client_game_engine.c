@@ -29,10 +29,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     LoadMedia media = loadMedia(renderer, &running);
 
     //Starting network
-    //clientConnection(playerIp, playerName);
-    int_network(playerIp, setup);
+    clientConnection(setup,playerIp, playerName,0); //Sätt sync till 1 för att aktivera nätverks sync. Host måste startas innan klient   
     create_Game_state(50, 50, current);
-    
+
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
