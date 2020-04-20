@@ -162,98 +162,50 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
 }
 
 
-
-
 static void hoverFly(Player aPlayer, Inputs aInput) {
 
     int speed = HOVER_VELOCITY;
 
     if (aInput->pattern == 0)
-        aInput->pattern = ((rand() % 3 - 0) + 1);
+        aInput->pattern = ((rand() % 8 - 0) + 1);
 
     switch (aInput->pattern) {
-
-        //pattern 1
     case 1:
-        if (aInput->state >= 0 && aInput->state < 5) {
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 5 && aInput->state < 10) {
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 10 && aInput->state < 15) {
-            movePlayerRight(aPlayer, speed);
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 15 && aInput->state < 20) {
-            movePlayerRight(aPlayer, speed);
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 20) {
-            aInput->state = 0;
-            aInput->pattern = 0;
-        }
+        movePlayerUp(aPlayer, speed);
         break;
-
-        //pattern 2
     case 2:
-        if (aInput->state >= 0 && aInput->state < 5) {
-            movePlayerLeft(aPlayer, speed);
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 5 && aInput->state < 10) {
-            movePlayerLeft(aPlayer, speed);
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 10 && aInput->state < 15) {
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 15 && aInput->state < 20) {
-            movePlayerDown(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 20) {
-            aInput->state = 0;
-            aInput->pattern = 0;
-        }
+        movePlayerUp(aPlayer, speed);
+        movePlayerRight(aPlayer, speed);
         break;
-
-        //pattern 3
     case 3:
-        if (aInput->state >= 0 && aInput->state < 5) {
-            movePlayerRight(aPlayer, speed);
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 5 && aInput->state < 10) {
-            movePlayerRight(aPlayer, speed);
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 10 && aInput->state < 15) {
-            movePlayerLeft(aPlayer, speed);
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 15 && aInput->state < 20) {
-            movePlayerLeft(aPlayer, speed);
-            movePlayerUp(aPlayer, speed);
-            aInput->state++;
-        }
-        else if (aInput->state >= 20) {
-            aInput->state = 0;
-            aInput->pattern = 0;
-        }
+        movePlayerRight(aPlayer, speed);
+        break;
+    case 4:
+        movePlayerRight(aPlayer, speed);
+        movePlayerDown(aPlayer, speed);
+        break;
+    case 5:
+        movePlayerDown(aPlayer, speed);
+        break;
+    case 6:
+        movePlayerDown(aPlayer, speed);
+        movePlayerLeft(aPlayer, speed);
+        break;
+    case 7:
+        movePlayerLeft(aPlayer, speed);
+        break;
+    case 8:
+        movePlayerUp(aPlayer, speed);
+        movePlayerLeft(aPlayer, speed);
         break;
     }
+    aInput->state++;
+    if (aInput->state == 15) {
+        aInput->pattern = 0;
+        aInput->state = 0;
+    }
 }
+
 
 void QuitInput(Inputs aInput) {
     free(aInput);
