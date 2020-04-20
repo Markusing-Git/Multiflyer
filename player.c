@@ -99,3 +99,9 @@ void movePlayerRight(Player aPlayer, int speed) {
 void newPlayer(Player playerList[], Player aPlayer, int* playerCount) {
 	playerList[(*playerCount)++] = aPlayer;
 }
+
+void freePlayers(Player playerList[], int playerCount) {
+	for (int i = 0; i < playerCount; i++) {
+		free(playerList[i]);
+	}
+}

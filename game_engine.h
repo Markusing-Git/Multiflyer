@@ -12,6 +12,7 @@
 #include "Network.h"
 #include "world.h"
 #include "loadMedia.h"
+#include "input.h"
 
 #define PLAYER_FRAMES 3 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
