@@ -22,7 +22,6 @@ struct UDP_Config_Type{
     UDPpacket *p1;
     UDPpacket *p2;
     int port;
-
 };
 
 

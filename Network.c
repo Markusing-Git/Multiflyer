@@ -25,49 +25,48 @@ int create_Game_state(int Player_position_x, int Player_position_y, Game_State G
 int int_network(char playerIp[], UDP_Config setup, int port1, int port2)
 {
 
-    int port = 2000;
-
     printf("%s\n", playerIp);
 
 
+    //Öppnar en socket för att ta skicka data
     if (!(setup->sd1 = (SDLNet_UDP_Open(0))))
     {
         printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
    
-  
-    if (!(setup->sd2 = (SDLNet_UDP_Open(port1))))
+    //Öppnar en port för att ta emot data om port 2000 är upptagen och tar den 2001.
+    if (setup->sd2 = (SDLNet_UDP_Open(port1)))
     {
-        if (!(setup->sd2 = (SDLNet_UDP_Open(port2)))) {
-            printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+
+        setup->port = port1;
+
+        if (SDLNet_ResolveHost(&setup->ip, playerIp, port2) == -1) {
+
+            printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port2, SDLNet_GetError());
             exit(EXIT_FAILURE);
         }
+
+        
+    }else if(setup->sd2 = (SDLNet_UDP_Open(port2)))
+    {
+        setup->port = port2;
 
         if (SDLNet_ResolveHost(&setup->ip, playerIp, port1) == -1) {
 
             printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port1, SDLNet_GetError());
             exit(EXIT_FAILURE);
         }
-
-        //kollar om port 2000 är upptagen och tar 2001 om den är det. 
-    }else if(SDLNet_ResolveHost(&setup->ip, playerIp, port2) == -1)
-    {
-        printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, port2, SDLNet_GetError());
-        exit(EXIT_FAILURE);
     }
 
-
+    //Allokerar plats för två paket
     if (!((setup->p1 = SDLNet_AllocPacket(1024)) && (setup->p2 = SDLNet_AllocPacket(1024))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-    setup->port = port;
-
 
     return 0;
-    //initierar en socket och returnerar den
 }
 
 
@@ -96,22 +95,24 @@ int networkCommunication(Game_State Gupd, UDP_Config setup)
 {
     Game_State Gupd_Recive = malloc(sizeof(struct Game_State_Type));
 
+    //Om flaggan är satt så finns det ny data att skicka
     if (Gupd->change_flag == 1) {
 
         //printf("%d %d\n", (int)Gupd->Player_position_x, (int)Gupd->Player_position_y);
 
         Gupd->change_flag = 0;
 
-        memcpy(setup->p1->data, Gupd, sizeof(struct Game_State_Type));
+        memcpy(setup->p1->data, Gupd, sizeof(struct Game_State_Type)); //kopierar Game_state till paketet
         setup->p1->len = sizeof(struct Game_State_Type);
-        setup->p1->address.host = setup->ip.host;	/* Set the destination host */
-        setup->p1->address.port = setup->ip.port;	/* And destination port */
+        setup->p1->address.host = setup->ip.host;	
+        setup->p1->address.port = setup->ip.port;	
         SDLNet_UDP_Send(setup->sd1, -1, setup->p1);
 
         Gupd->obstacle_change_flag = 0;
 
     }
 
+    //kollar om det finns ett packet att hämta
     if (SDLNet_UDP_Recv(setup->sd2, setup->p2)) {
 
         memcpy(Gupd_Recive, setup->p2->data, sizeof(struct Game_State_Type));
@@ -130,14 +131,7 @@ int networkCommunication(Game_State Gupd, UDP_Config setup)
 
 }
 
-int updateGameReciving(Game_State Gupd, SDL_Rect *Local_opponent)
-{
-    Local_opponent->x = Gupd->opponent_position_x;
-    Local_opponent->y = Gupd->opponent_position_y;
-
-    return 0;
-}
-
+//Öppnar en TCP ström och väntar på en klient
 int serverConnection(char playerIp[], UDP_Config setup, int sync)
 {
 
@@ -151,7 +145,7 @@ int serverConnection(char playerIp[], UDP_Config setup, int sync)
         exit(EXIT_FAILURE);
     }
 
-    if (sync == 1)
+    if (sync == 1) //kollar om sync flaggan är satt
     {
         SDLNet_ResolveHost(&ip1, NULL, 2005);
 
@@ -163,12 +157,11 @@ int serverConnection(char playerIp[], UDP_Config setup, int sync)
         do
         {
             client = SDLNet_TCP_Accept(server);
-
             if (client)
             {
                 printf("Recived\n");
-                SDLNet_TCP_Recv(client, text, 100);
-                ip_Recive = *SDLNet_TCP_GetPeerAddress(client);
+                SDLNet_TCP_Recv(client, text, 100); //Tar emot namnet som skickas över strömmen
+                ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
             }
 
             connection_flag++;
@@ -177,21 +170,18 @@ int serverConnection(char playerIp[], UDP_Config setup, int sync)
         playerIp = SDLNet_ResolveIP(&ip_Recive);
 
         printf("%s\n", playerIp);
-
         printf("%s\n", text);
 
         SDLNet_TCP_Close(client);
-
     }
-        int_network(playerIp, setup, 2001, 2000);
 
-    
+    int_network(playerIp, setup, 2001, 2000); //initierar nätverket för servern
 
     return 0;
 }
 
 
-//
+//Öppnar en ström till servern och skickar namnet, vilket startar spelet. 
 int clientConnection(UDP_Config setup,char playerIp[], char playerName[], int sync)
 {
     
@@ -200,9 +190,6 @@ int clientConnection(UDP_Config setup,char playerIp[], char playerName[], int sy
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-    
-    
-    int_network(playerIp, setup, 2000, 2001);
 
     if (sync == 1)
     {
@@ -211,23 +198,18 @@ int clientConnection(UDP_Config setup,char playerIp[], char playerName[], int sy
         printf("%s\n", playerIp);
 
         SDLNet_ResolveHost(&ip1, playerIp, 2005);
-
-        TCPsocket client = SDLNet_TCP_Open(&ip1);
-
-        SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1);
-
-        int connection_flag = 0;
-
+        TCPsocket client = SDLNet_TCP_Open(&ip1); //Öppnar en TCP ström.
+        SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1); //Skickar namnet på spelaren.
+        
         SDLNet_TCP_Close(client);
-
     }
 
+    int_network(playerIp, setup, 2000, 2001); //initierar nätverket för klienten
     
     return 0;
-
 }
 
-
+//Stänger ner och rensar
 int Close_SDLNet(UDP_Config setup)
 {
     SDLNet_FreePacket(setup->p1);
@@ -235,10 +217,15 @@ int Close_SDLNet(UDP_Config setup)
     SDLNet_Quit();
 
     return 0;
-    //Stänger ner och rensar
 }
 
+int updateGameReciving(Game_State Gupd, SDL_Rect* Local_opponent)
+{
+    Local_opponent->x = Gupd->opponent_position_x;
+    Local_opponent->y = Gupd->opponent_position_y;
 
+    return 0;
+}
 
 int getPlayerPosX(Game_State Gupd)
 {
@@ -295,10 +282,11 @@ int SetPlayerAlive(Game_State Gupd, bool Alive_Local)
     return 0;
 }
 
+//Uppdaterar obstacle i Game_state
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles)
 {
-    Gupd->change_flag = 1;
-    Gupd->obstacle_change_flag = 1;
+    Gupd->change_flag = 1; //sätter change flaggan så att det skickas över nätverket
+    Gupd->obstacle_change_flag = 1; //obstacle flaggan visar för klienten att ett nytt obstacle finns att rendra
     Gupd->obstacle_top = getRectfromObstacle(getNextObsFromList(Send_obstacles), true);
     Gupd->obstacle_bottom = getRectfromObstacle(getNextObsFromList(Send_obstacles), false);
     

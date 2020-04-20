@@ -32,8 +32,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //Starting network
 
     serverConnection(playerIp,setup,0); //Sätt sync till 1 för att aktivera nätverks sync. host måste startas innan klient
-    //printf("%s\n", &playerIp);
-    //int_network(playerIp, setup);
     create_Game_state(50, 50, current);
 
 
