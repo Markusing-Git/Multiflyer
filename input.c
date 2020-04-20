@@ -165,6 +165,7 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
 static void hoverFly(Player aPlayer, Inputs aInput) {
 
     int speed = HOVER_VELOCITY;
+    int distance = HOVER_DISTANCE;
 
     if (aInput->pattern == 0)
         aInput->pattern = ((rand() % 8 - 0) + 1);
@@ -200,7 +201,7 @@ static void hoverFly(Player aPlayer, Inputs aInput) {
         break;
     }
     aInput->state++;
-    if (aInput->state == 15) {
+    if (aInput->state == distance) {
         aInput->pattern = 0;
         aInput->state = 0;
     }

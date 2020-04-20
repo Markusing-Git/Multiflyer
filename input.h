@@ -11,6 +11,7 @@
 #define PLAYER_VELOCITY 5
 #define GLIDING_VELOCITY 2
 #define HOVER_VELOCITY 1
+#define HOVER_DISTANCE 15
 
 typedef struct input_type* Inputs;
 
