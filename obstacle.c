@@ -1,4 +1,4 @@
-#include "Obstacle.h"
+#include "obstacle.h"
 
 struct obstacle_type {
     SDL_Rect top;

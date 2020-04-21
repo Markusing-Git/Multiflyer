@@ -45,6 +45,7 @@ int main(void) {
             SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
             if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
+                Mix_HaltMusic();
                 //Starts game engine
                 if (hostOrClient)
                     startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp);
@@ -55,8 +56,9 @@ int main(void) {
                 SDL_DestroyRenderer(renderer);
             }
         }
-
     }
+    //Mix_FreeMusic(backgroundMusic);
+    Mix_CloseAudio();
     SDL_DestroyWindow(window);
     IMG_Quit();
     SDL_Quit();
