@@ -151,6 +151,7 @@
     <ClCompile Include="input.c" />
     <ClCompile Include="loadMedia.c" />
     <ClCompile Include="LoadMenu.c" />
+    <ClCompile Include="lobby.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Network.c" />
     <ClCompile Include="obstacle.c" />
@@ -162,6 +163,7 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="loadMedia.h" />
     <ClInclude Include="LoadMenu.h" />
+    <ClInclude Include="lobby.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
