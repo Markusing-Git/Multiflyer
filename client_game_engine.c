@@ -9,6 +9,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int splashFrame = 0;
     int playerCount = 0;
     int nrOfSoundEffects = 0;
+    int backgroundOffset = 0;
 
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
@@ -70,11 +71,25 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
+        //Make the background scroll to the left
+        backgroundOffset -= 1;
+        if (backgroundOffset <= -w) {
+            backgroundOffset = 0;
+        }
+        media->scrollingBackground[0].x = backgroundOffset;
+        media->scrollingBackground[0].y = 0;
+        media->scrollingBackground[0].w = w;
+        media->scrollingBackground[0].h = h;
 
+        media->scrollingBackground[1].x = backgroundOffset + w;
+        media->scrollingBackground[1].y = 0;
+        media->scrollingBackground[1].w = w;
+        media->scrollingBackground[1].h = h;
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[0]), players[0], media->playerSprites, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);
         renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[1]), players[1], media->playerSprites, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);

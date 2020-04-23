@@ -16,13 +16,17 @@ struct loadMedia {
 	SDL_Texture* flyTrapTex;
 	SDL_Texture* flyTex;
 	SDL_Texture* flySplashTex;
+	SDL_Texture* backgroundTex;
+
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
 	SDL_Surface* flySplashSurface;
+	SDL_Surface* backgroundSurface;
+
 	SDL_Rect playerSprites[PLAYER_FRAMES];
 	SDL_Rect splashSprites[SPLASH_FRAMES];
-	SDL_Texture* backgroundTex;
-	SDL_Surface* backgroundSurface;
+	SDL_Rect scrollingBackground[2];
+	
 	Mix_Chunk* electricShock;
 };
 typedef struct loadMedia* LoadMedia;
