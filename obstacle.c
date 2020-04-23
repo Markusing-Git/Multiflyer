@@ -180,10 +180,10 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
 
 void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
     SDL_Rect pixelRect;
-    pixelRect.x = aPlayerPos->x + 10;
+    pixelRect.x = aPlayerPos->x + 5;
     pixelRect.y = aPlayerPos->y + 23;
-    pixelRect.w = aPlayerPos->w - 15;
-    pixelRect.h = aPlayerPos->h - 55;
+    pixelRect.w = aPlayerPos->w - 10;
+    pixelRect.h = aPlayerPos->h - 30;
     Obstacle obs;
     obs = head;
     obs = obs->next;

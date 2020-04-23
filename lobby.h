@@ -6,6 +6,8 @@
 #define NAME_LENGTH 50
 #define IP_LENGTH 50
 #define TEXTS 9
+#define PUBLIC
+#define PRIVATE static
 
 #include <stdio.h>
 #include <stdlib.h>

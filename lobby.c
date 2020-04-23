@@ -27,14 +27,14 @@ typedef struct {
 }Lobby;
 
 
-static void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby);
-static void closeLobbyTTF(Lobby aLobby);
-static Lobby createLobby(SDL_Renderer* renderer);
+PRIVATE void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby);
+PRIVATE void closeLobbyTTF(Lobby aLobby);
+PRIVATE Lobby createLobby(SDL_Renderer* renderer);
 
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-int hostLobby(SDL_Renderer* renderer) {
+PUBLIC int hostLobby(SDL_Renderer* renderer) {
 
 	Lobby hostLobby;
 	hostLobby = createLobby(renderer);
@@ -92,7 +92,7 @@ int hostLobby(SDL_Renderer* renderer) {
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-void clientLobby(SDL_Renderer* renderer) {
+PUBLIC void clientLobby(SDL_Renderer* renderer) {
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
 
@@ -118,7 +118,7 @@ void clientLobby(SDL_Renderer* renderer) {
 
 
 // ************************************************** PRIVATE LOBBY FUNCTIONS *****************************************************************************************
-static Lobby createLobby(SDL_Renderer* renderer) {
+PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 	Lobby newLobby;
 
 	strcpy(newLobby.lobbyText, "Lobby");
@@ -225,7 +225,7 @@ static Lobby createLobby(SDL_Renderer* renderer) {
 
 
 
-static void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby) {
+PRIVATE void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby) {
 	SDL_RenderClear(renderer);
 	if (hostOrClient)
 		SDL_RenderCopy(renderer, aLobby.startGameTexture, NULL, &aLobby.startGameRect);
@@ -238,7 +238,7 @@ static void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby)
 
 
 
-static void closeLobbyTTF(Lobby aLobby) {
+PRIVATE void closeLobbyTTF(Lobby aLobby) {
 	for (int i = 0; i < TEXTS; i++)
 		SDL_DestroyTexture(aLobby.textures[i]);
 	SDL_DestroyTexture(aLobby.startGameTexture);

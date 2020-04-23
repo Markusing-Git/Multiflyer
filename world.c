@@ -1,10 +1,10 @@
 #include "world.h"
 
 void worldCollision(SDL_Rect* aPlayerPos, Player aPlayer, int screenWidth, int screenHeight) {
-	int pixelX = 10;
-	int pixelY = 23;
-	int pixelW = 13;
-	int pixelH = 32;
+	int pixelX = 2;
+	int pixelY = 13;
+	int pixelW = 4;
+	int pixelH = 2;
 	if (getPlayerStatus(aPlayer) == true) {
 		if (aPlayerPos->x + pixelX <= 0) {
 			aPlayerPos->x = 0 - pixelX;
