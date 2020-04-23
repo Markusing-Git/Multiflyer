@@ -105,8 +105,15 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 }
                 else if(x>=imageS_pos.x && x<=imageS_pos.x+imageS_pos.w && y>imageS_pos.y && y<=imageS_pos.y+imageS_pos.h)//Start
                 {                   
-                    running = false;
-                    return 1;
+                    if (*hostOrClient) {
+                        if (hostLobby(renderer)) {
+                            running = false;
+                            return 1;
+                        }
+                    }
+                    else {
+                        clientLobby(renderer);
+                    }
                 }
             }
         }
@@ -171,6 +178,9 @@ void control(SDL_Renderer* renderer)
 
 }
 
+
+
+//**************************************************************************************** MULTIPLAYER *********************************************************************
 void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {
     SDL_Event e;
     int done = true;
