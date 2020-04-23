@@ -2,7 +2,7 @@
 
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
-    media->flySurface = IMG_Load("bilder/flySpriteSheet.png"); //Laddar in spritesheet
+    media->flySurface = IMG_Load("bilder/startFly.png"); //Laddar in spritesheet
     media->flyTrapSurface = IMG_Load("bilder/electricTrap.png"); //Laddar in spritesheet
     media->flySplashSurface = IMG_Load("bilder/bloodsplat.png");
     media->backgroundSurface = IMG_Load("bilder/background.png");
@@ -48,20 +48,47 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     }
 
     //SPRITES
-    media->playerSprites[0].x = 0;   //Skapar de olika rect för frames:en i spritesheet, vår spritesheet har 3 frames därav 3 rects
-    media->playerSprites[0].y = 0;
-    media->playerSprites[0].w = 117;
-    media->playerSprites[0].h = 150;
+    
+    //Fly sprite https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
+    media->startFlyBlue[0].x = 0;
+    media->startFlyBlue[0].y = 0;
+    media->startFlyBlue[0].w = 150;
+    media->startFlyBlue[0].h = 135;
 
-    media->playerSprites[1].x = 117;
-    media->playerSprites[1].y = 0;
-    media->playerSprites[1].w = 117;
-    media->playerSprites[1].h = 150;
+    media->startFlyBlue[1].x = 150;
+    media->startFlyBlue[1].y = 0;
+    media->startFlyBlue[1].w = 150;
+    media->startFlyBlue[1].h = 135;
 
-    media->playerSprites[2].x = 234;
-    media->playerSprites[2].y = 0;
-    media->playerSprites[2].w = 117;
-    media->playerSprites[2].h = 150;
+    media->startFlyGreen[0].x = 0;
+    media->startFlyGreen[0].y = 135;
+    media->startFlyGreen[0].w = 150;
+    media->startFlyGreen[0].h = 135;
+
+    media->startFlyGreen[1].x = 150;
+    media->startFlyGreen[1].y = 135;
+    media->startFlyGreen[1].w = 150;
+    media->startFlyGreen[1].h = 135;
+
+    media->startFlyRed[0].x = 0;
+    media->startFlyRed[0].y = 270;
+    media->startFlyRed[0].w = 150;
+    media->startFlyRed[0].h = 135;
+
+    media->startFlyRed[1].x = 150;
+    media->startFlyRed[1].y = 270;
+    media->startFlyRed[1].w = 150;
+    media->startFlyRed[1].h = 135;
+
+    media->startFlyYellow[0].x = 0;
+    media->startFlyYellow[0].y = 405;
+    media->startFlyYellow[0].w = 150;
+    media->startFlyYellow[0].h = 135;
+
+    media->startFlyYellow[1].x = 150;
+    media->startFlyYellow[1].y = 405;
+    media->startFlyYellow[1].w = 150;
+    media->startFlyYellow[1].h = 135;
 
     //splash sprites by https://opengameart.org/users/pwl artist: PWL
 

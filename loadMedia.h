@@ -8,7 +8,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 
-#define PLAYER_FRAMES 3 //Antal frames i spritesheet
+#define PLAYER_FRAMES 2 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
 #define TIME_DELAY 100
 
@@ -23,7 +23,10 @@ struct loadMedia {
 	SDL_Surface* flySplashSurface;
 	SDL_Surface* backgroundSurface;
 
-	SDL_Rect playerSprites[PLAYER_FRAMES];
+	SDL_Rect startFlyBlue[PLAYER_FRAMES];
+	SDL_Rect startFlyGreen[PLAYER_FRAMES];
+	SDL_Rect startFlyRed[PLAYER_FRAMES];
+	SDL_Rect startFlyYellow[PLAYER_FRAMES];
 	SDL_Rect splashSprites[SPLASH_FRAMES];
 	SDL_Rect scrollingBackground[2];
 	

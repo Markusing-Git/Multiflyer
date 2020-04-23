@@ -14,7 +14,7 @@
 #include "loadMedia.h"
 #include "input.h"
 
-#define PLAYER_FRAMES 3 //Antal frames i spritesheet
+#define PLAYER_FRAMES 2 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
 #define TIME_DELAY 100
 #define MAX_PLAYERS 3

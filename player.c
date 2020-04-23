@@ -1,7 +1,7 @@
 #include "player.h"
 
 static int playerWidth = 64;
-static int playerHeight = 100;
+static int playerHeight = 64;
 
 struct playerType {
 	SDL_Rect playerPos;
