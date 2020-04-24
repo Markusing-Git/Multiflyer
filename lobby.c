@@ -3,6 +3,7 @@
 typedef struct {
 	char lobbyText[NAME_LENGTH];
 	char startGame[NAME_LENGTH];
+	char waitingForHost[NAME_LENGTH];
 	char slots[4][8];
 	char playerNames[4][NAME_LENGTH];
 	bool running;
@@ -11,8 +12,10 @@ typedef struct {
 
 	SDL_Texture* textures[TEXTS];
 	SDL_Texture* startGameTexture;
+	SDL_Texture* waitingForHostTex;
 	SDL_Rect rects[TEXTS];
 	SDL_Rect startGameRect;
+	SDL_Rect waitingForHostRect;
 	Player players[MAX_PLAYERS];
 	SDL_Event event;
 
@@ -22,7 +25,7 @@ typedef struct {
 	SDL_Color lobbyTextColor;
 	SDL_Color playerListColor;
 
-	SDL_Surface* surfaces[10];
+	SDL_Surface* surfaces[11];
 
 }Lobby;
 
@@ -93,10 +96,33 @@ PUBLIC int hostLobby(SDL_Renderer* renderer) {
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
 PUBLIC void clientLobby(SDL_Renderer* renderer) {
+
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
+	int loadingCounter = 50;
+	int loadingDots = 3;
 
 	while (clientLobby.running) {
+
+		//makes dots on waiting for host count down
+		if (loadingCounter <= 0) {
+			char* p = clientLobby.waitingForHost;
+			p++[strlen(p) - 1] = 0;
+			if (loadingDots <= 0) {
+				strcpy(clientLobby.waitingForHost, "Waiting for host...");
+				loadingDots = 3;
+			}
+			else {
+				loadingDots--;
+			}
+			SDL_Surface* temp = TTF_RenderText_Solid(clientLobby.headLine, clientLobby.waitingForHost, clientLobby.lobbyTextColor);
+			clientLobby.waitingForHostTex = SDL_CreateTextureFromSurface(renderer, temp);
+			SDL_QueryTexture(clientLobby.waitingForHostTex, NULL, NULL, &clientLobby.waitingForHostRect.w, &clientLobby.waitingForHostRect.h);
+			SDL_FreeSurface(temp);
+			clientLobby.renderText = true;
+			loadingCounter = 50;
+		}
+		loadingCounter--;
 
 		while (SDL_PollEvent(&clientLobby.event))
 		{
@@ -123,6 +149,7 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 
 	strcpy(newLobby.lobbyText, "Lobby");
 	strcpy(newLobby.startGame, "Start Game");
+	strcpy(newLobby.waitingForHost, "Waiting for host...");
 	strcpy(newLobby.slots[0], "slot 1:");
 	strcpy(newLobby.slots[1], "slot 2:");
 	strcpy(newLobby.slots[2], "slot 3:");
@@ -170,20 +197,25 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 
 	//create surfaces from TTF
 	newLobby.surfaces[0] = TTF_RenderText_Solid(newLobby.headLine, newLobby.lobbyText, newLobby.lobbyTextColor);
+
 	for (int i = 1; i < 5; i++)
 		newLobby.surfaces[i] = TTF_RenderText_Solid(newLobby.playerList, newLobby.slots[i - 1], newLobby.playerListColor);
 
 	for (int i = 5; i < 9; i++)
 		newLobby.surfaces[i] = TTF_RenderText_Solid(newLobby.playerList, newLobby.playerNames[i - 5], newLobby.playerListColor);
+
 	newLobby.surfaces[9] = TTF_RenderText_Solid(newLobby.startGameFont, newLobby.startGame, newLobby.lobbyTextColor);
+	newLobby.surfaces[10] = TTF_RenderText_Solid(newLobby.headLine, newLobby.waitingForHost, newLobby.lobbyTextColor);
 
 	//create textures from surfaces
 	for (int i = 0; i < 9; i++)
 		newLobby.textures[i] = SDL_CreateTextureFromSurface(renderer, newLobby.surfaces[i]);
+
 	newLobby.startGameTexture = SDL_CreateTextureFromSurface(renderer, newLobby.surfaces[9]);
+	newLobby.waitingForHostTex = SDL_CreateTextureFromSurface(renderer, newLobby.surfaces[10]);
 
 	//destroy unnessesary surfaces 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 11; i++)
 		SDL_FreeSurface(newLobby.surfaces[i]);
 
 	//lobby rect
@@ -215,6 +247,10 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 	newLobby.startGameRect.y = 490;
 	SDL_QueryTexture(newLobby.startGameTexture, NULL, NULL, &newLobby.startGameRect.w, &newLobby.startGameRect.h);
 
+	newLobby.waitingForHostRect.x = 230;
+	newLobby.waitingForHostRect.y = 490;
+	SDL_QueryTexture(newLobby.waitingForHostTex, NULL, NULL, &newLobby.waitingForHostRect.w, &newLobby.waitingForHostRect.h);
+
 	for (int i = 0; i < TEXTS; i++) {
 		SDL_QueryTexture(newLobby.textures[i], NULL, NULL, &newLobby.rects[i].w, &newLobby.rects[i].h);
 	}
@@ -227,11 +263,18 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 
 PRIVATE void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby) {
 	SDL_RenderClear(renderer);
-	if (hostOrClient)
+
+	if (hostOrClient) {
 		SDL_RenderCopy(renderer, aLobby.startGameTexture, NULL, &aLobby.startGameRect);
+	}
+	else {
+		SDL_RenderCopy(renderer, aLobby.waitingForHostTex, NULL, &aLobby.waitingForHostRect);
+	}
+
 	for (int i = 0; i < TEXTS; i++) {
 		SDL_RenderCopy(renderer, aLobby.textures[i], NULL, &aLobby.rects[i]);
 	}
+
 	SDL_RenderPresent(renderer);
 	aLobby.renderText = false;
 }
