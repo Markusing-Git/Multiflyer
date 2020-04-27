@@ -10,6 +10,7 @@ typedef struct lobby_type {
 	int playerCount;
 	bool renderText;
 
+
 	SDL_Texture* textures[TEXTS];
 	SDL_Texture* startGameTexture;
 	SDL_Texture* waitingForHostTex;
@@ -98,17 +99,16 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
-	int loadingCounter = 50;
+	Uint32 loadingCounter = SDL_GetTicks();
 	int loadingDots = 3;
 
 	//initiates with name
 	playerJoined(renderer, clientLobby, playerName);
 
-
 	while (clientLobby->running) {
 
 		//makes dots on waiting for host count down
-		if (loadingCounter <= 0) {
+		if (SDL_GetTicks() >= loadingCounter + 1000) {
 			char* p = clientLobby->waitingForHost;
 			p++[strlen(p) - 1] = 0;
 			if (loadingDots <= 0) {
@@ -122,10 +122,11 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 			clientLobby->waitingForHostTex = SDL_CreateTextureFromSurface(renderer, temp);
 			SDL_QueryTexture(clientLobby->waitingForHostTex, NULL, NULL, &clientLobby->waitingForHostRect.w, &clientLobby->waitingForHostRect.h);
 			SDL_FreeSurface(temp);
+
 			clientLobby->renderText = true;
-			loadingCounter = 50;
+			loadingCounter = SDL_GetTicks();
 		}
-		loadingCounter--;
+
 
 		while (SDL_PollEvent(&clientLobby->event))
 		{
@@ -140,6 +141,7 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 			renderLobby(renderer, false, clientLobby);
 		}
 	}
+
 	closeLobbyTTF(clientLobby);
 }
 
