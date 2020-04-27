@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[]) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -25,8 +25,6 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     bool running = true;
     SDL_Event event;
     Inputs input = initInputs();
-
-    LoadMedia media = loadMedia(renderer, &running);
 
     //Starting network
     clientConnection(setup,playerIp, playerName,0); //Sätt sync till 1 för att aktivera nätverks sync. Host måste startas innan klient   

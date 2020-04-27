@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], Game_State current)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
 {
     SDL_Texture* imageS_texture = NULL;
     SDL_Texture* imageM_texture = NULL;
@@ -58,17 +58,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
     SDL_Event event;
 
     //************************************AUDIO***************************************************
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
-    }
-
-    //Background music: https://opengameart.org/content/on-my-way-8-bit-loop Artist: DeltaBreaker
-    Mix_Music* backgroundMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
-    if (backgroundMusic == NULL) {
-        printf("Could not load music. Error: %s", Mix_GetError());
-    }
-
-    Mix_PlayMusic(backgroundMusic, -1);
+    Mix_PlayMusic(media->backgroundMusic, -1);
 
     //SDL_Event event;
     while(running)

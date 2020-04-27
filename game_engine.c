@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[]) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -27,8 +27,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     bool running = true;
     SDL_Event event;
     Inputs input = initInputs();
-
-    LoadMedia media = loadMedia(renderer, &running);
 
     //Starting network
 

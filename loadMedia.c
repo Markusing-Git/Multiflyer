@@ -47,8 +47,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         *running = false;
     }
 
+    SDL_FreeSurface(media->flySurface);
+    SDL_FreeSurface(media->flyTrapSurface);
+    SDL_FreeSurface(media->flySplashSurface);
+    SDL_FreeSurface(media->backgroundSurface);
+
     //SPRITES
-    
     //Fly sprite https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
     media->startFlyBlue[0].x = 0;
     media->startFlyBlue[0].y = 0;
@@ -168,6 +172,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     if (media->electricShock == NULL) {
         printf("Could not load sound effect. Error: %s", Mix_GetError());
         *running = false;
+    }
+
+    //Background music: https://opengameart.org/content/on-my-way-8-bit-loop Artist: DeltaBreaker
+    media->backgroundMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
+    if (media->backgroundMusic == NULL) {
+        printf("Could not load music. Error: %s", Mix_GetError());
     }
 
     return media;

@@ -20,7 +20,7 @@
 #define MAX_PLAYERS 3
 
 //params a renderer, screen width, screen height
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[]);
-bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[]);
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media);
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media);
 
 #endif /*game_engine_h*/
