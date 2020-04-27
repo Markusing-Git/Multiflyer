@@ -1,5 +1,6 @@
 #include "LoadMenu.h"
 
+<<<<<<< HEAD
 struct menu{
     char menuChoices[NUM_MENU][NAME_LENGTH];
     SDL_Color color;
@@ -15,6 +16,9 @@ typedef struct menu Menu;
 Menu createMenu(SDL_Renderer* renderer);
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[])
+=======
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
+>>>>>>> e65e466ea61208143bb9241769c9fce285720f13
 {
     
     //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -22,17 +26,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
     IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
     // Load an image
     //************************************AUDIO***************************************************
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
-    }
-
-    //Background music: https://opengameart.org/content/on-my-way-8-bit-loop Artist: DeltaBreaker
-    Mix_Music* backgroundMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
-    if (backgroundMusic == NULL) {
-        printf("Could not load music. Error: %s", Mix_GetError());
-    }
-
-    Mix_PlayMusic(backgroundMusic, -1);
+    Mix_PlayMusic(media->backgroundMusic, -1);
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer);
@@ -113,13 +107,13 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 else if(x>=newMenu1.pos[0].x && x<=newMenu1.pos[0].x+newMenu1.pos[0].w && y>newMenu1.pos[0].y && y<=newMenu1.pos[0].y+newMenu1.pos[0].h)
                 {                   
                     if (*hostOrClient) {
-                        if (hostLobby(renderer)) {
+                        if (hostLobby(renderer, current,ip)) {
                             running = false;
                             return 1;
                         }
                     }
                     else {
-                        clientLobby(renderer);
+                        clientLobby(renderer,name,ip);
                     }
                 }
             }

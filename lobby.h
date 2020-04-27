@@ -16,11 +16,14 @@
 #include <SDL2/SDL_net.h>
 #include <SDL2/SDL_ttf.h>
 #include "player.h"
+#include "Network.h"
+
+typedef struct Lobby* pLobby;
 
 //starts a client based lobby
-void clientLobby(SDL_Renderer* renderer);
+void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);
 
 //starts a host based lobby
-int hostLobby(SDL_Renderer* renderer);
+//int hostLobby(SDL_Renderer* renderer, Game_State *current, char playerIp[]);
 
 #endif /*lobby_h*/

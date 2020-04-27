@@ -31,6 +31,7 @@ struct loadMedia {
 	SDL_Rect scrollingBackground[2];
 	
 	Mix_Chunk* electricShock;
+	Mix_Music* backgroundMusic;
 };
 typedef struct loadMedia* LoadMedia;
 
