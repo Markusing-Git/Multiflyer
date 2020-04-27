@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-<<<<<<< HEAD
+
 struct menu{
     char menuChoices[NUM_MENU][NAME_LENGTH];
     SDL_Color color;
@@ -15,10 +15,7 @@ typedef struct menu Menu;
 
 Menu createMenu(SDL_Renderer* renderer);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[])
-=======
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
->>>>>>> e65e466ea61208143bb9241769c9fce285720f13
 {
     
     //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -107,7 +104,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 else if(x>=newMenu1.pos[0].x && x<=newMenu1.pos[0].x+newMenu1.pos[0].w && y>newMenu1.pos[0].y && y<=newMenu1.pos[0].y+newMenu1.pos[0].h)
                 {                   
                     if (*hostOrClient) {
-                        if (hostLobby(renderer, current,ip)) {
+                        if (hostLobby(renderer, name)) {
                             running = false;
                             return 1;
                         }

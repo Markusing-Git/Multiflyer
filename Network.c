@@ -196,7 +196,7 @@ int serverConnection(char playerIp[], UDP_Client_Config setup, int sync)
     return 0;
 }
 
-int serverLobbyConnection(char playerIp[], Game_State current, pLobby hostLobby)
+int serverLobbyConnection(char playerIp[], Game_State current, Lobby hostLobby)
 {
 
     IPaddress ip1;
