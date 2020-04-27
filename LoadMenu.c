@@ -1,6 +1,6 @@
 #include "LoadMenu.h"
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[])
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], Game_State current)
 {
     SDL_Texture* imageS_texture = NULL;
     SDL_Texture* imageM_texture = NULL;
@@ -106,13 +106,13 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 else if(x>=imageS_pos.x && x<=imageS_pos.x+imageS_pos.w && y>imageS_pos.y && y<=imageS_pos.y+imageS_pos.h)//Start
                 {                   
                     if (*hostOrClient) {
-                        if (hostLobby(renderer)) {
+                        if (hostLobby(renderer, current,ip)) {
                             running = false;
                             return 1;
                         }
                     }
                     else {
-                        clientLobby(renderer);
+                        clientLobby(renderer,name,ip);
                     }
                 }
             }

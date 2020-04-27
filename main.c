@@ -17,6 +17,12 @@ int main(void) {
     char playerName[NAME_LENGTH] = "No-alias";
     char playerIp[IP_LENGTH] = "127.0.0.1";
 
+    UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
+    Game_State current = malloc(sizeof(struct Game_State_Type));
+    initGamestate(current);
+
+
+
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -44,7 +50,7 @@ int main(void) {
             //scales all rendering on renderer
             SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
+            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, current)) {
                 Mix_HaltMusic();
                 //Starts game engine
                 if (hostOrClient)

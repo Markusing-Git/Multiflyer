@@ -12,6 +12,7 @@
 #include <string.h>
 #include <SDL2/SDL_mixer.h>
 #include "lobby.h"
+#include "Network.h"
 
 #define NAME_LENGTH 50
 #define IP_LENGTH 50

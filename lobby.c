@@ -37,7 +37,7 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer);
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-PUBLIC int hostLobby(SDL_Renderer* renderer) {
+PUBLIC int hostLobby(SDL_Renderer* renderer,Game_State current, char playerIp[]) {
 
 	Lobby hostLobby;
 	hostLobby = createLobby(renderer);
@@ -47,8 +47,11 @@ PUBLIC int hostLobby(SDL_Renderer* renderer) {
 
 	while (hostLobby.running) {
 
+		//serverLobbyConnection(playerIp, current, hostLobby);
+
 		while (SDL_PollEvent(&hostLobby.event))
 		{
+
 			if (hostLobby.event.type == SDL_QUIT || hostLobby.event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				closeLobbyTTF(hostLobby);
@@ -95,12 +98,14 @@ PUBLIC int hostLobby(SDL_Renderer* renderer) {
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC void clientLobby(SDL_Renderer* renderer) {
+PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]) {
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
 	int loadingCounter = 50;
 	int loadingDots = 3;
+
+	//clientLobbyConnection(playerIp, playerName);
 
 	while (clientLobby.running) {
 
@@ -139,8 +144,6 @@ PUBLIC void clientLobby(SDL_Renderer* renderer) {
 	}
 	closeLobbyTTF(clientLobby);
 }
-
-
 
 
 // ************************************************** PRIVATE LOBBY FUNCTIONS *****************************************************************************************

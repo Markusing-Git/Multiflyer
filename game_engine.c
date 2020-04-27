@@ -19,7 +19,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     Player players[MAX_PLAYERS];
     newPlayer(players, createPlayer(50, 50), &playerCount);
     newPlayer(players, createPlayer(50, 50), &playerCount);
-    UDP_Config setup = malloc(sizeof(struct UDP_Config_Type));
+    UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     SDL_Rect* pPlayerPos = getPlayerPosAdr(players[0]);
     SDL_Rect* pOpponentPos = getPlayerPosAdr(players[1]);
@@ -32,9 +32,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     //Starting network
 
-    serverConnection(playerIp,setup,0); //Sätt sync till 1 för att aktivera nätverks sync. host måste startas innan klient
-    create_Game_state(50, 50, current);
-
+    clientConnection(setup, playerIp, playerName, 0); //Sätt sync till 1 för att aktivera nätverks sync. Host måste startas innan klient   
+    create_Game_state(players, current, playerCount);
+    int_client_network(playerIp, setup, 2000, 2001);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
@@ -47,11 +47,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         uppdateInputs(players[0], input);
 
-        SetPlayerAlive(current, getPlayerStatus(players[0]));
+        SetPlayerAlive(current, getPlayerStatus(players[0]), 0);
 
         sendAndRecive(current, setup, pPlayerPos, pOpponentPos);
 
-        setPlayerStatus(players[1], current->opponent_alive);
+        setPlayerStatus(players[1], current->player_Alive[1]);
 
         worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
 
