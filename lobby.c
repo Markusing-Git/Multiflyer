@@ -102,7 +102,7 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 	int loadingDots = 3;
 
 	//initiates with name
-	playerJoined(renderer, &clientLobby, playerName);
+	playerJoined(renderer, clientLobby, playerName);
 
 
 	while (clientLobby->running) {
