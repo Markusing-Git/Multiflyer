@@ -12,11 +12,12 @@
 #include <string.h>
 #include <SDL2/SDL_mixer.h>
 #include "lobby.h"
+#include "loadMedia.h"
 
 #define NAME_LENGTH 50
 #define IP_LENGTH 50
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[]);
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media);
 void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient);
 void enterName(SDL_Renderer* renderer, char name[]);
 void enterIp(SDL_Renderer* renderer, char ip[]);

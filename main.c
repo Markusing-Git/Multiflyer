@@ -4,6 +4,7 @@
 #include "game_engine.h"
 #include "LoadMenu.h"
 #include "Network.h"
+#include "loadMedia.h"
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
@@ -13,6 +14,7 @@ int main(void) {
     SDL_Window* window = NULL;
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
     bool hostOrClient = true;
+    bool running = true;
 
     char playerName[NAME_LENGTH] = "No-alias";
     char playerIp[IP_LENGTH] = "127.0.0.1";
@@ -44,13 +46,21 @@ int main(void) {
             //scales all rendering on renderer
             SDL_RenderSetLogicalSize(renderer, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-            if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp)) {
-                Mix_HaltMusic();
-                //Starts game engine
-                if (hostOrClient)
-                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp);
-                else
-                    startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp);
+            //loads all the media
+            LoadMedia media = loadMedia(renderer, &running);
+
+            if (running) {
+                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media)) {
+                    Mix_HaltMusic();
+                    //Starts game engine
+                    if (hostOrClient)
+                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media);
+                    else
+                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media);
+                }
+                else {
+                    SDL_DestroyRenderer(renderer);
+                }
             }
             else {
                 SDL_DestroyRenderer(renderer);
