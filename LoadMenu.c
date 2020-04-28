@@ -17,11 +17,9 @@ Menu createMenu(SDL_Renderer* renderer);
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
 {
-    
-    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
-    // Load an image
+    
     //************************************AUDIO***************************************************
     Mix_PlayMusic(media->backgroundMusic, -1);
 
@@ -32,6 +30,16 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
     SDL_Color selected = { 77 , 255, 0, 0 };
     SDL_Event event;
 
+    // Background by 
+    // https://www.freeiconspng.com/img/26394
+    // https://wallpapertag.com/game-background
+    // https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
+    // https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
+    // https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
+    // https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
+    // https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
+
+    // Load image
     newMenu1.menuBackground = IMG_Load("bilder/bakgrund.png");
     if(newMenu1.menuBackground == NULL)
     {

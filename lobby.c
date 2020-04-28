@@ -134,7 +134,7 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 			{
 				closeLobbyTTF(clientLobby);
 				clientLobby->running = false;
-				return 0;
+				//return 0;
 			}
 		}
 		if (clientLobby->renderText) {
