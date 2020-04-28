@@ -22,6 +22,6 @@
 typedef struct lobby_type* Lobby;
 
 PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[]);
-PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);
 
 #endif /*lobby_h*/

@@ -90,12 +90,14 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[]) {
 			renderLobby(renderer, true, hostLobby);
 		}
 	}
+
+	return 0;
 }
 
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]) {
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]) {
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
@@ -134,7 +136,7 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 			{
 				closeLobbyTTF(clientLobby);
 				clientLobby->running = false;
-				//return 0;
+				return 1;
 			}
 		}
 		if (clientLobby->renderText) {
@@ -143,6 +145,7 @@ PUBLIC void clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp
 	}
 
 	closeLobbyTTF(clientLobby);
+	return 0;
 }
 
 
