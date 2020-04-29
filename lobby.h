@@ -2,12 +2,6 @@
 #define lobby_h
 
 #define _CRT_SECURE_NO_DEPRECATE
-#define MAX_PLAYERS 3
-#define NAME_LENGTH 50
-#define IP_LENGTH 50
-#define TEXTS 9
-#define PUBLIC
-#define PRIVATE static
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,12 +10,16 @@
 #include <SDL2/SDL_net.h>
 #include <SDL2/SDL_ttf.h>
 #include "player.h"
+#include "constants.h"
 
-
+#define TEXTS 9
 
 typedef struct lobby_type* Lobby;
 
+//hosts a lobby and inserts player name in lobby waiting list
 PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[]);
+
+//starts the client side of lobby, sends playername and ip for connections to host. 
 PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);
 
 #endif /*lobby_h*/

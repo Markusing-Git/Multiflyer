@@ -6,14 +6,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
-
-#define PLAYER_FRAMES 3 //Antal frames i spritesheet
-#define SPLASH_FRAMES 14
+#include "constants.h"
 
 //en ADT för att skapa en spelare
 //getPlayerPositionX returnerar spelarens x cordinat
 //getPlayerPositionY returnerar spelarens y cordinat
-//drawPlayer ritar ut spelaren på skärmen (Kanske borde tillhöra annan source fil t.ex en som heter game??)
 
 typedef struct playerType* Player;
 

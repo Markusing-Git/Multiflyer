@@ -14,9 +14,8 @@
 #include "lobby.h"
 #include "loadMedia.h"
 #include "Network.h"
+#include "constants.h"
 
-#define NAME_LENGTH 50
-#define IP_LENGTH 50
 #define NUM_MENU 4
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media);

@@ -7,10 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-
-#define PLAYER_FRAMES 2 //Antal frames i spritesheet
-#define SPLASH_FRAMES 14
-#define TIME_DELAY 100
+#include "constants.h"
 
 struct loadMedia {
 	SDL_Texture* flyTrapTex;

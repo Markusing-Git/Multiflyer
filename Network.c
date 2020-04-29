@@ -24,7 +24,7 @@ int create_Game_state(Player playerList[], Game_State current, int playerCount) 
 
 int initGamestate(Game_State current)
 {
-    for (int i = 0; MAX_PLAYERS_NET > i; i++) {
+    for (int i = 0; MAX_PLAYERS > i; i++) {
         current->player_Pos_X[i] = 0;
         current->player_Pos_Y[i] = 0;
         current->player_Alive[i] = true;

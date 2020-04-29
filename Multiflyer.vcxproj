@@ -159,6 +159,7 @@
     <ClCompile Include="world.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants.h" />
     <ClInclude Include="game_engine.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="loadMedia.h" />

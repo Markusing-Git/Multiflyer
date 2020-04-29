@@ -1,12 +1,16 @@
 #include "obstacle.h"
 
+
 struct obstacle_type {
     SDL_Rect top;
     SDL_Rect bottom;
     struct obstacle_type* next;
 };
 
-Obstacle createObstacle(int screenWidth, int screenHeight) {
+PRIVATE bool destroyObstacle(Obstacle head);
+
+
+PUBLIC Obstacle createObstacle(int screenWidth, int screenHeight) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top.x = screenWidth;
     aObs->top.w = 65;
@@ -21,7 +25,7 @@ Obstacle createObstacle(int screenWidth, int screenHeight) {
     return aObs;
 }
 
-Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom) {
+PUBLIC Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom) {
     Obstacle aObs = malloc(sizeof(struct obstacle_type));
     aObs->top = top;
     aObs->bottom = bottom;
@@ -30,7 +34,7 @@ Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom) {
 }
 
 //param a obstacle, true for top false for bot, x:y:w:h for cordinates
-int getObstacleValue(Obstacle aObs, bool topOrBot, char value) {
+PUBLIC int getObstacleValue(Obstacle aObs, bool topOrBot, char value) {
     if (topOrBot) {
         switch (value) {
         case 'x':
@@ -63,7 +67,7 @@ int getObstacleValue(Obstacle aObs, bool topOrBot, char value) {
     }
 }
 
-SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot) {
+PUBLIC SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot) {
     if (topOrBot) {
         return aObs->top;
     }
@@ -72,7 +76,7 @@ SDL_Rect getRectfromObstacle(Obstacle aObs, bool topOrBot) {
     }
 }
 
-void setRectfromObstacle(Obstacle aObs, SDL_Rect aRect, bool topOrBot) {
+PUBLIC void setRectfromObstacle(Obstacle aObs, SDL_Rect aRect, bool topOrBot) {
     if (topOrBot) {
         aObs->top = aRect;
     }
@@ -81,15 +85,15 @@ void setRectfromObstacle(Obstacle aObs, SDL_Rect aRect, bool topOrBot) {
     }
 }
 
-Obstacle getNextObsFromList(Obstacle aObs) {
+PUBLIC Obstacle getNextObsFromList(Obstacle aObs) {
     return aObs->next;
 }
 
-void initRandomGeneratior(void) {
+PUBLIC void initRandomGeneratior(void) {
     srand((unsigned)time(NULL));
 }
 
-void rndOpening(Obstacle aObs, int screenHeight) {
+PUBLIC void rndOpening(Obstacle aObs, int screenHeight) {
 
     int obsCenter = screenHeight / 2;
     int opening = screenHeight / 7;
@@ -118,7 +122,7 @@ void rndOpening(Obstacle aObs, int screenHeight) {
 }
 
 
-static bool destroyObstacle(Obstacle head) {
+PRIVATE bool destroyObstacle(Obstacle head) {
     Obstacle current, prev;
     current = head;
     current = current->next;
@@ -136,7 +140,7 @@ static bool destroyObstacle(Obstacle head) {
 }
 
 
-void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
+PUBLIC void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
     Obstacle newNode;
 
     newNode = createObstacle(screenWidth, screenHeight);
@@ -145,7 +149,7 @@ void newObstacle(Obstacle head, int screenWidth, int screenHeight) {
     head->next = newNode;
 }
 
-void newClientObstacle(Obstacle receivedObstacle, Obstacle head) {
+PUBLIC void newClientObstacle(Obstacle receivedObstacle, Obstacle head) {
     Obstacle newNode;
    
 
@@ -155,7 +159,7 @@ void newClientObstacle(Obstacle receivedObstacle, Obstacle head) {
     head->next = newNode;
 }
 
-void obsteclesTick(Obstacle head) {
+PUBLIC void obsteclesTick(Obstacle head) {
     Obstacle obs;
     obs = head;
     obs = obs->next;
@@ -167,7 +171,7 @@ void obsteclesTick(Obstacle head) {
     destroyObstacle(head);
 }
 
-void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture) {
+PUBLIC void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture) {
     Obstacle obs;
     obs = head;
     obs = obs->next;
@@ -178,7 +182,7 @@ void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* texture
     }
 }
 
-void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
+PUBLIC void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
     SDL_Rect pixelRect;
     pixelRect.x = aPlayerPos->x + 5;
     pixelRect.y = aPlayerPos->y + 23;
