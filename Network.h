@@ -71,7 +71,7 @@ int getPlayerPosY(Game_State current, int playerNr);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
 int serverConnection(char playerIp[], UDP_Client_Config setup, int sync);
 int clientConnection(UDP_Client_Config setup, char playerIp[], char playerName[], int sync);
-int serverLobbyConnection(char playerIp[], Game_State current, pLobby hostLobby);
+int serverLobbyConnection(char playerIp[], Game_State current, Lobby hostLobby);
 int clientLobbyConnection(char serverIp[], char playerName[]);
 int initGamestate(Game_State current);
 

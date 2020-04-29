@@ -224,7 +224,6 @@ int serverLobbyConnection(char playerIp[], Game_State current, Lobby hostLobby)
                  printf("Recived\n");
                  SDLNet_TCP_Recv(client, playerName, 100); //Tar emot namnet som skickas över strömmen
                  ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
-                 inputNameLobby(hostLobby, current, playerName);
                  playerIp = SDLNet_ResolveIP(&ip_Recive);
 
              } while (!strcmp(playerName, "NULL"));
@@ -246,7 +245,6 @@ int clientLobbyConnection(char playerIp[], char playerName[])
 {
 
     int port = 2005;
-    TCPsocket client;
     TCPsocket server;
     IPaddress ip1;
     char sent[10] = "NULL";
