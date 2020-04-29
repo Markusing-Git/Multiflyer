@@ -10,9 +10,10 @@
 #include <SDL2/SDL_net.h>
 #include "obstacle.h"
 #include "player.h"
-#include "lobby.h"
 #include "constants.h"
 
+//för att du ska få tillgång till Lobby, funktioner måste skapas för att utföra operationer.
+typedef struct lobby_type* Lobby;
 
 struct UDP_Client_Config_Type{
     UDPsocket send_Sock;

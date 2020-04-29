@@ -56,7 +56,7 @@ int main(void) {
             LoadMedia media = loadMedia(renderer, &running);
 
             if (running) {
-                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media)) {
+                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media, current, setup)) {
                     Mix_HaltMusic();
                     //Starts game engine
                     if (hostOrClient)

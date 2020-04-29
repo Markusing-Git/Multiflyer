@@ -10,6 +10,7 @@
 #include <SDL2/SDL_net.h>
 #include <SDL2/SDL_ttf.h>
 #include "player.h"
+#include "Network.h"
 #include "constants.h"
 
 #define TEXTS 9
@@ -17,7 +18,7 @@
 typedef struct lobby_type* Lobby;
 
 //hosts a lobby and inserts player name in lobby waiting list
-PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[]);
+PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup);
 
 //starts the client side of lobby, sends playername and ip for connections to host. 
 PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);

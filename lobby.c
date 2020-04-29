@@ -1,6 +1,6 @@
 #include "lobby.h"
 
-typedef struct lobby_type {
+struct lobby_type {
 	char lobbyText[NAME_LENGTH];
 	char startGame[NAME_LENGTH];
 	char waitingForHost[NAME_LENGTH];
@@ -36,7 +36,7 @@ PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, char name[]);
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[]) {
+PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup) {
 
 	Lobby hostLobby;
 	hostLobby = createLobby(renderer);

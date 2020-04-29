@@ -15,7 +15,7 @@ typedef struct menu Menu;
 
 Menu createMenu(SDL_Renderer* renderer);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media, Game_State current, UDP_Client_Config setup)
 {
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
@@ -112,7 +112,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 else if(x>=newMenu1.pos[0].x && x<=newMenu1.pos[0].x+newMenu1.pos[0].w && y>newMenu1.pos[0].y && y<=newMenu1.pos[0].y+newMenu1.pos[0].h)
                 {                   
                     if (*hostOrClient) {
-                        if (hostLobby(renderer, name)) {
+                        if (hostLobby(renderer, name, current, setup)) {
                             running = false;
                             return 1;
                         }
