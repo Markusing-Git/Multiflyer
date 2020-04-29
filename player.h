@@ -9,8 +9,6 @@
 #include "constants.h"
 
 //en ADT för att skapa en spelare
-//getPlayerPositionX returnerar spelarens x cordinat
-//getPlayerPositionY returnerar spelarens y cordinat
 
 typedef struct playerType* Player;
 
