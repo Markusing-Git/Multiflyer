@@ -201,7 +201,8 @@ int serverLobbyConnection(char playerIp[], Game_State current, pLobby hostLobby)
 
     IPaddress ip1;
     IPaddress ip_Recive;
-    char playerName[100];
+    char playerName[100] = "NULL";
+    char close[] = "close";
 
     if (SDLNet_Init() < 0)
     {
@@ -215,26 +216,31 @@ int serverLobbyConnection(char playerIp[], Game_State current, pLobby hostLobby)
      TCPsocket server = SDLNet_TCP_Open(&ip1);
      TCPsocket client;
          
-     while (1)
-     {
-
          client = SDLNet_TCP_Accept(server);
 
          if (client)
          {
-             printf("Recived\n");
-             SDLNet_TCP_Recv(client, playerName, 100); //Tar emot namnet som skickas över strömmen
-             ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
-             //inputNameLobby(hostLobby, current, playerName);
-             playerIp = SDLNet_ResolveIP(&ip_Recive);
-         }
-     }
-     SDLNet_TCP_Close(server);
+             do {
+                 printf("Recived\n");
+                 SDLNet_TCP_Recv(client, playerName, 100); //Tar emot namnet som skickas över strömmen
+                 ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
+                 inputNameLobby(hostLobby, current, playerName);
+                 playerIp = SDLNet_ResolveIP(&ip_Recive);
 
+             } while (!strcmp(playerName, "NULL"));
+
+             printf("Send\n");
+             SDLNet_TCP_Send(client, close, strlen(close) + 1);
+         }
+
+     SDLNet_TCP_Close(server);
+     SDLNet_Quit();
 
     //int_network(playerIp, setup, 2001, 2000); //initierar nätverket för servern
     return 0;
 }
+
+
 
 int clientLobbyConnection(char playerIp[], char playerName[])
 {
@@ -243,6 +249,7 @@ int clientLobbyConnection(char playerIp[], char playerName[])
     TCPsocket client;
     TCPsocket server;
     IPaddress ip1;
+    char sent[10] = "NULL";
 
     printf("init Network\n");
 
@@ -260,15 +267,20 @@ int clientLobbyConnection(char playerIp[], char playerName[])
 
 
     printf("%s\n", playerName);
-    client = SDLNet_TCP_Open(&ip1);
 
     do {
-            SDLNet_TCP_Send(client, playerName, strlen(playerName) + 1); //Skickar namnet på spelaren.
-            //printf("Sending\n");
- 
-    } while (1);
+        server = SDLNet_TCP_Open(&ip1);
+    } while (server == NULL);
 
-    //SDLNet_TCP_Close(client);
+    do {
+            SDLNet_TCP_Send(server, playerName, strlen(playerName) + 1); //Skickar namnet på spelaren.
+            SDLNet_TCP_Recv(server, sent, 10);
+            printf("Waiting\n");
+    } while (!strcmp(sent, "NULL"));
+
+    printf("%s", sent);
+
+    SDLNet_TCP_Close(server);
 //int_client_network(serverIp, setup, 2000, 2001); //initierar nätverket för klienten
 
     return 0;
