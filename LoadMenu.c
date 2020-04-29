@@ -1,64 +1,55 @@
 #include "LoadMenu.h"
 
+
+struct menu{
+    char menuChoices[NUM_MENU][NAME_LENGTH];
+    SDL_Color color;
+    TTF_Font* menuFont;
+    SDL_Surface* menuSurface[NUM_MENU];
+    SDL_Rect pos[NUM_MENU];
+    SDL_Texture* textures[NUM_MENU];
+    SDL_Surface* menuBackground;
+    SDL_Texture* backgroundTexture;
+};
+typedef struct menu Menu;
+
+Menu createMenu(SDL_Renderer* renderer);
+
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media)
 {
-    SDL_Texture* imageS_texture = NULL;
-    SDL_Texture* imageM_texture = NULL;
-    SDL_Texture* imageC_texture = NULL;
-    SDL_Texture* imageQ_texture = NULL;
-
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
-    // Load an image
-
-    SDL_Surface *imageS = IMG_Load("bilder/Start.png");
-    imageS_texture = SDL_CreateTextureFromSurface(renderer,imageS);
-    SDL_FreeSurface(imageS); 
-    bool running = true;
-    //Define position for Start
-    SDL_Rect imageS_pos;
-    imageS_pos.x = 170;
-    imageS_pos.y = 150;
-    imageS_pos.w = 150;
-    imageS_pos.h = 50;
-
-    SDL_Surface *imageM = IMG_Load("bilder/Multiplayer.png");
-    imageM_texture = SDL_CreateTextureFromSurface(renderer,imageM);
-    //Define position for Multiplayer
-    SDL_Rect imageM_pos;
-    imageM_pos.x = 170;
-    imageM_pos.y = 225;
-    imageM_pos.w = 320;
-    imageM_pos.h = 50;
-    SDL_FreeSurface(imageM);
-
-    SDL_Surface *imageC = IMG_Load("bilder/controls.png");
-    imageC_texture = SDL_CreateTextureFromSurface(renderer,imageC);
-    //Define position for Controls
-    SDL_Rect imageC_pos;
-    imageC_pos.x = 170;
-    imageC_pos.y = 300;
-    imageC_pos.w = 150;
-    imageC_pos.h = 50;
-    SDL_FreeSurface(imageC);
-
-    SDL_Surface *imageQ = IMG_Load("bilder/Quit.png");
-    imageQ_texture = SDL_CreateTextureFromSurface(renderer,imageQ);
-    //Define position for Quit
-    SDL_Rect imageQ_pos;
-    imageQ_pos.x = 170;
-    imageQ_pos.y = 375;
-    imageQ_pos.w = 150;
-    imageQ_pos.h = 50;
-    SDL_FreeSurface(imageQ);
-    running = true;
-    int x,y;
-
-    SDL_Event event;
-
+    
     //************************************AUDIO***************************************************
     Mix_PlayMusic(media->backgroundMusic, -1);
+
+    Menu newMenu1;
+    newMenu1 = createMenu(renderer);
+    bool running = true;
+    int x,y;
+    SDL_Color selected = { 77 , 255, 0, 0 };
+    SDL_Event event;
+
+    // Background by 
+    // https://www.freeiconspng.com/img/26394
+    // https://wallpapertag.com/game-background
+    // https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
+    // https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
+    // https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
+    // https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
+    // https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
+
+    // Load image
+    newMenu1.menuBackground = IMG_Load("bilder/bakgrund.png");
+    if(newMenu1.menuBackground == NULL)
+    {
+        printf("Unable to load image. Error: %s", SDL_GetError());
+    }
+    newMenu1.backgroundTexture = SDL_CreateTextureFromSurface(renderer, newMenu1.menuBackground);
+    if (newMenu1.backgroundTexture == NULL)
+    {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+    }
 
     //SDL_Event event;
     while(running)
@@ -70,19 +61,43 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
             {
                 running = false;
             }
-            else if(event.type==SDL_MOUSEBUTTONDOWN)// if click!
+            else if (event.type == SDL_MOUSEMOTION) {
+				x = event.motion.x;
+				y = event.motion.y;
+                for(int i = 0; i < NUM_MENU; i++)
+                {   
+                    // if focus change text to green
+                    if(x>=newMenu1.pos[i].x && x<=newMenu1.pos[i].x+newMenu1.pos[i].w && y>newMenu1.pos[i].y && y<=newMenu1.pos[i].y+newMenu1.pos[i].h)
+                    {
+                        SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], selected);
+                        newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);               
+                    }
+                    else
+                    {
+                        SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], newMenu1.color);
+                        newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                    }
+                }
+			}
+            // if click!
+            else if(event.type==SDL_MOUSEBUTTONDOWN)
             {
                 x=event.button.x;
                 y=event.button.y;
-                if(x>=imageQ_pos.x && x<=imageQ_pos.x+imageQ_pos.w && y>imageQ_pos.y && y<=imageQ_pos.y+imageQ_pos.h)// Quit
+                // Quit
+                if(x>=newMenu1.pos[3].x && x<=newMenu1.pos[3].x+newMenu1.pos[3].w && y>newMenu1.pos[3].y && y<=newMenu1.pos[3].y+newMenu1.pos[3].h)
                 {
                     running= false;
                 }
-                else if(x>=imageC_pos.x && x<=imageC_pos.x+imageC_pos.w && y>imageC_pos.y && y<=imageC_pos.y+imageC_pos.h)//Controls
+                //Controls
+                else if(x>=newMenu1.pos[2].x && x<=newMenu1.pos[2].x+newMenu1.pos[2].w && y>newMenu1.pos[2].y && y<=newMenu1.pos[2].y+newMenu1.pos[2].h)
                 {
                     control(renderer);
                 }
-                else if(x>=imageM_pos.x && x<=imageM_pos.x+imageM_pos.w && y>imageM_pos.y && y<=imageM_pos.y+imageM_pos.h)//Multiplayer
+                //Multiplayer
+                else if(x>=newMenu1.pos[1].x && x<=newMenu1.pos[1].x+newMenu1.pos[1].w && y>newMenu1.pos[1].y && y<=newMenu1.pos[1].y+newMenu1.pos[1].h)
                 {
                     getHostOrClient(renderer, hostOrClient);
                     if (*hostOrClient) {
@@ -93,10 +108,11 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                         enterIp(renderer, ip);
                     }
                 }
-                else if(x>=imageS_pos.x && x<=imageS_pos.x+imageS_pos.w && y>imageS_pos.y && y<=imageS_pos.y+imageS_pos.h)//Start
+                //Start
+                else if(x>=newMenu1.pos[0].x && x<=newMenu1.pos[0].x+newMenu1.pos[0].w && y>newMenu1.pos[0].y && y<=newMenu1.pos[0].y+newMenu1.pos[0].h)
                 {                   
                     if (*hostOrClient) {
-                        if (hostLobby(renderer, current,ip)) {
+                        if (hostLobby(renderer, name)) {
                             running = false;
                             return 1;
                         }
@@ -107,27 +123,81 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 }
             }
         }
-        // Clear screen
+       // Clear screen
         SDL_RenderClear(renderer);
+        SDL_RenderCopyEx(renderer, newMenu1.backgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
         //Draw
-        SDL_RenderCopy(renderer, imageS_texture, NULL, &imageS_pos);
-        SDL_RenderCopy(renderer,imageM_texture,NULL,&imageM_pos);
-        SDL_RenderCopy(renderer,imageC_texture,NULL,&imageC_pos);
-        SDL_RenderCopy(renderer,imageQ_texture,NULL,&imageQ_pos);
+        for(int i = 0; i < NUM_MENU; i++)
+            SDL_RenderCopy(renderer, newMenu1.textures[i], NULL, &newMenu1.pos[i]);
         //show what was drawn
         SDL_RenderPresent(renderer);
-
-
     }
+
     //Release resourse
-    SDL_DestroyTexture(imageS_texture);
-    SDL_DestroyTexture(imageM_texture);
-    SDL_DestroyTexture(imageC_texture);
-    SDL_DestroyTexture(imageQ_texture);
-    IMG_Quit();
-    SDL_DestroyRenderer(renderer);
+    for(int i = 0; i < NUM_MENU; i++)
+    {
+        SDL_DestroyTexture(newMenu1.textures[i]);
+    }
+    TTF_CloseFont(newMenu1.menuFont);
+    TTF_Quit();
     return 0;
 }
+
+
+
+//**************************************************************************************** MENU *********************************************************************
+Menu createMenu(SDL_Renderer* renderer)
+{
+    // Init Menu choices 
+    Menu newMenu;
+    strcpy(newMenu.menuChoices[0], "Start");
+    strcpy(newMenu.menuChoices[1], "Multiplayer");
+    strcpy(newMenu.menuChoices[2], "Option");
+    strcpy(newMenu.menuChoices[3], "Quit");
+
+    if (TTF_Init() == -1)
+	{
+		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+	newMenu.menuFont = TTF_OpenFont("fonts/Magical.ttf", 45);
+	if (newMenu.menuFont == NULL)
+	{
+		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+	}
+
+    // Set text color to white 
+    newMenu.color.r = 0;
+    newMenu.color.g = 0;
+    newMenu.color.b = 0;
+    newMenu.color.a = 0;
+
+    // Render text, create texture and realease resources 
+    for (int i = 0; i < NUM_MENU; i++)
+		newMenu.menuSurface[i] = TTF_RenderText_Solid(newMenu.menuFont,newMenu.menuChoices[i], newMenu.color);
+    for (int i = 0; i < NUM_MENU; i++)
+		newMenu.textures[i] = SDL_CreateTextureFromSurface(renderer, newMenu.menuSurface[i]);
+    for (int i = 0; i < NUM_MENU; i++)
+        SDL_FreeSurface(newMenu.menuSurface[i]);
+    
+    // Define position for texture 
+    newMenu.pos[0].x = 450;
+    newMenu.pos[0].y = 220;
+    newMenu.pos[1].x = 450;
+    newMenu.pos[1].y = 270;
+    newMenu.pos[2].x = 450;
+    newMenu.pos[2].y = 320;
+    newMenu.pos[3].x = 450;
+    newMenu.pos[3].y = 370;
+
+    // Get the size of texture (weight & high)
+    for (int i = 0; i < NUM_MENU; i++) {
+		SDL_QueryTexture(newMenu.textures[i], NULL, NULL, &newMenu.pos[i].w, &newMenu.pos[i].h);
+	}
+
+    return newMenu;    
+}
+
+
 
 void control(SDL_Renderer* renderer)
 {
@@ -135,10 +205,10 @@ void control(SDL_Renderer* renderer)
     SDL_Event e;
 
     SDL_Texture* controls_texture = NULL;
-    SDL_Surface* controls = IMG_Load("bilder/instruction.png");
+    SDL_Surface* controls = IMG_Load("bilder/instructions1.png");
     controls_texture = SDL_CreateTextureFromSurface(renderer,controls);
-    //Define positonen for Controls
 
+    //Define positonen for Controls
     SDL_Rect controls_pos;
     controls_pos.x = 0;
     controls_pos.y = 0;
@@ -161,7 +231,8 @@ void control(SDL_Renderer* renderer)
                 }
             }
             SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, controls_texture, NULL, &controls_pos);
+            SDL_RenderCopyEx(renderer, controls_texture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+            //SDL_RenderCopy(renderer, controls_texture, NULL, &controls_pos);
             SDL_RenderPresent(renderer);
     }
     SDL_DestroyTexture(controls_texture);

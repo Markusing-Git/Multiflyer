@@ -1,10 +1,6 @@
 #ifndef Network_h
 #define Network_h
 
-
-#define IP_LENGHT 16
-#define NAME_LENGHT 100
-#define MAX_PLAYERS_NET 4
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
@@ -15,6 +11,7 @@
 #include "obstacle.h"
 #include "player.h"
 #include "lobby.h"
+#include "constants.h"
 
 
 struct UDP_Client_Config_Type{
@@ -37,9 +34,9 @@ typedef struct Player_info_Type* Player_info;
 
 struct Game_State_Type
 {
-    int player_Pos_X[MAX_PLAYERS_NET];
-    int player_Pos_Y[MAX_PLAYERS_NET];
-    bool player_Alive[MAX_PLAYERS_NET];
+    int player_Pos_X[MAX_PLAYERS];
+    int player_Pos_Y[MAX_PLAYERS];
+    bool player_Alive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
     int nrOfPlayers;
     int change_flag;
