@@ -18,7 +18,8 @@ typedef struct lobby_type* Lobby;
 struct UDP_Client_Config_Type{
     UDPsocket send_Sock;
     UDPsocket rec_Sock;
-    IPaddress server_Ip;
+    IPaddress sendingIP;
+    char playerIp[MAX_PLAYERS][IP_LENGTH];
     UDPpacket *send_Pack;
     UDPpacket *rec_Pack;
     int port;
@@ -39,9 +40,15 @@ struct Game_State_Type
     int player_Pos_Y[MAX_PLAYERS];
     bool player_Alive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
+    char ipAdressCache[IP_LENGTH];
+
     int nrOfPlayers;
     int change_flag;
     int obstacle_change_flag;
+    int gameStartFlag;
+    int newPlayerFlag;
+    int localPlayerNr;
+
     SDL_Rect obstacle_top;
     SDL_Rect obstacle_bottom;
 }; 
@@ -72,8 +79,8 @@ int getPlayerPosY(Game_State current, int playerNr);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
 int serverConnection(char playerIp[], UDP_Client_Config setup, int sync);
 int clientConnection(UDP_Client_Config setup, char playerIp[], char playerName[], int sync);
-int serverLobbyConnection(char playerIp[], Game_State current, Lobby hostLobby);
-int clientLobbyConnection(char serverIp[], char playerName[]);
+int serverLobbyConnection(Game_State current); 
+int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int initGamestate(Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);

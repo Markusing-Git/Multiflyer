@@ -44,9 +44,15 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	SDL_Color selected = { 77 , 255, 0, 0 };
 
 	//initiates with name
+	strcpy(current->playerNames[current->nrOfPlayers], playerName);
+	current->nrOfPlayers++;
 	playerJoined(renderer, hostLobby, playerName);
 
+	SDL_CreateThread(serverLobbyConnection, "Connection_Thread", current);
+
+
 	while (hostLobby->running) {
+
 
 		while (SDL_PollEvent(&hostLobby->event))
 		{
@@ -81,15 +87,25 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
 					closeLobbyTTF(hostLobby);
+					current->gameStartFlag = 1;
 					hostLobby->running = false;
 					return 1;
 				}
 			}
 		}
+		if (current->newPlayerFlag){
+			playerJoined(renderer, hostLobby, current->playerNames[current->nrOfPlayers - 1]);
+			strcpy(setup->playerIp[current->nrOfPlayers - 1], current->ipAdressCache);
+			current->newPlayerFlag = 0;
+
+		}
+
 		if (hostLobby->renderText) {
 			renderLobby(renderer, true, hostLobby);
 		}
 	}
+
+	
 
 	return 0;
 }
@@ -97,7 +113,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]) {
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[],Game_State current) {
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
@@ -105,7 +121,11 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 	int loadingDots = 3;
 
 	//initiates with name
-	playerJoined(renderer, clientLobby, playerName);
+	clientLobbyConnection(playerIp, playerName, current);
+	for (int i = 0; current->nrOfPlayers > i; i++) {
+		playerJoined(renderer, clientLobby, current->playerNames[i]);
+	}
+	
 
 	while (clientLobby->running) {
 
@@ -128,7 +148,6 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			clientLobby->renderText = true;
 			loadingCounter = SDL_GetTicks();
 		}
-
 
 		while (SDL_PollEvent(&clientLobby->event))
 		{

@@ -21,6 +21,6 @@ typedef struct lobby_type* Lobby;
 PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup);
 
 //starts the client side of lobby, sends playername and ip for connections to host. 
-PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[]);
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current);
 
 #endif /*lobby_h*/
