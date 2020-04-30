@@ -69,12 +69,14 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                     // if focus change text to green
                     if(x>=newMenu1.pos[i].x && x<=newMenu1.pos[i].x+newMenu1.pos[i].w && y>newMenu1.pos[i].y && y<=newMenu1.pos[i].y+newMenu1.pos[i].h)
                     {
+                        SDL_DestroyTexture(newMenu1.textures[i]);
                         SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], selected);
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);               
                     }
                     else
                     {
+                        SDL_DestroyTexture(newMenu1.textures[i]);
                         SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], newMenu1.color);
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);

@@ -67,6 +67,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				y = hostLobby->event.motion.y;
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
+					SDL_DestroyTexture(hostLobby->startGameTexture);
 					SDL_Surface* temp = TTF_RenderText_Solid(hostLobby->startGameFont, hostLobby->startGame, selected);
 					hostLobby->startGameTexture = SDL_CreateTextureFromSurface(renderer, temp);
 					SDL_FreeSurface(temp);
@@ -74,6 +75,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				}
 				else
 				{
+					SDL_DestroyTexture(hostLobby->startGameTexture);
 					SDL_Surface* temp = TTF_RenderText_Solid(hostLobby->startGameFont, hostLobby->startGame, hostLobby->lobbyTextColor);
 					hostLobby->startGameTexture = SDL_CreateTextureFromSurface(renderer, temp);
 					SDL_FreeSurface(temp);
@@ -140,6 +142,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			else {
 				loadingDots--;
 			}
+			SDL_DestroyTexture(clientLobby->waitingForHostTex);
 			SDL_Surface* temp = TTF_RenderText_Solid(clientLobby->headLine, clientLobby->waitingForHost, clientLobby->lobbyTextColor);
 			clientLobby->waitingForHostTex = SDL_CreateTextureFromSurface(renderer, temp);
 			SDL_QueryTexture(clientLobby->waitingForHostTex, NULL, NULL, &clientLobby->waitingForHostRect.w, &clientLobby->waitingForHostRect.h);
