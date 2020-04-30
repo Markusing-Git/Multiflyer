@@ -1,14 +1,13 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Game_State current, UDP_Client_Config setup) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
     int delay = TIME_DELAY;
-    int playerCount = 0;
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
 
@@ -17,12 +16,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     Obstacle obstacles = createObstacle(w, h); //innitate start node
 
     Player players[MAX_PLAYERS];
-    newPlayer(players, createPlayer(50, 50), &playerCount);
-    newPlayer(players, createPlayer(50, 50), &playerCount);
-    UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
-    Game_State current = malloc(sizeof(struct Game_State_Type));
-    SDL_Rect* pPlayerPos = getPlayerPosAdr(players[0]);
-    SDL_Rect* pOpponentPos = getPlayerPosAdr(players[1]);
+    SDL_Rect* playerPos[MAX_PLAYERS];
+    initPlayers(players, current->nrOfPlayers);
+
+    for (int i = 0; i < current->nrOfPlayers; i++)
+        playerPos[i] = getPlayerPosAdr(players[i]);
 
     bool running = true;
     SDL_Event event;
@@ -31,7 +29,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //Starting network
 
     clientConnection(setup, playerIp, playerName, 0); //Sätt sync till 1 för att aktivera nätverks sync. Host måste startas innan klient   
-    create_Game_state(players, current, playerCount);
+    create_Game_state(players, current, current->nrOfPlayers);
     int_client_network(playerIp, setup, 2000, 2001);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
@@ -47,7 +45,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         SetPlayerAlive(current, getPlayerStatus(players[0]), 0);
 
-        sendAndRecive(current, setup, pPlayerPos, pOpponentPos);
+        if (current->nrOfPlayers > 1)
+            sendAndRecive(current, setup, playerPos[0], playerPos[1]);
 
         setPlayerStatus(players[1], current->player_Alive[1]);
 
@@ -96,13 +95,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
-        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[0]), players[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);
-        renderPlayer(renderer, media->flyTex, media->flySplashTex, getPlayerPosAdr(players[1]), players[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, &nrOfSoundEffects);
-        //SDL_RenderCopyEx(renderer, flyTex, &playerSprites[playerFrame / 3], &opponentPos, 0, NULL, SDL_FLIP_NONE); //Visar spriten
+        renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderPresent(renderer);
     }
 
     QuitInput(input);
-    freePlayers(players,playerCount);
+    freePlayers(players, current->nrOfPlayers);
     return true;
 }
