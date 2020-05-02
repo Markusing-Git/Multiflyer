@@ -51,7 +51,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	SDL_CreateThread(serverLobbyConnection, "Connection_Thread", current);
 
 
-	while (hostLobby->running) {
+	while (current->lobbyRunningFlag) {
 
 
 		while (SDL_PollEvent(&hostLobby->event))
@@ -88,8 +88,9 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				y = hostLobby->event.button.y;
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
+					serverStartGame(setup, current);
 					closeLobbyTTF(hostLobby);
-					current->gameStartFlag = 1;
+					current->lobbyRunningFlag = 0;
 					hostLobby->running = false;
 					return 1;
 				}
@@ -97,9 +98,16 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 		if (current->newPlayerFlag){
 			playerJoined(renderer, hostLobby, current->playerNames[current->nrOfPlayers - 1]);
-			strcpy(setup->playerIp[current->nrOfPlayers - 1], current->ipAdressCache);
-			current->newPlayerFlag = 0;
+			printf("%d", current->nrOfPlayers);
+			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache,IP_LENGTH);
 
+			for (int i = 0; current->nrOfPlayers-2>i; i++) {
+				printf("%d\n",i);
+				printf("%s\n", setup->playerIp[i]);
+				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 1), current);
+			}
+
+			current->newPlayerFlag = 0;
 		}
 
 		if (hostLobby->renderText) {
@@ -128,8 +136,10 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 		playerJoined(renderer, clientLobby, current->playerNames[i]);
 	}
 	
+	SDL_CreateThread(clientLobbyWait, "Client_Wait_Thread", current);
+	SDL_CreateThread(clientStartGame, "Client_Start_Thread", current);
 
-	while (clientLobby->running) {
+	while (current->lobbyRunningFlag) {
 
 		//makes dots on waiting for host count down
 		if (SDL_GetTicks() >= loadingCounter + 1000) {
@@ -160,6 +170,10 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 				clientLobby->running = false;
 				return 1;
 			}
+		}
+		if (current->newPlayerFlag) {
+			playerJoined(renderer, clientLobby, current->playerNames[current->nrOfPlayers-1]);
+			current->newPlayerFlag = 0;
 		}
 		if (clientLobby->renderText) {
 			renderLobby(renderer, false, clientLobby);

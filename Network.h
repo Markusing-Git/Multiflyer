@@ -45,7 +45,7 @@ struct Game_State_Type
     int nrOfPlayers;
     int change_flag;
     int obstacle_change_flag;
-    int gameStartFlag;
+    int lobbyRunningFlag;
     int newPlayerFlag;
     int localPlayerNr;
 
@@ -82,6 +82,10 @@ int clientConnection(UDP_Client_Config setup, char playerIp[], char playerName[]
 int serverLobbyConnection(Game_State current); 
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int initGamestate(Game_State current);
+int clientLobbyWait(Game_State current);
+int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current);
+int serverStartGame(UDP_Client_Config setup, Game_State current);
+int clientStartGame(Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);
 
