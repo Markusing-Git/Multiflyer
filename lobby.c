@@ -338,8 +338,10 @@ PRIVATE void closeLobbyTTF(Lobby aLobby) {
 
 PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, char name[]) {
 	aLobby->playerCount++;
+	SDL_DestroyTexture(aLobby->textures[4 + (aLobby->playerCount)]);
 	SDL_Surface* temp = TTF_RenderText_Solid(aLobby->playerList, name, aLobby->playerListColor);
 	aLobby->textures[4 + (aLobby->playerCount)] = SDL_CreateTextureFromSurface(renderer, temp);
+	SDL_QueryTexture(aLobby->textures[4 + (aLobby->playerCount)], NULL, NULL, &aLobby->rects[4 + (aLobby->playerCount)].w, &aLobby->rects[4 + (aLobby->playerCount)].h);
 	SDL_FreeSurface(temp);
 	aLobby->renderText = true;
 }

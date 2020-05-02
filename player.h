@@ -7,43 +7,43 @@
 #include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 #include "constants.h"
+#include "loadMedia.h"
 
 //en ADT för att skapa en spelare
 
 typedef struct playerType* Player;
 
 //creates a player struct
-Player createPlayer(int x, int y);
+PUBLIC Player createPlayer(int x, int y);
 
 //renders player dead or alive
-void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
-	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, int* nrOfSoundEffects);
+PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame, int* nrOfSoundEffects, int playerCount, LoadMedia media);
 
 //creates a new player and adds to the list of players
-void newPlayer(Player playerList[], Player aPlayer, int* playerCount);
+PUBLIC void initPlayers(Player playerList[], int playerCount);
 
 //returns adress of player position 
-SDL_Rect* getPlayerPosAdr(Player aPlayer);
+PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
 
 //returns player players status false: dead true: alive
-bool getPlayerStatus(Player aPLayer);
+PUBLIC bool getPlayerStatus(Player aPLayer);
 
 //sets the status of player false: dead true: alive
-void setPlayerStatus(Player aPlayer, bool deadOrAlive);
+PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive);
 
 //sets cordinates of a players x:y:w:h, value represents the value to be set
-void setPlayerPoint(Player aPlayer, char cord, int value);
+PUBLIC void setPlayerPoint(Player aPlayer, char cord, int value);
 
 //returns the value of player cordinate. cord: x:y:w:h
-int getPlayerPoint(Player aPlayer, char cord);
+PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 
 //moves a player
-void movePlayerUp(Player aPlayer, int speed);
-void movePlayerDown(Player aPlayer, int speed);
-void movePlayerLeft(Player aPlayer, int speed);
-void movePlayerRight(Player aPlayer, int speed);
+PUBLIC void movePlayerUp(Player aPlayer, int speed);
+PUBLIC void movePlayerDown(Player aPlayer, int speed);
+PUBLIC void movePlayerLeft(Player aPlayer, int speed);
+PUBLIC void movePlayerRight(Player aPlayer, int speed);
 
 //frees player structs from heap, params: list of players and amount
-void freePlayers(Player playerList[], int playerCount);
+PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 #endif /* player_h */
