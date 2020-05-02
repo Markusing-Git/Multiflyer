@@ -6,7 +6,6 @@ struct lobby_type {
 	char waitingForHost[NAME_LENGTH];
 	char slots[4][8];
 	char playerNames[4][NAME_LENGTH];
-	bool running;
 	int playerCount;
 	bool renderText;
 
@@ -46,6 +45,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	//initiates with name
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
 	current->nrOfPlayers++;
+	current->lobbyRunningFlag = 1;
 	playerJoined(renderer, hostLobby, playerName);
 
 	SDL_CreateThread(serverLobbyConnection, "Connection_Thread", current);
@@ -56,10 +56,10 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 		while (SDL_PollEvent(&hostLobby->event))
 		{
-			if (hostLobby->event.type == SDL_QUIT || hostLobby->event.key.keysym.sym == SDLK_ESCAPE)
+			if (hostLobby->event.type == SDL_QUIT || hostLobby->event.type == SDL_KEYDOWN && hostLobby->event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				closeLobbyTTF(hostLobby);
-				hostLobby->running = false;
+				current->lobbyRunningFlag = 0;
 				return 0;
 			}
 			else if (hostLobby->event.type == SDL_MOUSEMOTION) {
@@ -91,18 +91,17 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 					serverStartGame(setup, current);
 					closeLobbyTTF(hostLobby);
 					current->lobbyRunningFlag = 0;
-					hostLobby->running = false;
 					return 1;
 				}
 			}
 		}
-		if (current->newPlayerFlag){
+		if (current->newPlayerFlag) {
 			playerJoined(renderer, hostLobby, current->playerNames[current->nrOfPlayers - 1]);
 			printf("%d", current->nrOfPlayers);
-			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache,IP_LENGTH);
+			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
 
-			for (int i = 0; current->nrOfPlayers-2>i; i++) {
-				printf("%d\n",i);
+			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
+				printf("%d\n", i);
 				printf("%s\n", setup->playerIp[i]);
 				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 1), current);
 			}
@@ -115,15 +114,14 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 	}
 
-	
-
+	printf("lobby crashed");
 	return 0;
 }
 
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[],Game_State current) {
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current) {
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer);
@@ -135,7 +133,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 	for (int i = 0; current->nrOfPlayers > i; i++) {
 		playerJoined(renderer, clientLobby, current->playerNames[i]);
 	}
-	
+
 	SDL_CreateThread(clientLobbyWait, "Client_Wait_Thread", current);
 	SDL_CreateThread(clientStartGame, "Client_Start_Thread", current);
 
@@ -164,15 +162,14 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 		while (SDL_PollEvent(&clientLobby->event))
 		{
-			if (clientLobby->event.type == SDL_QUIT || clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
+			if (clientLobby->event.type == SDL_QUIT || clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				closeLobbyTTF(clientLobby);
-				clientLobby->running = false;
-				return 1;
+				return 0;
 			}
 		}
 		if (current->newPlayerFlag) {
-			playerJoined(renderer, clientLobby, current->playerNames[current->nrOfPlayers-1]);
+			playerJoined(renderer, clientLobby, current->playerNames[current->nrOfPlayers - 1]);
 			current->newPlayerFlag = 0;
 		}
 		if (clientLobby->renderText) {
@@ -181,7 +178,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 	}
 
 	closeLobbyTTF(clientLobby);
-	return 0;
+	return 1;
 }
 
 
@@ -205,7 +202,6 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 	strcpy(newLobby->playerNames[3], "*empty*");
 
 	newLobby->renderText = true;
-	newLobby->running = true;
 	newLobby->playerCount = 0;
 
 

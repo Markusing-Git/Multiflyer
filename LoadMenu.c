@@ -120,9 +120,10 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                         }
                     }
                     else {
-                        clientLobby(renderer,name,ip,current);
-                        running = false;
-                        return 1;
+                        if (clientLobby(renderer, name, ip, current)) {
+                            running = false;
+                            return 1;
+                        };
                     }
                 }
             }
