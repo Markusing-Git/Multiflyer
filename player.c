@@ -9,7 +9,7 @@ struct playerType {
 };
 
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
-	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, int* nrOfSoundEffects);
+	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects);
 
 PUBLIC Player createPlayer(int x, int y) {
 	Player aPlayer = malloc(sizeof(struct playerType));
@@ -24,42 +24,58 @@ PUBLIC Player createPlayer(int x, int y) {
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame, int* nrOfSoundEffects, int playerCount, LoadMedia media) {
 	switch (playerCount) {
 	case 1:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
 		break;
 	case 2:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
 		break;
 	case 3:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
 		break;
 	case 4:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->startFlyBlue, media->splashSprites, playerFrame, splashFrame, media->electricShock, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->startFlyBlue, media->splashSprites, playerFrame, splashFrame, media->electricShock, media->flyingNoise, nrOfSoundEffects);
 		break;
 	default: printf("players is NULL");
 	}
 }
 
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
-	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, int* nrOfSoundEffects) {
+	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects) {
 	if (aPLayer->alive) {
 		SDL_RenderCopyEx(renderer, playerTex, &playerSprites[playerFrame / (PLAYER_FRAMES + 1)], playerPos, 0, NULL, SDL_FLIP_NONE);
+		getSoundEffect(1, flyingNoise);
 	}
 	else {
 		SDL_RenderCopyEx(renderer, splashTex, &splashSprites[splashFrame / SPLASH_FRAMES], playerPos, 0, NULL, SDL_FLIP_NONE);
 		playerPos->x -= 2;
 		if (*nrOfSoundEffects == 0) {
-			Mix_PlayChannel(-1, electricShock, 0);
+			getSoundEffect(2, electricShock);
 			(*nrOfSoundEffects) = 1;
 		}
+		//Inte säker på vart dessa ska ligga:
+		//Mix_FreeChunk(electricShock);
+		//Mix_FreeChunk(flyingNoise);
 	}
 }
 
+void getSoundEffect(int alive, Mix_Chunk* soundEffect)
+{
+	if(alive==1)
+	{
+		Mix_PlayChannel(-1, soundEffect, -1); //Plays buzzing noise
+	}
+	else
+	{
+		Mix_Pause(-1);
+		Mix_PlayChannel(2, soundEffect, 0); //Plays electrified noise
+	}
+}
 
 PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer) {
 	return &aPlayer->playerPos;

@@ -27,8 +27,9 @@ struct loadMedia {
 	SDL_Rect splashSprites[SPLASH_FRAMES];
 	SDL_Rect scrollingBackground[2];
 	
+	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
-	Mix_Music* backgroundMusic;
+	Mix_Music* menuMusic;
 };
 typedef struct loadMedia* LoadMedia;
 

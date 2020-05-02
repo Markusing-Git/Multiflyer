@@ -21,7 +21,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
     IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
     
     //************************************AUDIO***************************************************
-    Mix_PlayMusic(media->backgroundMusic, -1);
+    Mix_PlayMusic(media->menuMusic, -1);
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer);

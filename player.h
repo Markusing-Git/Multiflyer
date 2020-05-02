@@ -9,7 +9,7 @@
 #include "constants.h"
 #include "loadMedia.h"
 
-//en ADT för att skapa en spelare
+//en ADT fï¿½r att skapa en spelare
 
 typedef struct playerType* Player;
 
@@ -36,6 +36,9 @@ PUBLIC void setPlayerPoint(Player aPlayer, char cord, int value);
 
 //returns the value of player cordinate. cord: x:y:w:h
 PUBLIC int getPlayerPoint(Player aPlayer, char cord);
+
+//Plays the sound effect
+void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 
 //moves a player
 PUBLIC void movePlayerUp(Player aPlayer, int speed);

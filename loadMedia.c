@@ -24,7 +24,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         *running = false;
     }
 
-    media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
+    media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
     media->flyTrapTex = SDL_CreateTextureFromSurface(renderer, media->flyTrapSurface);
     media->flySplashTex = SDL_CreateTextureFromSurface(renderer, media->flySplashSurface);
     media->backgroundTex = SDL_CreateTextureFromSurface(renderer, media->backgroundSurface);
@@ -161,24 +161,34 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->splashSprites[13].w = 480;
     media->splashSprites[13].h = 480;
 
-    //*****************************************AUDIO********************************************************
+  //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
         *running = false;
     }
 
-    //Sound effect https://opengameart.org/content/electric-buzz artist: themightyglider
-    media->electricShock = Mix_LoadWAV("audio/buzz.ogg");
+    //Electricshock noise https://opengameart.org/content/electric-buzz artist: themightyglider
+    media->electricShock = Mix_LoadWAV("Audio/buzz.ogg");
     if (media->electricShock == NULL) {
         printf("Could not load sound effect. Error: %s", Mix_GetError());
         *running = false;
     }
 
+    //Flying noise: http://soundbible.com/396-Fly-Buzzing.html Artist: Mike Koenig
+	media->flyingNoise = Mix_LoadWAV("Audio/FlyNoise.wav");
+	if (media->flyingNoise == NULL) 
+	{
+		printf("Could not load sound effect. Error: %s \n", Mix_GetError());
+	}
+
     //Background music: https://opengameart.org/content/on-my-way-8-bit-loop Artist: DeltaBreaker
-    media->backgroundMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
-    if (media->backgroundMusic == NULL) {
+    media->menuMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
+    if (media->menuMusic == NULL) {
         printf("Could not load music. Error: %s", Mix_GetError());
     }
+
+    Mix_Volume(-1, 50); //Andrar ljud för alla sound effekts, mellan 0 - 128 (MAX för SDL)
+    Mix_VolumeMusic(10); //Andrar volym för musik, mellan 0 - 128 (MAX för SDL)
 
     return media;
 }
