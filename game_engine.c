@@ -7,7 +7,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame = 0;
-    int delay = TIME_DELAY;
+    Uint32 obstacleDelay = SDL_GetTicks();
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
 
@@ -66,11 +66,10 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         }
 
         //handles obstacles
-        delay--;
-        if (delay <= 0) {
+        if (SDL_GetTicks() >= obstacleDelay + TIME_DELAY) {
             newObstacle(obstacles, w, h);
             SetObstacle(current, obstacles);
-            delay = TIME_DELAY;
+            obstacleDelay = SDL_GetTicks();
         }
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
