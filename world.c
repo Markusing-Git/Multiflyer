@@ -20,3 +20,19 @@ void worldCollision(SDL_Rect* aPlayerPos, Player aPlayer, int screenWidth, int s
 		}
 	}
 }
+
+void scrollBackground(LoadMedia aMedia, int *aOffset, int w, int h) {
+	(*aOffset) -= 1;
+	if ((*aOffset) <= -w) {
+		(*aOffset) = 0;
+	}
+	aMedia->scrollingBackground[0].x = (*aOffset);
+	aMedia->scrollingBackground[0].y = 0;
+	aMedia->scrollingBackground[0].w = w;
+	aMedia->scrollingBackground[0].h = h;
+
+	aMedia->scrollingBackground[1].x = (*aOffset) + w;
+	aMedia->scrollingBackground[1].y = 0;
+	aMedia->scrollingBackground[1].w = w;
+	aMedia->scrollingBackground[1].h = h;
+}

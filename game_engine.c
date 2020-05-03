@@ -6,7 +6,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //************************************CREATE ENVOIRMENT**************************************************************************
 
     int playerFrame = 0; //Den frame som ska visas
-    int splashFrame = 0;
+    int splashFrame[MAX_PLAYERS] = { 0 };
     Uint32 obstacleDelay = SDL_GetTicks();
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
@@ -58,10 +58,12 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             playerFrame = 0;
         }
 
-        if (splashFrame != SPLASH_FRAMES * 11 && getPlayerStatus(players[0]) == false) {
-            splashFrame++;
-            if (splashFrame / 13 == SPLASH_FRAMES) {
-                splashFrame = 0;
+        for (int i = 0; i < current->nrOfPlayers; i++) {
+            if (splashFrame[i] != SPLASH_FRAMES * 11 && getPlayerStatus(players[i]) == false) {
+                splashFrame[i]++;
+                if (splashFrame[i] / 13 == SPLASH_FRAMES) {
+                    splashFrame[i] = 0;
+                }
             }
         }
 
@@ -75,19 +77,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
         //Make the background scroll to the left
-        backgroundOffset -= 1;
-        if (backgroundOffset <= -w) {
-            backgroundOffset = 0;
-        }
-        media->scrollingBackground[0].x = backgroundOffset;
-        media->scrollingBackground[0].y = 0;
-        media->scrollingBackground[0].w = w;
-        media->scrollingBackground[0].h = h;
-
-        media->scrollingBackground[1].x = backgroundOffset + w;
-        media->scrollingBackground[1].y = 0;
-        media->scrollingBackground[1].w = w;
-        media->scrollingBackground[1].h = h;
+        scrollBackground(media, &backgroundOffset, w, h);
+        
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);

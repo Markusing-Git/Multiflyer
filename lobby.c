@@ -60,6 +60,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			{
 				closeLobbyTTF(hostLobby);
 				current->lobbyRunningFlag = 0;
+				current->nrOfPlayers = 0;
 				return 0;
 			}
 			else if (hostLobby->event.type == SDL_MOUSEMOTION) {
@@ -165,6 +166,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			if (clientLobby->event.type == SDL_QUIT || clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				closeLobbyTTF(clientLobby);
+				current->nrOfPlayers = 0;
 				return 0;
 			}
 		}
@@ -328,6 +330,7 @@ PRIVATE void closeLobbyTTF(Lobby aLobby) {
 	TTF_CloseFont(aLobby->headLine);
 	TTF_CloseFont(aLobby->playerList);
 	TTF_CloseFont(aLobby->startGameFont);
+	free(aLobby);
 	TTF_Quit();
 }
 

@@ -16,8 +16,8 @@ typedef struct playerType* Player;
 //creates a player struct
 PUBLIC Player createPlayer(int x, int y);
 
-//renders player dead or alive
-PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame, int* nrOfSoundEffects, int playerCount, LoadMedia media);
+//renders players dead or alive
+PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media);
 
 //creates a new player and adds to the list of players
 PUBLIC void initPlayers(Player playerList[], int playerCount);
