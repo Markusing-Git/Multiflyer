@@ -1,11 +1,28 @@
 #include "loadMedia.h"
 
+// MenuBackground by 
+// https://www.freeiconspng.com/img/26394
+// https://wallpapertag.com/game-background
+// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
+// https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
+// https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
+// https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
+// https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
+
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
     media->flySurface = IMG_Load("bilder/startFly.png"); //Laddar in spritesheet
     media->flyTrapSurface = IMG_Load("bilder/electricTrap.png"); //Laddar in spritesheet
     media->flySplashSurface = IMG_Load("bilder/bloodsplat.png");
     media->backgroundSurface = IMG_Load("bilder/background.png");
+    media->scoreboardSurface = IMG_Load("bilder/scoreboard.png");
+    media->menuBackgroundSurface = IMG_Load("bilder/bakgrund.png");
+    media->controlsSurface = IMG_Load("bilder/instructions1.png");
+    media->hostButtonSurface = IMG_Load("bilder/Host.png");
+    media->clientButtonSurface = IMG_Load("bilder/Client.png");
+    media->textboxSurface = IMG_Load("bilder/textbox1.png");
+
+
 
     if (media->flySurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
@@ -23,11 +40,49 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
+    if (media->scoreboardSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->menuBackgroundSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->controlsSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->hostButtonSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->clientButtonSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->textboxSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+
+
 
     media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
     media->flyTrapTex = SDL_CreateTextureFromSurface(renderer, media->flyTrapSurface);
     media->flySplashTex = SDL_CreateTextureFromSurface(renderer, media->flySplashSurface);
     media->backgroundTex = SDL_CreateTextureFromSurface(renderer, media->backgroundSurface);
+    media->scoreBoardTexture = SDL_CreateTextureFromSurface(renderer, media->scoreboardSurface);
+    media->menuBackgroundTexture = SDL_CreateTextureFromSurface(renderer, media->menuBackgroundSurface);
+    media->controlsTexture = SDL_CreateTextureFromSurface(renderer, media->controlsSurface);
+    media->hostButtonTexture = SDL_CreateTextureFromSurface(renderer, media->hostButtonSurface);
+    media->clientButtonTexture = SDL_CreateTextureFromSurface(renderer, media->clientButtonSurface);
+    media->textboxTexture = SDL_CreateTextureFromSurface(renderer, media->textboxSurface);
+
+
+
+
+
+
 
     if (media->flyTex == NULL)
     {
@@ -46,11 +101,47 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    if (media->scoreBoardTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->menuBackgroundTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->controlsTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->hostButtonTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->clientButtonTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->textboxTexture == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
     SDL_FreeSurface(media->flySplashSurface);
     SDL_FreeSurface(media->backgroundSurface);
+    SDL_FreeSurface(media->scoreboardSurface);
+    SDL_FreeSurface(media->menuBackgroundSurface);
+    SDL_FreeSurface(media->controlsSurface);
+    SDL_FreeSurface(media->hostButtonSurface);
+    SDL_FreeSurface(media->clientButtonSurface);
+    SDL_FreeSurface(media->textboxSurface);
+
+
+
+
+
+
 
     //SPRITES
     //Fly sprite https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
@@ -161,7 +252,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->splashSprites[13].w = 480;
     media->splashSprites[13].h = 480;
 
-  //*****************************************AUDIO********************************************************
+    //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
         *running = false;
@@ -175,11 +266,11 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     }
 
     //Flying noise: http://soundbible.com/396-Fly-Buzzing.html Artist: Mike Koenig
-	media->flyingNoise = Mix_LoadWAV("Audio/FlyNoise.wav");
-	if (media->flyingNoise == NULL) 
-	{
-		printf("Could not load sound effect. Error: %s \n", Mix_GetError());
-	}
+    media->flyingNoise = Mix_LoadWAV("Audio/FlyNoise.wav");
+    if (media->flyingNoise == NULL)
+    {
+        printf("Could not load sound effect. Error: %s \n", Mix_GetError());
+    }
 
     //Background music: https://opengameart.org/content/on-my-way-8-bit-loop Artist: DeltaBreaker
     media->menuMusic = Mix_LoadMUS("Audio/OnMyWay.wav");
@@ -192,3 +283,51 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
 
     return media;
 }
+
+//************************************************* TTF FONTS ***************************************************************************************
+Fonts loadFonts(void) {
+
+    if (TTF_Init() == -1)
+    {
+        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    Fonts fonts = malloc(sizeof(struct loadFonts));
+
+    fonts->magical_45 = TTF_OpenFont("fonts/Magical.ttf", 45);
+    fonts->cuvert_24 = TTF_OpenFont("fonts/Curvert.otf", 24);
+    fonts->cuvert_28 = TTF_OpenFont("fonts/Curvert.otf", 28);
+    fonts->cuvert_48 = TTF_OpenFont("fonts/Curvert.otf", 48);
+    fonts->ka1_60 = TTF_OpenFont("fonts/ka1.ttf", 60);
+
+    if (fonts->magical_45 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->cuvert_24 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->cuvert_48 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->ka1_60 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->cuvert_28 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+}
+
+void closeFonts(Fonts mediaFonts) {
+    TTF_CloseFont(mediaFonts->magical_45);
+    TTF_CloseFont(mediaFonts->cuvert_24);
+    TTF_CloseFont(mediaFonts->cuvert_28);
+    TTF_CloseFont(mediaFonts->cuvert_48);
+    TTF_CloseFont(mediaFonts->ka1_60);
+    free(mediaFonts);
+    TTF_Quit;
+}
+

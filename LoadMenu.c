@@ -1,157 +1,131 @@
 #include "LoadMenu.h"
 
 
-struct menu{
+struct menu {
     char menuChoices[NUM_MENU][NAME_LENGTH];
     SDL_Color color;
-    TTF_Font* menuFont;
     SDL_Surface* menuSurface[NUM_MENU];
     SDL_Rect pos[NUM_MENU];
     SDL_Texture* textures[NUM_MENU];
-    SDL_Surface* menuBackground;
-    SDL_Texture* backgroundTexture;
 };
 typedef struct menu Menu;
 
-Menu createMenu(SDL_Renderer* renderer);
+PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media, Game_State current, UDP_Client_Config setup)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup)
 {
     //Initalize for loading image
-    IMG_Init(IMG_INIT_JPG|IMG_INIT_PNG);   
-    
+    IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
+
     //************************************AUDIO***************************************************
     Mix_PlayMusic(media->menuMusic, -1);
 
     Menu newMenu1;
-    newMenu1 = createMenu(renderer);
+    newMenu1 = createMenu(renderer, fonts);
     bool running = true;
-    int x,y;
+    int x, y;
     SDL_Color selected = { 77 , 255, 0, 0 };
     SDL_Event event;
 
-    // Background by 
-    // https://www.freeiconspng.com/img/26394
-    // https://wallpapertag.com/game-background
-    // https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
-    // https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
-    // https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
-    // https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
-    // https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
-
-    // Load image
-    newMenu1.menuBackground = IMG_Load("bilder/bakgrund.png");
-    if(newMenu1.menuBackground == NULL)
-    {
-        printf("Unable to load image. Error: %s", SDL_GetError());
-    }
-    newMenu1.backgroundTexture = SDL_CreateTextureFromSurface(renderer, newMenu1.menuBackground);
-    if (newMenu1.backgroundTexture == NULL)
-    {
-        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
-    }
 
     //SDL_Event event;
-    while(running)
+    while (running)
     {
         // Process events
-        while(SDL_PollEvent(&event))
+        while (SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+            if (event.type == SDL_QUIT)
             {
                 running = false;
             }
             else if (event.type == SDL_MOUSEMOTION) {
-				x = event.motion.x;
-				y = event.motion.y;
-                for(int i = 0; i < NUM_MENU; i++)
-                {   
+                x = event.motion.x;
+                y = event.motion.y;
+                for (int i = 0; i < NUM_MENU; i++)
+                {
                     // if focus change text to green
-                    if(x>=newMenu1.pos[i].x && x<=newMenu1.pos[i].x+newMenu1.pos[i].w && y>newMenu1.pos[i].y && y<=newMenu1.pos[i].y+newMenu1.pos[i].h)
+                    if (x >= newMenu1.pos[i].x && x <= newMenu1.pos[i].x + newMenu1.pos[i].w && y > newMenu1.pos[i].y && y <= newMenu1.pos[i].y + newMenu1.pos[i].h)
                     {
                         SDL_DestroyTexture(newMenu1.textures[i]);
-                        SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], selected);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, newMenu1.menuChoices[i], selected);
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                        SDL_FreeSurface(temp);               
+                        SDL_FreeSurface(temp);
                     }
                     else
                     {
                         SDL_DestroyTexture(newMenu1.textures[i]);
-                        SDL_Surface* temp = TTF_RenderText_Solid(newMenu1.menuFont, newMenu1.menuChoices[i], newMenu1.color);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, newMenu1.menuChoices[i], newMenu1.color);
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);
                     }
                 }
-			}
+            }
             // if click!
-            else if(event.type==SDL_MOUSEBUTTONDOWN)
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-                x=event.button.x;
-                y=event.button.y;
+                x = event.button.x;
+                y = event.button.y;
                 // Quit
-                if(x>=newMenu1.pos[3].x && x<=newMenu1.pos[3].x+newMenu1.pos[3].w && y>newMenu1.pos[3].y && y<=newMenu1.pos[3].y+newMenu1.pos[3].h)
+                if (x >= newMenu1.pos[3].x && x <= newMenu1.pos[3].x + newMenu1.pos[3].w && y > newMenu1.pos[3].y && y <= newMenu1.pos[3].y + newMenu1.pos[3].h)
                 {
-                    running= false;
+                    running = false;
                 }
                 //Controls
-                else if(x>=newMenu1.pos[2].x && x<=newMenu1.pos[2].x+newMenu1.pos[2].w && y>newMenu1.pos[2].y && y<=newMenu1.pos[2].y+newMenu1.pos[2].h)
+                else if (x >= newMenu1.pos[2].x && x <= newMenu1.pos[2].x + newMenu1.pos[2].w && y > newMenu1.pos[2].y && y <= newMenu1.pos[2].y + newMenu1.pos[2].h)
                 {
-                    control(renderer);
+                    control(renderer, media);
                 }
                 //Multiplayer
-                else if(x>=newMenu1.pos[1].x && x<=newMenu1.pos[1].x+newMenu1.pos[1].w && y>newMenu1.pos[1].y && y<=newMenu1.pos[1].y+newMenu1.pos[1].h)
+                else if (x >= newMenu1.pos[1].x && x <= newMenu1.pos[1].x + newMenu1.pos[1].w && y > newMenu1.pos[1].y && y <= newMenu1.pos[1].y + newMenu1.pos[1].h)
                 {
-                    getHostOrClient(renderer, hostOrClient);
+                    getHostOrClient(renderer, media, hostOrClient);
                     if (*hostOrClient) {
-                        enterName(renderer, name);
-                    }
-                    else {
-                        enterName(renderer, name);
-                        enterIp(renderer, ip);
-                    }
-                }
-                //Start
-                else if(x>=newMenu1.pos[0].x && x<=newMenu1.pos[0].x+newMenu1.pos[0].w && y>newMenu1.pos[0].y && y<=newMenu1.pos[0].y+newMenu1.pos[0].h)
-                {                   
-                    if (*hostOrClient) {
-                        if (hostLobby(renderer, name, current, setup)) {
+                        enterName(renderer, media, fonts, name);
+                        if (hostLobby(renderer, name, current, setup, fonts)) {
                             running = false;
                             return 1;
                         }
                     }
                     else {
-                        if (clientLobby(renderer, name, ip, current)) {
+                        enterName(renderer, media, fonts, name);
+                        enterIp(renderer, media, fonts, ip);
+                        if (clientLobby(renderer, name, ip, current, fonts)) {
                             running = false;
                             return 1;
-                        };
+                        }
                     }
+                }
+                //Start
+                else if (x >= newMenu1.pos[0].x && x <= newMenu1.pos[0].x + newMenu1.pos[0].w && y > newMenu1.pos[0].y && y <= newMenu1.pos[0].y + newMenu1.pos[0].h)
+                {
+                    current->nrOfPlayers = 1; //needs to be set as one for singleplayer game
+                    running = false;
+                    return 1;
                 }
             }
         }
-       // Clear screen
+        // Clear screen
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, newMenu1.backgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, media->menuBackgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
         //Draw
-        for(int i = 0; i < NUM_MENU; i++)
+        for (int i = 0; i < NUM_MENU; i++)
             SDL_RenderCopy(renderer, newMenu1.textures[i], NULL, &newMenu1.pos[i]);
         //show what was drawn
         SDL_RenderPresent(renderer);
     }
 
     //Release resourse
-    for(int i = 0; i < NUM_MENU; i++)
+    for (int i = 0; i < NUM_MENU; i++)
     {
         SDL_DestroyTexture(newMenu1.textures[i]);
     }
-    TTF_CloseFont(newMenu1.menuFont);
-    TTF_Quit();
     return 0;
 }
 
 
 
 //**************************************************************************************** MENU *********************************************************************
-Menu createMenu(SDL_Renderer* renderer)
+PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 {
     // Init Menu choices 
     Menu newMenu;
@@ -159,16 +133,6 @@ Menu createMenu(SDL_Renderer* renderer)
     strcpy(newMenu.menuChoices[1], "Multiplayer");
     strcpy(newMenu.menuChoices[2], "Option");
     strcpy(newMenu.menuChoices[3], "Quit");
-
-    if (TTF_Init() == -1)
-	{
-		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	newMenu.menuFont = TTF_OpenFont("fonts/Magical.ttf", 45);
-	if (newMenu.menuFont == NULL)
-	{
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-	}
 
     // Set text color to white 
     newMenu.color.r = 0;
@@ -178,12 +142,12 @@ Menu createMenu(SDL_Renderer* renderer)
 
     // Render text, create texture and realease resources 
     for (int i = 0; i < NUM_MENU; i++)
-		newMenu.menuSurface[i] = TTF_RenderText_Solid(newMenu.menuFont,newMenu.menuChoices[i], newMenu.color);
+        newMenu.menuSurface[i] = TTF_RenderText_Solid(fonts->magical_45, newMenu.menuChoices[i], newMenu.color);
     for (int i = 0; i < NUM_MENU; i++)
-		newMenu.textures[i] = SDL_CreateTextureFromSurface(renderer, newMenu.menuSurface[i]);
+        newMenu.textures[i] = SDL_CreateTextureFromSurface(renderer, newMenu.menuSurface[i]);
     for (int i = 0; i < NUM_MENU; i++)
         SDL_FreeSurface(newMenu.menuSurface[i]);
-    
+
     // Define position for texture 
     newMenu.pos[0].x = 450;
     newMenu.pos[0].y = 220;
@@ -196,22 +160,18 @@ Menu createMenu(SDL_Renderer* renderer)
 
     // Get the size of texture (weight & high)
     for (int i = 0; i < NUM_MENU; i++) {
-		SDL_QueryTexture(newMenu.textures[i], NULL, NULL, &newMenu.pos[i].w, &newMenu.pos[i].h);
-	}
+        SDL_QueryTexture(newMenu.textures[i], NULL, NULL, &newMenu.pos[i].w, &newMenu.pos[i].h);
+    }
 
-    return newMenu;    
+    return newMenu;
 }
 
 
 
-void control(SDL_Renderer* renderer)
+void control(SDL_Renderer* renderer, LoadMedia media)
 {
     bool running = true;
     SDL_Event e;
-
-    SDL_Texture* controls_texture = NULL;
-    SDL_Surface* controls = IMG_Load("bilder/instructions1.png");
-    controls_texture = SDL_CreateTextureFromSurface(renderer,controls);
 
     //Define positonen for Controls
     SDL_Rect controls_pos;
@@ -219,61 +179,51 @@ void control(SDL_Renderer* renderer)
     controls_pos.y = 0;
     controls_pos.w = 1000;
     controls_pos.h = 600;
-    SDL_FreeSurface(controls);
 
-    while(running){
-        
-        while(SDL_PollEvent(&e))
-            if(e.type == SDL_QUIT)
+    while (running) {
+
+        while (SDL_PollEvent(&e))
+            if (e.type == SDL_QUIT)
             {
                 running = false;
             }
-            else if(e.type == SDL_KEYDOWN)
+            else if (e.type == SDL_KEYDOWN)
             {
-                if(e.key.keysym.sym == SDLK_ESCAPE)
+                if (e.key.keysym.sym == SDLK_ESCAPE)
                 {
                     running = false;
                 }
             }
-            SDL_RenderClear(renderer);
-            SDL_RenderCopyEx(renderer, controls_texture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
-            //SDL_RenderCopy(renderer, controls_texture, NULL, &controls_pos);
-            SDL_RenderPresent(renderer);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopyEx(renderer, media->controlsTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(renderer);
     }
-    SDL_DestroyTexture(controls_texture);
-
 }
 
 
 
 //**************************************************************************************** MULTIPLAYER *********************************************************************
-void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {
+void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, bool* hostOrClient) {
     SDL_Event e;
     int done = true;
     int x, y;
 
-    SDL_Texture* imageH_texture = NULL;
-    SDL_Texture* imageC_texture = NULL;
 
-    SDL_Surface* imageH = IMG_Load("bilder/Host.png");
-    imageH_texture = SDL_CreateTextureFromSurface(renderer, imageH);
     //Define position for Multiplayer
     SDL_Rect imageH_pos;
     imageH_pos.x = 100;
     imageH_pos.y = 200;
     imageH_pos.w = 354;
     imageH_pos.h = 185;
-    SDL_FreeSurface(imageH);
 
-    SDL_Surface* imageC = IMG_Load("bilder/Client.png");
-    imageC_texture = SDL_CreateTextureFromSurface(renderer, imageC);
+
     //Define position for Multiplayer
     SDL_Rect imageC_pos;
     imageC_pos.x = 520;
     imageC_pos.y = 200;
     imageC_pos.w = 354;
     imageC_pos.h = 185;
-    SDL_FreeSurface(imageC);
+
 
     while (done) {
 
@@ -298,50 +248,34 @@ void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient) {
                 }
             }
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, imageH_texture, NULL, &imageH_pos);
-        SDL_RenderCopy(renderer, imageC_texture, NULL, &imageC_pos);
+        SDL_RenderCopy(renderer, media->hostButtonTexture, NULL, &imageH_pos);
+        SDL_RenderCopy(renderer, media->clientButtonTexture, NULL, &imageC_pos);
         SDL_RenderPresent(renderer);
     }
-    SDL_DestroyTexture(imageH_texture);
-    SDL_DestroyTexture(imageC_texture);
 }
 
 
-void enterName(SDL_Renderer* renderer, char name[]) {
+void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]) {
 
     SDL_Event event;
     bool done = false;
     bool renderText = true;
     char nameInit[] = "NAME: ";
 
-    if (TTF_Init() == -1)
-    {
-        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-
-    TTF_Font* font = TTF_OpenFont("fonts/Curvert.otf", 24);
-    if (font == NULL)
-    {
-        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-
     //Textbox
-    SDL_Surface* textboxSurface = IMG_Load("bilder/textbox1.png");
-    SDL_Texture* textboxTex = SDL_CreateTextureFromSurface(renderer, textboxSurface);
     SDL_Rect txRect_pos;
     txRect_pos.x = 170;
     txRect_pos.y = 150;
     txRect_pos.w = 530;
     txRect_pos.h = 65;
-    SDL_FreeSurface(textboxSurface);
 
     //Name:
     SDL_Color textColor = { 144, 77, 255, 255 };
     SDL_Color initColor = { 255,255,255, 0 };
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, name, textColor);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(fonts->cuvert_24, name, textColor);
     SDL_Texture* nameTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
-    SDL_Surface* nameInitSurface = TTF_RenderText_Solid(font, nameInit, initColor);
+    SDL_Surface* nameInitSurface = TTF_RenderText_Solid(fonts->cuvert_24, nameInit, initColor);
     SDL_Texture* nameInitTexture = SDL_CreateTextureFromSurface(renderer, nameInitSurface);
     SDL_FreeSurface(nameInitSurface);
 
@@ -385,13 +319,13 @@ void enterName(SDL_Renderer* renderer, char name[]) {
         //update texture
 
         if (renderText) {
-            textSurface = TTF_RenderText_Solid(font, name, textColor);
+            textSurface = TTF_RenderText_Solid(fonts->cuvert_24, name, textColor);
             nameTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
             SDL_QueryTexture(nameTexture, NULL, NULL, &textRect.w, &textRect.h);
 
             //render
             SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, textboxTex, NULL, &txRect_pos);
+            SDL_RenderCopy(renderer, media->textboxTexture, NULL, &txRect_pos);
             SDL_RenderCopy(renderer, nameInitTexture, NULL, &tInitRect);
             SDL_RenderCopy(renderer, nameTexture, NULL, &textRect);
             SDL_RenderPresent(renderer);
@@ -401,49 +335,33 @@ void enterName(SDL_Renderer* renderer, char name[]) {
     }
 
     SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textboxTex);
     SDL_DestroyTexture(nameInitTexture);
     SDL_DestroyTexture(nameTexture);
-    TTF_CloseFont(font);
-    TTF_Quit();
 }
 
 
 
-void enterIp(SDL_Renderer* renderer, char ip[]) {
+void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
 
     SDL_Event event;
     bool done = false;
     bool renderText = true;
     char ipInit[] = "ip-adress: ";
 
-    if (TTF_Init() == -1)
-    {
-        printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-    }
-
-    TTF_Font* font = TTF_OpenFont("fonts/Curvert.otf", 24);
-    if (font == NULL)
-    {
-        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-    }
 
     //Textbox
-    SDL_Surface* textboxSurface = IMG_Load("bilder/textbox1.png");
-    SDL_Texture* textboxTex = SDL_CreateTextureFromSurface(renderer, textboxSurface);
     SDL_Rect txRect_pos;
     txRect_pos.x = 170;
     txRect_pos.y = 150;
     txRect_pos.w = 530;
     txRect_pos.h = 65;
-    SDL_FreeSurface(textboxSurface);
 
     SDL_Color textColor = { 144, 77, 255, 255 };
     SDL_Color initColor = { 255,255,255, 0 };
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, ip, textColor);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(fonts->cuvert_24, ip, textColor);
     SDL_Texture* ipTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
-    SDL_Surface* ipInitSurface = TTF_RenderText_Solid(font, ipInit, initColor);
+    SDL_Surface* ipInitSurface = TTF_RenderText_Solid(fonts->cuvert_24, ipInit, initColor);
     SDL_Texture* ipInitTexture = SDL_CreateTextureFromSurface(renderer, ipInitSurface);
     SDL_FreeSurface(ipInitSurface);
 
@@ -486,13 +404,13 @@ void enterIp(SDL_Renderer* renderer, char ip[]) {
         //update texture
 
         if (renderText) {
-            textSurface = TTF_RenderText_Solid(font, ip, textColor);
+            textSurface = TTF_RenderText_Solid(fonts->cuvert_24, ip, textColor);
             ipTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
             SDL_QueryTexture(ipTexture, NULL, NULL, &ipRect.w, &ipRect.h);
 
             //render
             SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, textboxTex, NULL, &txRect_pos);
+            SDL_RenderCopy(renderer, media->textboxTexture, NULL, &txRect_pos);
             SDL_RenderCopy(renderer, ipInitTexture, NULL, &ipInitRect);
             SDL_RenderCopy(renderer, ipTexture, NULL, &ipRect);
             SDL_RenderPresent(renderer);
@@ -503,9 +421,6 @@ void enterIp(SDL_Renderer* renderer, char ip[]) {
 
 
     SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textboxTex);
     SDL_DestroyTexture(ipInitTexture);
     SDL_DestroyTexture(ipTexture);
-    TTF_CloseFont(font);
-    TTF_Quit();
 }
