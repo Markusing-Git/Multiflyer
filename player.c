@@ -6,6 +6,7 @@ PRIVATE int playerHeight = 64;
 struct playerType {
 	SDL_Rect playerPos;
 	bool alive;
+	int score;
 };
 
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
@@ -18,6 +19,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->playerPos.w = playerWidth;
 	aPlayer->playerPos.h = playerHeight;
 	aPlayer->alive = true;
+	aPlayer->score = 0;
 	return aPlayer;
 }
 
@@ -151,4 +153,23 @@ PUBLIC void freePlayers(Player playerList[], int playerCount) {
 	for (int i = 0; i < playerCount; i++) {
 		free(playerList[i]);
 	}
+}
+
+PUBLIC void addScore(Player aPlayer) {
+	aPlayer->score++;
+}
+
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts) {
+	char scr[50];
+	int score = aPlayer->score;
+
+	sprintf(scr, "Score:%d", score);
+
+	SDL_Color colorFront = { 255,255,255 };
+	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, &scr, colorFront);
+	media->scoreTex = SDL_CreateTextureFromSurface(renderer, media->score);
+	SDL_QueryTexture(media->scoreTex, NULL, NULL, &media->scoreRect.w, &media->scoreRect.h);
+	SDL_RenderCopy(renderer, media->scoreTex, NULL, &media->scoreRect);
+	SDL_FreeSurface(media->score);
+	SDL_DestroyTexture(media->scoreTex);
 }

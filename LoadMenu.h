@@ -18,11 +18,11 @@
 
 #define NUM_MENU 4
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], 
-				LoadMedia media, Game_State current, UDP_Client_Config setup);
-void getHostOrClient(SDL_Renderer* renderer, bool* hostOrClient);
-void enterName(SDL_Renderer* renderer, char name[]);
-void enterIp(SDL_Renderer* renderer, char ip[]);
-void control(SDL_Renderer* renderer);
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[],
+	LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup);
+void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, bool* hostOrClient);
+void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]);
+void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
+void control(SDL_Renderer* renderer, LoadMedia media);
 
 #endif 

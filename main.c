@@ -54,15 +54,16 @@ int main(void) {
 
             //loads all the media
             LoadMedia media = loadMedia(renderer, &running);
+            Fonts fonts = loadFonts();
 
             if (running) {
-                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media, current, setup)) {
+                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media, fonts, current, setup)) {
                     Mix_HaltMusic();
                     //Starts game engine
                     if (hostOrClient)
-                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup);
+                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
                     else
-                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup);
+                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
                 }
                 else {
                     SDL_DestroyRenderer(renderer);
@@ -70,6 +71,7 @@ int main(void) {
             }
             else {
                 SDL_DestroyRenderer(renderer);
+                closeFonts(fonts);
             }
         }
     }

@@ -1,5 +1,6 @@
 #ifndef player_h
 #define player_h
+#define _CRT_SECURE_NO_DEPRECATE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,5 +49,11 @@ PUBLIC void movePlayerRight(Player aPlayer, int speed);
 
 //frees player structs from heap, params: list of players and amount
 PUBLIC void freePlayers(Player playerList[], int playerCount);
+
+//Adds one to a players score
+PUBLIC void addScore(Player aPlayer);
+
+//Renders player score
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
 #endif /* player_h */

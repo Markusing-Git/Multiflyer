@@ -4,6 +4,8 @@
 struct obstacle_type {
     SDL_Rect top;
     SDL_Rect bottom;
+    int x1, y1, x2, y2;
+    bool passed;
     struct obstacle_type* next;
 };
 
@@ -20,6 +22,13 @@ PUBLIC Obstacle createObstacle(int screenWidth, int screenHeight) {
     aObs->bottom.w = 65;
     aObs->bottom.h = screenHeight / 2;
     aObs->next = NULL;
+
+    aObs->x1 = screenWidth + 130;
+    aObs->y1 = 0;
+    aObs->x2 = screenWidth + 130;
+    aObs->y2 = screenHeight;
+
+    aObs->passed = false;
 
     rndOpening(aObs, screenHeight);
     return aObs;
@@ -166,6 +175,8 @@ PUBLIC void obsteclesTick(Obstacle head) {
     while (obs != NULL) {
         obs->top.x -= 2;
         obs->bottom.x -= 2;
+        obs->x1 -= 2;
+        obs->x2 -= 2;
         obs = obs->next;
     }
     destroyObstacle(head);
@@ -194,6 +205,26 @@ PUBLIC void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle hea
     while (obs != NULL) {
         if (SDL_HasIntersection(&pixelRect, &obs->top) || SDL_HasIntersection(&pixelRect, &obs->bottom)) {
             setPlayerStatus(aPlayer, false);
+        }
+        obs = obs->next;
+    }
+}
+
+PUBLIC void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
+    SDL_Rect pixelRect;
+    pixelRect.x = aPlayerPos->x;
+    pixelRect.y = aPlayerPos->y;
+    pixelRect.w = aPlayerPos->w;
+    pixelRect.h = aPlayerPos->h;
+    Obstacle obs;
+    obs = head;
+    obs = obs->next;
+    while (obs != NULL) {
+        if (SDL_IntersectRectAndLine(&pixelRect, &obs->x1, &obs->y1, &obs->x2, &obs->y2)) {
+            if (!obs->passed) {
+                addScore(aPlayer);
+                obs->passed = true;
+            }
         }
         obs = obs->next;
     }

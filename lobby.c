@@ -9,7 +9,6 @@ struct lobby_type {
 	int playerCount;
 	bool renderText;
 
-
 	SDL_Texture* textures[TEXTS];
 	SDL_Texture* startGameTexture;
 	SDL_Texture* waitingForHostTex;
@@ -18,9 +17,6 @@ struct lobby_type {
 	SDL_Rect waitingForHostRect;
 	SDL_Event event;
 
-	TTF_Font* headLine;
-	TTF_Font* playerList;
-	TTF_Font* startGameFont;
 	SDL_Color lobbyTextColor;
 	SDL_Color playerListColor;
 
@@ -30,15 +26,15 @@ struct lobby_type {
 
 PRIVATE void renderLobby(SDL_Renderer* renderer, bool hostOrClient, Lobby aLobby);
 PRIVATE void closeLobbyTTF(Lobby aLobby);
-PRIVATE Lobby createLobby(SDL_Renderer* renderer);
-PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, char name[]);
+PRIVATE Lobby createLobby(SDL_Renderer* renderer, Fonts fonts);
+PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, Fonts fonts, char name[]);
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup) {
+PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup, Fonts fonts) {
 
 	Lobby hostLobby;
-	hostLobby = createLobby(renderer);
+	hostLobby = createLobby(renderer, fonts);
 	int x, y;
 	SDL_Color selected = { 77 , 255, 0, 0 };
 
@@ -46,7 +42,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
 	current->nrOfPlayers++;
 	current->lobbyRunningFlag = 1;
-	playerJoined(renderer, hostLobby, playerName);
+	playerJoined(renderer, hostLobby, fonts, playerName);
 
 	SDL_CreateThread(serverLobbyConnection, "Connection_Thread", current);
 
@@ -69,7 +65,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
 					SDL_DestroyTexture(hostLobby->startGameTexture);
-					SDL_Surface* temp = TTF_RenderText_Solid(hostLobby->startGameFont, hostLobby->startGame, selected);
+					SDL_Surface* temp = TTF_RenderText_Solid(fonts->ka1_60, hostLobby->startGame, selected);
 					hostLobby->startGameTexture = SDL_CreateTextureFromSurface(renderer, temp);
 					SDL_FreeSurface(temp);
 					hostLobby->renderText = true;
@@ -77,7 +73,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				else
 				{
 					SDL_DestroyTexture(hostLobby->startGameTexture);
-					SDL_Surface* temp = TTF_RenderText_Solid(hostLobby->startGameFont, hostLobby->startGame, hostLobby->lobbyTextColor);
+					SDL_Surface* temp = TTF_RenderText_Solid(fonts->ka1_60, hostLobby->startGame, hostLobby->lobbyTextColor);
 					hostLobby->startGameTexture = SDL_CreateTextureFromSurface(renderer, temp);
 					SDL_FreeSurface(temp);
 					hostLobby->renderText = true;
@@ -97,7 +93,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			}
 		}
 		if (current->newPlayerFlag) {
-			playerJoined(renderer, hostLobby, current->playerNames[current->nrOfPlayers - 1]);
+			playerJoined(renderer, hostLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
 			printf("%d", current->nrOfPlayers);
 			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
 
@@ -122,17 +118,17 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current) {
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current, Fonts fonts) {
 
 	Lobby clientLobby;
-	clientLobby = createLobby(renderer);
+	clientLobby = createLobby(renderer, fonts);
 	Uint32 loadingCounter = SDL_GetTicks();
 	int loadingDots = 3;
 
 	//initiates with name
 	clientLobbyConnection(playerIp, playerName, current);
 	for (int i = 0; current->nrOfPlayers > i; i++) {
-		playerJoined(renderer, clientLobby, current->playerNames[i]);
+		playerJoined(renderer, clientLobby, fonts, current->playerNames[i]);
 	}
 
 	SDL_CreateThread(clientLobbyWait, "Client_Wait_Thread", current);
@@ -152,7 +148,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 				loadingDots--;
 			}
 			SDL_DestroyTexture(clientLobby->waitingForHostTex);
-			SDL_Surface* temp = TTF_RenderText_Solid(clientLobby->headLine, clientLobby->waitingForHost, clientLobby->lobbyTextColor);
+			SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, clientLobby->waitingForHost, clientLobby->lobbyTextColor);
 			clientLobby->waitingForHostTex = SDL_CreateTextureFromSurface(renderer, temp);
 			SDL_QueryTexture(clientLobby->waitingForHostTex, NULL, NULL, &clientLobby->waitingForHostRect.w, &clientLobby->waitingForHostRect.h);
 			SDL_FreeSurface(temp);
@@ -171,7 +167,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			}
 		}
 		if (current->newPlayerFlag) {
-			playerJoined(renderer, clientLobby, current->playerNames[current->nrOfPlayers - 1]);
+			playerJoined(renderer, clientLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
 			current->newPlayerFlag = 0;
 		}
 		if (clientLobby->renderText) {
@@ -187,7 +183,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 
 // ************************************************** PRIVATE LOBBY FUNCTIONS *****************************************************************************************
-PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
+PRIVATE Lobby createLobby(SDL_Renderer* renderer, Fonts fonts) {
 	Lobby newLobby = malloc(sizeof(struct lobby_type));;
 
 	strcpy(newLobby->lobbyText, "Lobby");
@@ -206,27 +202,6 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 	newLobby->renderText = true;
 	newLobby->playerCount = 0;
 
-
-	if (TTF_Init() == -1)
-	{
-		printf("SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	newLobby->headLine = TTF_OpenFont("fonts/Curvert.otf", 48);
-	if (newLobby->headLine == NULL)
-	{
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	newLobby->playerList = TTF_OpenFont("fonts/Curvert.otf", 28);
-	if (newLobby->playerList == NULL)
-	{
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-	newLobby->startGameFont = TTF_OpenFont("fonts/ka1.ttf", 60);
-	if (newLobby->startGameFont == NULL)
-	{
-		printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
-	}
-
 	newLobby->lobbyTextColor.r = 255;
 	newLobby->lobbyTextColor.g = 255;
 	newLobby->lobbyTextColor.b = 255;
@@ -238,16 +213,16 @@ PRIVATE Lobby createLobby(SDL_Renderer* renderer) {
 	newLobby->playerListColor.a = 0;
 
 	//create surfaces from TTF
-	newLobby->surfaces[0] = TTF_RenderText_Solid(newLobby->headLine, newLobby->lobbyText, newLobby->lobbyTextColor);
+	newLobby->surfaces[0] = TTF_RenderText_Solid(fonts->cuvert_48, newLobby->lobbyText, newLobby->lobbyTextColor);
 
 	for (int i = 1; i < 5; i++)
-		newLobby->surfaces[i] = TTF_RenderText_Solid(newLobby->playerList, newLobby->slots[i - 1], newLobby->playerListColor);
+		newLobby->surfaces[i] = TTF_RenderText_Solid(fonts->cuvert_28, newLobby->slots[i - 1], newLobby->playerListColor);
 
 	for (int i = 5; i < 9; i++)
-		newLobby->surfaces[i] = TTF_RenderText_Solid(newLobby->playerList, newLobby->playerNames[i - 5], newLobby->playerListColor);
+		newLobby->surfaces[i] = TTF_RenderText_Solid(fonts->cuvert_28, newLobby->playerNames[i - 5], newLobby->playerListColor);
 
-	newLobby->surfaces[9] = TTF_RenderText_Solid(newLobby->startGameFont, newLobby->startGame, newLobby->lobbyTextColor);
-	newLobby->surfaces[10] = TTF_RenderText_Solid(newLobby->headLine, newLobby->waitingForHost, newLobby->lobbyTextColor);
+	newLobby->surfaces[9] = TTF_RenderText_Solid(fonts->ka1_60, newLobby->startGame, newLobby->lobbyTextColor);
+	newLobby->surfaces[10] = TTF_RenderText_Solid(fonts->cuvert_48, newLobby->waitingForHost, newLobby->lobbyTextColor);
 
 	//create textures from surfaces
 	for (int i = 0; i < 9; i++)
@@ -327,18 +302,14 @@ PRIVATE void closeLobbyTTF(Lobby aLobby) {
 	for (int i = 0; i < TEXTS; i++)
 		SDL_DestroyTexture(aLobby->textures[i]);
 	SDL_DestroyTexture(aLobby->startGameTexture);
-	TTF_CloseFont(aLobby->headLine);
-	TTF_CloseFont(aLobby->playerList);
-	TTF_CloseFont(aLobby->startGameFont);
 	free(aLobby);
-	TTF_Quit();
 }
 
 
-PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, char name[]) {
+PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, Fonts fonts, char name[]) {
 	aLobby->playerCount++;
 	SDL_DestroyTexture(aLobby->textures[4 + (aLobby->playerCount)]);
-	SDL_Surface* temp = TTF_RenderText_Solid(aLobby->playerList, name, aLobby->playerListColor);
+	SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, name, aLobby->playerListColor);
 	aLobby->textures[4 + (aLobby->playerCount)] = SDL_CreateTextureFromSurface(renderer, temp);
 	SDL_QueryTexture(aLobby->textures[4 + (aLobby->playerCount)], NULL, NULL, &aLobby->rects[4 + (aLobby->playerCount)].w, &aLobby->rects[4 + (aLobby->playerCount)].h);
 	SDL_FreeSurface(temp);
