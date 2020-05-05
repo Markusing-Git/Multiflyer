@@ -51,10 +51,10 @@ PUBLIC void movePlayerRight(Player aPlayer, int speed);
 PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 //Adds one to a players score
-void addScore(Player aPlayer);
+PUBLIC void addScore(Player aPlayer);
 
 //Renders player score
-void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
 /*checks if all players are dead and game is over,
 params: list of players and how many

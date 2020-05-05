@@ -210,7 +210,7 @@ PUBLIC void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle hea
     }
 }
 
-void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
+PUBLIC void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
     SDL_Rect pixelRect;
     pixelRect.x = aPlayerPos->x;
     pixelRect.y = aPlayerPos->y;
