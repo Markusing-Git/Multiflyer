@@ -56,4 +56,10 @@ void addScore(Player aPlayer);
 //Renders player score
 void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
+/*checks if all players are dead and game is over,
+params: list of players and how many
+Uint32 delay for lastplayer splash effects
+*/
+PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag);
+
 #endif /* player_h */

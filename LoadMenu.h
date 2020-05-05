@@ -25,4 +25,7 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
 void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
 void control(SDL_Renderer* renderer, LoadMedia media);
 
+//opens a scoreboard and with alternatives to return to menu or start again
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts);
+
 #endif 

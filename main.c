@@ -61,9 +61,9 @@ int main(void) {
                     Mix_HaltMusic();
                     //Starts game engine
                     if (hostOrClient)
-                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
+                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup);
                     else
-                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
+                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup);
                 }
                 else {
                     SDL_DestroyRenderer(renderer);
