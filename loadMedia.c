@@ -21,6 +21,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->hostButtonSurface = IMG_Load("bilder/Host.png");
     media->clientButtonSurface = IMG_Load("bilder/Client.png");
     media->textboxSurface = IMG_Load("bilder/textbox1.png");
+    media->scoreBackgroundSurface = IMG_Load("bilder/scoreBackground.png");
 
 
 
@@ -64,6 +65,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
+    if (media->scoreBackgroundSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
 
@@ -77,7 +82,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->hostButtonTexture = SDL_CreateTextureFromSurface(renderer, media->hostButtonSurface);
     media->clientButtonTexture = SDL_CreateTextureFromSurface(renderer, media->clientButtonSurface);
     media->textboxTexture = SDL_CreateTextureFromSurface(renderer, media->textboxSurface);
-
+    media->scoreBackgroundTex = SDL_CreateTextureFromSurface(renderer, media->scoreBackgroundSurface);
 
 
 
@@ -125,6 +130,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    if (media->scoreBackgroundTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -136,7 +145,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->hostButtonSurface);
     SDL_FreeSurface(media->clientButtonSurface);
     SDL_FreeSurface(media->textboxSurface);
-
+    SDL_FreeSurface(media->scoreBackgroundSurface);
 
 
 
@@ -252,6 +261,14 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->splashSprites[13].w = 480;
     media->splashSprites[13].h = 480;
 
+    media->scoreBackgroundRect.x = 700;
+    media->scoreBackgroundRect.y = 10;
+    media->scoreBackgroundRect.w = 300;
+    media->scoreBackgroundRect.h = 90;
+
+    media->scoreRect.x = 740;
+    media->scoreRect.y = 25;
+
     //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
@@ -298,6 +315,7 @@ Fonts loadFonts(void) {
     fonts->cuvert_28 = TTF_OpenFont("fonts/Curvert.otf", 28);
     fonts->cuvert_48 = TTF_OpenFont("fonts/Curvert.otf", 48);
     fonts->ka1_60 = TTF_OpenFont("fonts/ka1.ttf", 60);
+    fonts->scoreFont_40 = TTF_OpenFont("fonts/ScoreFont.ttf", 40);
 
     if (fonts->magical_45 == NULL)
     {
@@ -318,6 +336,10 @@ Fonts loadFonts(void) {
     if (fonts->cuvert_28 == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }   
+    if (fonts->scoreFont_40 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
 }
 
@@ -327,6 +349,7 @@ void closeFonts(Fonts mediaFonts) {
     TTF_CloseFont(mediaFonts->cuvert_28);
     TTF_CloseFont(mediaFonts->cuvert_48);
     TTF_CloseFont(mediaFonts->ka1_60);
+    TTF_CloseFont(mediaFonts->scoreFont_40);
     free(mediaFonts);
     TTF_Quit;
 }

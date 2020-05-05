@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Game_State current, UDP_Client_Config setup) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Game_State current, UDP_Client_Config setup, Fonts fonts) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -76,6 +76,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
+        checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
+
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
         
@@ -86,6 +88,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
+        SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
+        renderScore(players[0], media, renderer, fonts);
         SDL_RenderPresent(renderer);
     }
 

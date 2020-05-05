@@ -53,4 +53,7 @@ PUBLIC Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom);
 //Creates a client obstacle list
 PUBLIC void newClientObstacle(Obstacle receivedObstacle, Obstacle head);
 
+//Checks if player has passed an obstacle
+void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head);
+
 #endif /*Obstacle_h*/

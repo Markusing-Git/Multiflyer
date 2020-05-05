@@ -21,6 +21,8 @@ struct loadMedia {
 	SDL_Texture* hostButtonTexture;
 	SDL_Texture* clientButtonTexture;
 	SDL_Texture* textboxTexture;
+	SDL_Texture* scoreBackgroundTex;
+	SDL_Texture* scoreTex;
 
 
 	SDL_Surface* flyTrapSurface;
@@ -33,6 +35,8 @@ struct loadMedia {
 	SDL_Surface* hostButtonSurface;
 	SDL_Surface* clientButtonSurface;
 	SDL_Surface* textboxSurface;
+	SDL_Surface* scoreBackgroundSurface;
+	SDL_Surface* score;
 
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
@@ -41,6 +45,8 @@ struct loadMedia {
 	SDL_Rect startFlyYellow[PLAYER_FRAMES];
 	SDL_Rect splashSprites[SPLASH_FRAMES];
 	SDL_Rect scrollingBackground[2];
+	SDL_Rect scoreBackgroundRect;
+	SDL_Rect scoreRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
@@ -56,7 +62,7 @@ struct loadFonts {
 	TTF_Font* cuvert_28;
 	TTF_Font* cuvert_48;
 	TTF_Font* ka1_60;
-
+	TTF_Font* scoreFont_40;
 
 };
 
