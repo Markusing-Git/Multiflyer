@@ -165,18 +165,6 @@ void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts 
 
 	sprintf(scr, "Score:%d", score);
 
-	/*if (aPlayer->score > 9) {
-		media->scoreRect[0].x +=15;
-		media->scoreRect[0].y += 15;
-		media->scoreRect[0].w += 15;
-		media->scoreRect[0].h += 15;
-
-		media->scoreRect[1].x += 15;
-		media->scoreRect[1].y += 15;
-		media->scoreRect[1].w += 15;
-		media->scoreRect[1].h += 15;
-	}*/
-
 	SDL_Color colorFront = { 255,255,255 };
 	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, &scr, colorFront);
 	media->scoreTex = SDL_CreateTextureFromSurface(renderer, media->score);
