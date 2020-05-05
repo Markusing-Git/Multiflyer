@@ -155,11 +155,11 @@ PUBLIC void freePlayers(Player playerList[], int playerCount) {
 	}
 }
 
-void addScore(Player aPlayer) {
+PUBLIC void addScore(Player aPlayer) {
 	aPlayer->score++;
 }
 
-void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts) {
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts) {
 	char scr[50];
 	int score = aPlayer->score;
 
