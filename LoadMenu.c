@@ -17,8 +17,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
-    //************************************AUDIO***************************************************
-    Mix_PlayMusic(media->menuMusic, -1);
+    Mix_PlayMusic(media->menuMusic, -1); //Plays background music
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer, fonts);
@@ -131,7 +130,7 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
     Menu newMenu;
     strcpy(newMenu.menuChoices[0], "Start");
     strcpy(newMenu.menuChoices[1], "Multiplayer");
-    strcpy(newMenu.menuChoices[2], "Option");
+    strcpy(newMenu.menuChoices[2], "Controls");
     strcpy(newMenu.menuChoices[3], "Quit");
 
     // Set text color to white 
