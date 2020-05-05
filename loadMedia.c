@@ -341,6 +341,8 @@ Fonts loadFonts(void) {
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
+
+    return fonts;
 }
 
 void closeFonts(Fonts mediaFonts) {

@@ -447,11 +447,72 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts) {
 
     SDL_Event event;
     bool done = false;
+    bool renderText = true;
+    int x, y, texts = 1;
+    char interActives[][NAME_LENGTH] = { "Play Again", "Return to menu" };
 
+    SDL_Rect interActiveRect[2];
+
+    //SDL_Rect rects[1]; // för scoreboard
+    //SDL_Surface* surfaces[1]; //för scoreboard
+    SDL_Surface* interActivesSurface[2];
+    
+    //SDL_Texture* textures[1]; //för scoreboard
+    SDL_Texture* interActivesTexture[2];
+
+
+    //Colors
+    SDL_Color black = { 0,0,0,0 };
+    SDL_Color selectedColor = { 77 , 255, 0, 0 };
+
+
+    //Surfaces för scoreboard
+    //for(int i= 0; i<texts; i++)
+        //Surfaces[i] = TTF_RenderText_Solid(fonts->magical_45, playAgain, black);
+
+    for (int i = 0; i < 2; i++)
+        interActivesSurface[i] = TTF_RenderText_Solid(fonts->magical_45, interActives[i], black);
+
+
+    //textures för scoreboard
+    //for (int i = 0; i < texts; i++)
+        //textures[i] = SDL_CreateTextureFromSurface(renderer, surfaces[i]);
+    
+    for (int i = 0; i < 2; i++)
+        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, interActivesSurface[i]);
+
+
+    //free surfaces för scoreboard
+    //for (int i = 0; i < texts; i++)
+      //  SDL_FreeSurface(surfaces[i]);
+
+    for (int i = 0; i < 2; i++)
+        SDL_FreeSurface(interActivesSurface[i]);
+
+    //Rects
     SDL_Rect scoreboardPos;
     scoreboardPos.x = 200;
     scoreboardPos.y = 50;
     SDL_QueryTexture(media->scoreBoardTexture, NULL, NULL, &scoreboardPos.w, &scoreboardPos.h);
+
+
+    // Define position for texture 
+    //rects[0].x = 210; för scoreboard
+    //rects[0].y = 200; för scorebored
+
+    interActiveRect[0].x = 350;
+    interActiveRect[0].y = 300;
+    interActiveRect[1].x = 350;
+    interActiveRect[1].y = 370;
+
+    // Get the size of texture (weight & high) for scoreboard
+    //for (int i = 0; i < NUM_MENU; i++) {
+    //    SDL_QueryTexture(textures[i], NULL, NULL, &rects[i].w, &rects[i].h);
+    //}
+
+    for (int i = 0; i < 2; i++)
+        SDL_QueryTexture(interActivesTexture[i], NULL, NULL, &interActiveRect[i].w, &interActiveRect[i].h);
+  
 
     while (!done) {
 
@@ -461,13 +522,48 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts) {
             {
                 done = true;
             }
-        }
+            else if (event.type == SDL_MOUSEMOTION) {
+                x = event.motion.x;
+                y = event.motion.y;
+                for (int i = 0; i < 2; i++)
+                {
+                    // if focus change text to green
+                    if (x >= interActiveRect[i].x && x <= interActiveRect[i].x + interActiveRect[i].w && y > interActiveRect[i].y && y <= interActiveRect[i].y + interActiveRect[i].h)
+                    {
+                        SDL_DestroyTexture(interActivesTexture[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, interActives[i], selectedColor);
+                        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                        renderText = true;
+                    }
+                    else
+                    {
+                        SDL_DestroyTexture(interActivesTexture[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, interActives[i], black);
+                        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                        renderText = true;
+                    }
+                }
+            }
+            // if click!
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                x = event.button.x;
+                y = event.button.y;
+                // Quit
+                if (x >= interActiveRect[0].x && x <= interActiveRect[0].x + interActiveRect[0].w && y > interActiveRect[0].y && y <= interActiveRect[0].y + interActiveRect[0].h)
+                {
+                    done = true;
+                }
 
-        //rendering
-        //SDL_RenderClear(renderer);
-        //SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
-        //SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
-        SDL_RenderCopy(renderer, media->scoreBoardTexture, NULL, &scoreboardPos);
-        SDL_RenderPresent(renderer);
+            }
+        }
+        if (renderText) {
+            SDL_RenderCopy(renderer, media->scoreBoardTexture, NULL, &scoreboardPos);
+            for (int i = 0; i < 2; i++)
+                 SDL_RenderCopy(renderer, interActivesTexture[i], NULL, &interActiveRect[i]);
+            SDL_RenderPresent(renderer);
+        }
     }
 }
