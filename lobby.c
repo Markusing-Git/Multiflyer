@@ -41,6 +41,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	//initiates with name
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
 	current->nrOfPlayers++;
+	current->localPlayerNr++;
 	current->lobbyRunningFlag = 1;
 	playerJoined(renderer, hostLobby, fonts, playerName);
 

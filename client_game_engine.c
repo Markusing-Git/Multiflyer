@@ -24,10 +24,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     SDL_Event event;
     Inputs input = initInputs();
 
-    //Starting network
-    clientConnection(setup,playerIp, playerName,0); //Sätt sync till 1 för att aktivera nätverks sync. Host måste startas innan klient   
-    create_Game_state(players, current, current->nrOfPlayers);
-    int_client_network(playerIp, setup, 2000, 2001);
+    //Starting network   
+    start_Game_state(players, current);
+    init_client_network(playerIp, setup, current);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
@@ -40,11 +39,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
         uppdateInputs(players[0], input);
 
-        SetPlayerAlive(current, getPlayerStatus(players[0]),0);
-
-        sendAndRecive(current, setup, playerPos[0], playerPos[1]);
-
-        setPlayerStatus(players[1], current->player_Alive[1]);
+        sendAndReciveClient(current, setup, playerPos, players);
 
         worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
 
