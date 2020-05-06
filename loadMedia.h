@@ -58,6 +58,7 @@ typedef struct loadMedia* LoadMedia;
 //struct for fonts
 struct loadFonts {
 	TTF_Font* magical_45;
+	TTF_Font* magical_36;
 	TTF_Font* cuvert_24;
 	TTF_Font* cuvert_28;
 	TTF_Font* cuvert_48;

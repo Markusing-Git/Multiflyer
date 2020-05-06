@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -12,6 +12,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     bool gameOverDelayFlag = false;
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
+
 
     // struct to hold the position and size of the sprite
     initRandomGeneratior();
@@ -96,8 +97,10 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         SDL_RenderPresent(renderer);
 
         if (gameOver(players, current->nrOfPlayers, &gameOverDelay, &gameOverDelayFlag)) {
-            if (SDL_GetTicks() >= gameOverDelay + 2700)
-                openScoreBoard(renderer, media, fonts);
+            if (SDL_GetTicks() >= gameOverDelay + 2700) {
+                openScoreBoard(renderer, media, fonts, aGameRoute);
+                running = false;
+            }
         }
     }
 
