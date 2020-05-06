@@ -81,14 +81,14 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 else if (x >= newMenu1.pos[1].x && x <= newMenu1.pos[1].x + newMenu1.pos[1].w && y > newMenu1.pos[1].y && y <= newMenu1.pos[1].y + newMenu1.pos[1].h)
                 {
                     getHostOrClient(renderer, media, aGameRoute);
-                    if (*aGameRoute == hostMultiplayer) {
+                    if (*aGameRoute == hostRoute) {
                         enterName(renderer, media, fonts, name);
                         if (hostLobby(renderer, name, current, setup, fonts)) {
                             running = false;
                             return 1;
                         }
                     }
-                    else if(*aGameRoute == clientMultiplayer) {
+                    else if(*aGameRoute == clientRoute) {
                         enterName(renderer, media, fonts, name);
                         enterIp(renderer, media, fonts, ip);
                         if (clientLobby(renderer, name, ip, current, fonts)) {
@@ -100,7 +100,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 //Start
                 else if (x >= newMenu1.pos[0].x && x <= newMenu1.pos[0].x + newMenu1.pos[0].w && y > newMenu1.pos[0].y && y <= newMenu1.pos[0].y + newMenu1.pos[0].h)
                 {
-                    *aGameRoute = singlePlayer;
+                    *aGameRoute = singlePlayerRoute;
                     current->nrOfPlayers = 1; //needs to be set as one for singleplayer game
                     running = false;
                     return 1;
@@ -109,13 +109,13 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
         }
 
         //If user clicked play again during gameplay
-        if (*aGameRoute == hostMultiplayer) {
+        if (*aGameRoute == hostRoute) {
             if (hostLobby(renderer, name, current, setup, fonts)) {
                 running = false;
                 return 1;
             }
         }
-        else if (*aGameRoute == clientMultiplayer) {
+        else if (*aGameRoute == clientRoute) {
             if (clientLobby(renderer, name, ip, current, fonts)) {
                 running = false;
                 return 1;
@@ -268,12 +268,12 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameR
                 y = e.button.y;
                 if (x >= imageH_pos.x && x <= imageH_pos.x + imageH_pos.w && y > imageH_pos.y && y <= imageH_pos.y + imageH_pos.h)
                 {
-                    *aGameRoute = hostMultiplayer;
+                    *aGameRoute = hostRoute;
                     done = false;
                 }
                 else if (x >= imageC_pos.x && x <= imageC_pos.x + imageC_pos.w && y > imageC_pos.y && y <= imageC_pos.y + imageC_pos.h)
                 {
-                    *aGameRoute = clientMultiplayer;
+                    *aGameRoute = clientRoute;
                     done = false;
                 }
             }
@@ -587,7 +587,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_R
                 }
                 else if (x >= interActiveRect[1].x && x <= interActiveRect[1].x + interActiveRect[1].w && y > interActiveRect[1].y && y <= interActiveRect[1].y + interActiveRect[1].h)
                 {
-                    *aGameRoute = toMenu;
+                    *aGameRoute = menuRoute;
                     done = true;
                 }
             }

@@ -18,7 +18,7 @@ int main(void) {
     char playerName[NAME_LENGTH] = "No-alias";
     char playerIp[IP_LENGTH] = "127.0.0.1";
 
-    Game_Route gameRoute = toMenu;
+    Game_Route gameRoute = menuRoute;
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
@@ -56,18 +56,21 @@ int main(void) {
             Fonts fonts = loadFonts();
 
             while (running) {
-                if (gameRoute == toMenu || gameRoute == hostMultiplayer || gameRoute == clientMultiplayer) {
+                if (gameRoute == menuRoute || gameRoute == hostRoute || gameRoute == clientRoute) {
                     if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute)) {
                         running = false; //if user pressed quit
                     }
                     Mix_HaltMusic();
                 }
                 //Starts game engine
-                if (gameRoute == singlePlayer || gameRoute == hostMultiplayer) {
+                if (gameRoute == singlePlayerRoute || gameRoute == hostRoute) {
                     startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
                 }
-                if(gameRoute == clientMultiplayer){
+                if(gameRoute == clientRoute){
                         startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
+                }
+                if (gameRoute == quitRoute) {
+                    running = false;
                 }
             }
 

@@ -40,7 +40,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input);
+        pollInputEvents(&event, &running, players[0], input, aGameRoute);
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
