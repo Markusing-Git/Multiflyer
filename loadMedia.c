@@ -317,6 +317,8 @@ Fonts loadFonts(void) {
     fonts->cuvert_48 = TTF_OpenFont("fonts/Curvert.otf", 48);
     fonts->ka1_60 = TTF_OpenFont("fonts/ka1.ttf", 60);
     fonts->scoreFont_40 = TTF_OpenFont("fonts/ScoreFont.ttf", 40);
+    fonts->scoreFont_24 = TTF_OpenFont("fonts/ScoreFont.ttf", 24);
+
 
     if (fonts->magical_45 == NULL)
     {
@@ -346,6 +348,10 @@ Fonts loadFonts(void) {
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
+    if (fonts->scoreFont_24 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
 
     return fonts;
 }
@@ -358,6 +364,7 @@ void closeFonts(Fonts mediaFonts) {
     TTF_CloseFont(mediaFonts->cuvert_48);
     TTF_CloseFont(mediaFonts->ka1_60);
     TTF_CloseFont(mediaFonts->scoreFont_40);
+    TTF_CloseFont(mediaFonts->scoreFont_24);
     free(mediaFonts);
     TTF_Quit;
 }
