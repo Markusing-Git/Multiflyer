@@ -101,7 +101,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
 				printf("%d\n", i);
 				printf("%s\n", setup->playerIp[i]);
-				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 1), current);
+				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 2), current);
 			}
 
 			current->newPlayerFlag = 0;

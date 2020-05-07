@@ -27,21 +27,22 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     //Starting network   
     start_Game_state(players, current);
     init_client_network(playerIp, setup, current);
+    printf("%d\n", current->localPlayerNr);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input);
+        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input);
         
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
-        uppdateInputs(players[0], input);
+        uppdateInputs(players[current->localPlayerNr - 1], input);
 
         sendAndReciveClient(current, setup, playerPos, players);
 
-        worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
+        worldCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], w, h);
 
         //Uppdaterar frames:en, kodblocket skapar en liten delay i bytet mellan frames:en
         playerFrame++;
@@ -63,9 +64,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
             newClientObstacle(ReciveObstacle(current), obstacles);
         }
         obsteclesTick(obstacles);
-        obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
+        obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
-        checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
+        checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
@@ -77,7 +78,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
-        renderScore(players[0], media, renderer, fonts);
+        renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
         SDL_RenderPresent(renderer);
     }
     QuitInput(input);
