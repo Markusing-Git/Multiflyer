@@ -173,3 +173,27 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_FreeSurface(media->score);
 	SDL_DestroyTexture(media->scoreTex);
 }
+
+PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {
+
+	bool allDead = false;
+
+	for (int i = 0; i < playerCount; i++) {
+		if (playerList[i]->alive == true) {
+			allDead = false;
+			return allDead;
+		}
+		else
+		{
+			allDead = true;
+		}
+	}
+
+	//delay for splash effects to end
+	if (*delayFlag == false) {
+		(*delay) = SDL_GetTicks();
+		(*delayFlag) = true;
+	}
+
+	return allDead;
+}

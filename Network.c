@@ -52,7 +52,6 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
     if (setup->recv_Sock[0] = (SDLNet_UDP_Open(recvPort + current->localPlayerNr))) //Öppnar en port för att kunna 
     {
         setup->port[0] = recvPort + current->localPlayerNr;
-        printf("Client port: %d\n", sendPort + current->localPlayerNr);
 
         if (SDLNet_ResolveHost(&setup->sendingIP[0], playerIp, sendPort + current->localPlayerNr) == -1) {
 
@@ -80,15 +79,11 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
     //Öppnar en socket för att ta skicka data
     if (!(setup->send_Sock = (SDLNet_UDP_Open(0))))
     {
-        printf("trying socket\n");
-        printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
 
     for (int i = 0; current->nrOfPlayers-1> i; i++)
     {    
-        printf("Server port: %d\n", recvPort + i);
-        printf("Server IP: %s\n", setup->playerIp[i]);
         if (setup->recv_Sock[i] = (SDLNet_UDP_Open(recvPort + i))) //Öppnar en port för att kunna 
         {
             setup->port[i] = recvPort + current->localPlayerNr;
@@ -206,10 +201,6 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         current->obstacle_top = Gupd_Recive->obstacle_top;
         current->obstacle_change_flag = Gupd_Recive->obstacle_change_flag;
 
-        if (Gupd_Recive->obstacle_change_flag) {
-            printf("Reciving Obstacle: %d\n", current->obstacle_bottom.y);
-        }
-
         free(Gupd_Recive);
     }
 
@@ -240,7 +231,6 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
     for (int i = 0; current->nrOfPlayers - 1>i; i++)
     {
-        printf("Server trying to recive\n");
         if (SDLNet_UDP_Recv(setup->recv_Sock[i], setup->recv_Pack)) {
 
             current->change_flag = 1;
@@ -255,7 +245,6 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
             current->player_Pos_Y[i+1] = Gupd_Recive->player_Pos_Y;
             current->player_Alive[i+1] = Gupd_Recive->player_Alive;
 
-            printf("server recived %d \n", Gupd_Recive->player_Alive);
 
             free(Gupd_Recive);
         }
@@ -283,9 +272,7 @@ int serverLobbyConnection(Game_State current)
 
      SDLNet_ResolveHost(&ip1, NULL, 2005);
 
-     printf("server open\n");
      TCPsocket server = SDLNet_TCP_Open(&ip1);
-     printf("server open\n");
      TCPsocket client;
          
      do {
@@ -302,7 +289,6 @@ int serverLobbyConnection(Game_State current)
                  if (playerName != "NULL") {
                      ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
                      strncpy(current->ipAdressCache, SDLNet_ResolveIP(&ip_Recive), IP_LENGTH);
-                     printf("%s\n", current->ipAdressCache);
                      strcpy(current->playerNames[current->nrOfPlayers],playerName);
                      current->nrOfPlayers++;
                      current->newPlayerFlag = 1;
@@ -373,7 +359,6 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
                 current->localPlayerNr++;
                 strcpy(sent, "NULL");
             }
-            printf("sending\n");
             
     } while ((strcmp(sent, "Close")!=0));
 
@@ -432,8 +417,6 @@ int clientLobbyWait(Game_State current)
         exit(EXIT_FAILURE);
     }
 
-    printf("Client Sending Name port: %d", port);
-
     SDLNet_ResolveHost(&ip1, NULL, port);
 
     TCPsocket server = SDLNet_TCP_Open(&ip1);
@@ -471,7 +454,6 @@ int clientStartGame(Game_State current)
     IPaddress ip1;
     int port = 2100 + current->localPlayerNr;
 
-    printf("Client port %d\n", port);
 
     if (SDLNet_Init() < 0)
     {
@@ -514,7 +496,6 @@ int serverStartGame(UDP_Client_Config setup, Game_State current)
     for (int i = 0; current->nrOfPlayers - 1> i; i++) {
 
         port = 2100 + i +2;
-        printf("Server port %d\n", port);
         SDLNet_ResolveHost(&ip1, setup->playerIp[i] , port);
 
         client = SDLNet_TCP_Open(&ip1);

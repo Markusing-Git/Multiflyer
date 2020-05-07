@@ -1,15 +1,18 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Game_State current, UDP_Client_Config setup, Fonts fonts) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame[MAX_PLAYERS] = { 0 };
     Uint32 obstacleDelay = SDL_GetTicks();
+    Uint32 gameOverDelay = 0;
+    bool gameOverDelayFlag = false;
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
+
 
     // struct to hold the position and size of the sprite
     initRandomGeneratior();
@@ -28,6 +31,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     //Starting network   
     start_Game_state(players, current);
+    if (current->nrOfPlayers > 1)
     init_Server_network(setup, current);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
@@ -35,14 +39,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input);
+        pollInputEvents(&event, &running, players[0], input, aGameRoute);
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
         uppdateInputs(players[0], input);
-
-        if (current->nrOfPlayers > 1)
-            sendAndReciveServer(current, setup, playerPos, players);
 
         worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
 
@@ -76,6 +77,10 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         scrollBackground(media, &backgroundOffset, w, h);
         
 
+        if (current->nrOfPlayers > 1)
+            sendAndReciveServer(current, setup, playerPos,players);
+
+
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
@@ -85,6 +90,13 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[0], media, renderer, fonts);
         SDL_RenderPresent(renderer);
+
+        if (gameOver(players, current->nrOfPlayers, &gameOverDelay, &gameOverDelayFlag)) {
+            if (SDL_GetTicks() >= gameOverDelay + 2700) {
+                openScoreBoard(renderer, media, fonts, current, aGameRoute);
+                running = false;
+            }
+        }
     }
 
     QuitInput(input);

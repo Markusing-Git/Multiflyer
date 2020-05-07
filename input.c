@@ -38,12 +38,13 @@ Inputs initInputs(void) {
 }
 
 
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput) {
+void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute) {
     while (SDL_PollEvent(aEvent))
     {
         switch (aEvent->type)
         {
         case SDL_QUIT:
+            *aGameRoute = quitRoute;
             *aRunning = false;
             break;
         case SDL_KEYDOWN:
@@ -63,6 +64,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = true;
                     break;
                 case SDLK_ESCAPE:
+                    *aGameRoute = quitRoute;
                     *aRunning = false;
                     break;
                 }
