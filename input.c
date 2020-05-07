@@ -64,6 +64,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = true;
                     break;
                 case SDLK_ESCAPE:
+                    *aGameRoute = quitRoute;
                     *aRunning = false;
                     break;
                 }

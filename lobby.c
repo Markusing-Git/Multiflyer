@@ -31,7 +31,7 @@ PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, Fonts fonts, cha
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup, Fonts fonts) {
+PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup, Fonts fonts, Game_Route* aGameroute) {
 
 	Lobby hostLobby;
 	hostLobby = createLobby(renderer, fonts);
@@ -52,8 +52,15 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 		while (SDL_PollEvent(&hostLobby->event))
 		{
-			if (hostLobby->event.type == SDL_QUIT || hostLobby->event.type == SDL_KEYDOWN && hostLobby->event.key.keysym.sym == SDLK_ESCAPE)
+			if (hostLobby->event.type == SDL_QUIT)
 			{
+				*aGameroute = quitRoute;
+				closeLobbyTTF(hostLobby);
+				return 0;
+			}
+			else if (hostLobby->event.type == SDL_KEYDOWN && hostLobby->event.key.keysym.sym == SDLK_ESCAPE) 
+			{
+				*aGameroute = menuRoute;
 				closeLobbyTTF(hostLobby);
 				current->lobbyRunningFlag = 0;
 				current->nrOfPlayers = 0;
@@ -118,7 +125,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 
 // ************************************************** CLIENT CODE ****************************************************************************************************
-PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current, Fonts fonts) {
+PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[], Game_State current, Fonts fonts, Game_Route* aGameroute) {
 
 	Lobby clientLobby;
 	clientLobby = createLobby(renderer, fonts);
@@ -159,8 +166,16 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 		while (SDL_PollEvent(&clientLobby->event))
 		{
-			if (clientLobby->event.type == SDL_QUIT || clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
+			if (clientLobby->event.type == SDL_QUIT)
 			{
+				*aGameroute = quitRoute;
+				closeLobbyTTF(clientLobby);
+				current->nrOfPlayers = 0;
+				return 0;
+			}
+			else if(clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				*aGameroute = menuRoute;
 				closeLobbyTTF(clientLobby);
 				current->nrOfPlayers = 0;
 				return 0;

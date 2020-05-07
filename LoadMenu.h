@@ -23,7 +23,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
 void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]);
 void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
-void control(SDL_Renderer* renderer, LoadMedia media);
+void control(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
 
 //opens a scoreboard and with alternatives to return to menu or start again
 void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute);

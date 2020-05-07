@@ -75,7 +75,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 //Controls
                 else if (x >= newMenu1.pos[2].x && x <= newMenu1.pos[2].x + newMenu1.pos[2].w && y > newMenu1.pos[2].y && y <= newMenu1.pos[2].y + newMenu1.pos[2].h)
                 {
-                    control(renderer, media);
+                    control(renderer, media, aGameRoute);
                 }
                 //Multiplayer
                 else if (x >= newMenu1.pos[1].x && x <= newMenu1.pos[1].x + newMenu1.pos[1].w && y > newMenu1.pos[1].y && y <= newMenu1.pos[1].y + newMenu1.pos[1].h)
@@ -83,7 +83,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                     getHostOrClient(renderer, media, aGameRoute);
                     if (*aGameRoute == hostRoute) {
                         enterName(renderer, media, fonts, name);
-                        if (hostLobby(renderer, name, current, setup, fonts)) {
+                        if (hostLobby(renderer, name, current, setup, fonts, aGameRoute)) {
                             running = false;
                             return 1;
                         }
@@ -91,7 +91,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                     else if(*aGameRoute == clientRoute) {
                         enterName(renderer, media, fonts, name);
                         enterIp(renderer, media, fonts, ip);
-                        if (clientLobby(renderer, name, ip, current, fonts)) {
+                        if (clientLobby(renderer, name, ip, current, fonts, aGameRoute)) {
                             running = false;
                             return 1;
                         }
@@ -110,16 +110,21 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 
         //If user clicked play again during gameplay
         if (*aGameRoute == hostRoute) {
-            if (hostLobby(renderer, name, current, setup, fonts)) {
+            if (hostLobby(renderer, name, current, setup, fonts, aGameRoute)) {
                 running = false;
                 return 1;
             }
         }
         else if (*aGameRoute == clientRoute) {
-            if (clientLobby(renderer, name, ip, current, fonts)) {
+            if (clientLobby(renderer, name, ip, current, fonts, aGameRoute)) {
                 running = false;
                 return 1;
             }
+        }
+
+        //if user has quit game
+        if (*aGameRoute == quitRoute) {
+            running = false;
         }
 
         // Clear screen
@@ -195,7 +200,7 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-void control(SDL_Renderer* renderer, LoadMedia media)
+void control(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute)
 {
     bool running = true;
     SDL_Event e;
@@ -212,6 +217,7 @@ void control(SDL_Renderer* renderer, LoadMedia media)
         while (SDL_PollEvent(&e))
             if (e.type == SDL_QUIT)
             {
+                *aGameRoute = quitRoute;
                 running = false;
             }
             else if (e.type == SDL_KEYDOWN)
@@ -260,6 +266,12 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameR
         while (SDL_PollEvent(&e))
             if (e.type == SDL_QUIT)
             {
+                *aGameRoute = quitRoute;
+                done = false;
+            }
+            else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+            {
+                *aGameRoute = menuRoute;
                 done = false;
             }
             else if (e.type == SDL_MOUSEBUTTONDOWN)
@@ -329,9 +341,9 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
             }
             else if (event.type == SDL_KEYDOWN)
             {
-
-                if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_ESCAPE) {
-
+                if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_ESCAPE) 
+                {
+                    
                     done = true;
                 }
                 else if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(name) > 0)
@@ -530,7 +542,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     scoreboardPos.y = 20;
     scoreboardPos.w = 650;
     scoreboardPos.h = 550;
-    //SDL_QueryTexture(media->scoreBoardTexture, NULL, NULL, &scoreboardPos.w, &scoreboardPos.h);
+
 
 
 
@@ -569,6 +581,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
         {
             if (event.type == SDL_QUIT)
             {
+                *aGameRoute = quitRoute;
                 done = true;
             }
             else if (event.type == SDL_MOUSEMOTION) {
@@ -600,7 +613,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             {
                 x = event.button.x;
                 y = event.button.y;
-                // Quit
+                //play again or retur to menu
                 if (x >= interActiveRect[0].x && x <= interActiveRect[0].x + interActiveRect[0].w && y > interActiveRect[0].y && y <= interActiveRect[0].y + interActiveRect[0].h)
                 {
                     done = true;
