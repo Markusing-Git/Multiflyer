@@ -19,7 +19,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
     //reset game state
     initGamestate(current);
 
-    //************************************AUDIO***************************************************
+    //plays background music
     Mix_PlayMusic(media->menuMusic, -1);
 
     Menu newMenu1;
