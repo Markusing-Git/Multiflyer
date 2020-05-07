@@ -18,8 +18,6 @@
 
 #define NUM_MENU 4
 
-typedef enum { singlePlayerRoute, clientRoute , hostRoute, menuRoute, quitRoute } Game_Route;
-
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[],
 	LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute);
 void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);

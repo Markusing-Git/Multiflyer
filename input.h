@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include "player.h"
-#include "LoadMenu.h"
+#include "constants.h"
 
 //change player speeds here
 #define PLAYER_VELOCITY 5
