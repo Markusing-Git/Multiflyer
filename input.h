@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include "player.h"
+#include "constants.h"
 
 //change player speeds here
 #define PLAYER_VELOCITY 5
@@ -19,7 +20,7 @@ typedef struct input_type* Inputs;
 Inputs initInputs(void);
 
 //polling input events from keyboard
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput);
+void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute);
 
 //Adding inputs to player position
 void uppdateInputs(Player aPlayer, Inputs aInput);

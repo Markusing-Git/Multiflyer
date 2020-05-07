@@ -1,23 +1,26 @@
 #include "LoadMenu.h"
 
 
-struct menu {
+typedef struct menu {
     char menuChoices[NUM_MENU][NAME_LENGTH];
     SDL_Color color;
     SDL_Surface* menuSurface[NUM_MENU];
     SDL_Rect pos[NUM_MENU];
     SDL_Texture* textures[NUM_MENU];
-};
-typedef struct menu Menu;
+}Menu;
 
 PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hostOrClient, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute)
 {
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
-    Mix_PlayMusic(media->menuMusic, -1); //Plays background music
+    //reset game state
+    initGamestate(current);
+
+    //************************************AUDIO***************************************************
+    Mix_PlayMusic(media->menuMusic, -1);
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer, fonts);
@@ -77,15 +80,15 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 //Multiplayer
                 else if (x >= newMenu1.pos[1].x && x <= newMenu1.pos[1].x + newMenu1.pos[1].w && y > newMenu1.pos[1].y && y <= newMenu1.pos[1].y + newMenu1.pos[1].h)
                 {
-                    getHostOrClient(renderer, media, hostOrClient);
-                    if (*hostOrClient) {
+                    getHostOrClient(renderer, media, aGameRoute);
+                    if (*aGameRoute == hostRoute) {
                         enterName(renderer, media, fonts, name);
                         if (hostLobby(renderer, name, current, setup, fonts)) {
                             running = false;
                             return 1;
                         }
                     }
-                    else {
+                    else if(*aGameRoute == clientRoute) {
                         enterName(renderer, media, fonts, name);
                         enterIp(renderer, media, fonts, ip);
                         if (clientLobby(renderer, name, ip, current, fonts)) {
@@ -97,12 +100,28 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
                 //Start
                 else if (x >= newMenu1.pos[0].x && x <= newMenu1.pos[0].x + newMenu1.pos[0].w && y > newMenu1.pos[0].y && y <= newMenu1.pos[0].y + newMenu1.pos[0].h)
                 {
+                    *aGameRoute = singlePlayerRoute;
                     current->nrOfPlayers = 1; //needs to be set as one for singleplayer game
                     running = false;
                     return 1;
                 }
             }
         }
+
+        //If user clicked play again during gameplay
+        if (*aGameRoute == hostRoute) {
+            if (hostLobby(renderer, name, current, setup, fonts)) {
+                running = false;
+                return 1;
+            }
+        }
+        else if (*aGameRoute == clientRoute) {
+            if (clientLobby(renderer, name, ip, current, fonts)) {
+                running = false;
+                return 1;
+            }
+        }
+
         // Clear screen
         SDL_RenderClear(renderer);
         SDL_RenderCopyEx(renderer, media->menuBackgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
@@ -122,8 +141,12 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, bool* hos
 }
 
 
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//*********************************************************************************    MENU    *********************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
 
-//**************************************************************************************** MENU *********************************************************************
 PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 {
     // Init Menu choices 
@@ -166,6 +189,11 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 }
 
 
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//*********************************************************************************    OPTIONS    *********************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
 
 void control(SDL_Renderer* renderer, LoadMedia media)
 {
@@ -199,10 +227,13 @@ void control(SDL_Renderer* renderer, LoadMedia media)
     }
 }
 
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//**************************************************************************************** MULTIPLAYER *************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
 
-
-//**************************************************************************************** MULTIPLAYER *********************************************************************
-void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, bool* hostOrClient) {
+void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute) {
     SDL_Event e;
     int done = true;
     int x, y;
@@ -237,12 +268,12 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, bool* hostOrClient
                 y = e.button.y;
                 if (x >= imageH_pos.x && x <= imageH_pos.x + imageH_pos.w && y > imageH_pos.y && y <= imageH_pos.y + imageH_pos.h)
                 {
-                    *hostOrClient = true;
+                    *aGameRoute = hostRoute;
                     done = false;
                 }
                 else if (x >= imageC_pos.x && x <= imageC_pos.x + imageC_pos.w && y > imageC_pos.y && y <= imageC_pos.y + imageC_pos.h)
                 {
-                    *hostOrClient = false;
+                    *aGameRoute = clientRoute;
                     done = false;
                 }
             }
@@ -422,4 +453,173 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
     SDL_FreeSurface(textSurface);
     SDL_DestroyTexture(ipInitTexture);
     SDL_DestroyTexture(ipTexture);
+}
+
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//*********************************************************************************    scoreboard    ***************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute) {
+
+    SDL_Event event;
+    bool done = false;
+    bool renderText = true;
+    int x, y;
+    char interActives[][NAME_LENGTH] = { "Play Again", "Return to menu" };
+    char gameOver[] = "GAME OVER";
+    char playerNames[MAX_PLAYERS][NAME_LENGTH] = {" "};
+    char scores[MAX_PLAYERS][NAME_LENGTH] = {" "}; //måste fixa nätverks överföring för detta
+
+    if (*aGameRoute != singlePlayerRoute) {
+        for (int i = 0; i < current->nrOfPlayers; i++) {
+            strcpy(playerNames[i], current->playerNames[i]);
+        }
+    }
+    else 
+    {
+        strcpy(playerNames[0], "Player");
+    }
+
+    SDL_Rect gameOverRect;
+    SDL_Rect nameRects[MAX_PLAYERS]; // för scoreboard
+    SDL_Rect interActiveRect[2];
+
+    SDL_Surface* gameOverSurface;
+    SDL_Surface* nameSurfaces[MAX_PLAYERS]; //för scoreboard
+    SDL_Surface* interActivesSurface[2];
+
+    SDL_Texture* gameOverTexture;
+    SDL_Texture* nameTextures[MAX_PLAYERS]; //för scoreboard
+    SDL_Texture* interActivesTexture[2];
+
+
+    //Colors
+    SDL_Color scoresColor = { 201, 43, 43, 0 };
+    SDL_Color black = { 0,0,0,0 };
+    SDL_Color selectedColor = { 77 , 255, 0, 0 };
+
+
+    gameOverSurface = TTF_RenderText_Solid(fonts->magical_45, gameOver, black);
+    //Surfaces för scoreboard
+    for(int i= 0; i<MAX_PLAYERS; i++)
+        nameSurfaces[i] = TTF_RenderText_Solid(fonts->scoreFont_24, playerNames[i], scoresColor);
+    for (int i = 0; i < 2; i++)
+        interActivesSurface[i] = TTF_RenderText_Solid(fonts->magical_36, interActives[i], black);
+
+
+    gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
+    //textures för scoreboard
+    for (int i = 0; i < MAX_PLAYERS; i++)
+        nameTextures[i] = SDL_CreateTextureFromSurface(renderer, nameSurfaces[i]);
+    for (int i = 0; i < 2; i++)
+        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, interActivesSurface[i]);
+
+
+    SDL_FreeSurface(gameOverSurface);
+    //free surfaces för scoreboard
+    for (int i = 0; i <MAX_PLAYERS; i++)
+        SDL_FreeSurface(nameSurfaces[i]);
+    for (int i = 0; i < 2; i++)
+        SDL_FreeSurface(interActivesSurface[i]);
+
+    //Rects
+    SDL_Rect scoreboardPos;
+    scoreboardPos.x = 200;
+    scoreboardPos.y = 20;
+    scoreboardPos.w = 650;
+    scoreboardPos.h = 550;
+    //SDL_QueryTexture(media->scoreBoardTexture, NULL, NULL, &scoreboardPos.w, &scoreboardPos.h);
+
+
+
+    gameOverRect.x = 435;
+    gameOverRect.y = 170;
+
+    nameRects[0].x = 350; 
+    nameRects[0].y = 215; 
+    nameRects[1].x = 350;
+    nameRects[1].y = 255;
+    nameRects[2].x = 350;
+    nameRects[2].y = 295;
+    nameRects[3].x = 350;
+    nameRects[3].y = 335;
+
+
+    interActiveRect[0].x = 360;
+    interActiveRect[0].y = 380;
+    interActiveRect[1].x = 530;
+    interActiveRect[1].y = 380;
+
+
+    SDL_QueryTexture(gameOverTexture, NULL, NULL, &gameOverRect.w, &gameOverRect.h);
+    // Get the size of texture (weight & high) for scoreboard
+    for (int i = 0; i < MAX_PLAYERS; i++) 
+        SDL_QueryTexture(nameTextures[i], NULL, NULL, &nameRects[i].w, &nameRects[i].h);
+    for (int i = 0; i < 2; i++)
+        SDL_QueryTexture(interActivesTexture[i], NULL, NULL, &interActiveRect[i].w, &interActiveRect[i].h);
+
+       
+  
+
+    while (!done) {
+
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                done = true;
+            }
+            else if (event.type == SDL_MOUSEMOTION) {
+                x = event.motion.x;
+                y = event.motion.y;
+                for (int i = 0; i < 2; i++)
+                {
+                    // if focus change text to green
+                    if (x >= interActiveRect[i].x && x <= interActiveRect[i].x + interActiveRect[i].w && y > interActiveRect[i].y && y <= interActiveRect[i].y + interActiveRect[i].h)
+                    {
+                        SDL_DestroyTexture(interActivesTexture[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, interActives[i], selectedColor);
+                        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                        renderText = true;
+                    }
+                    else
+                    {
+                        SDL_DestroyTexture(interActivesTexture[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_45, interActives[i], black);
+                        interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                        renderText = true;
+                    }
+                }
+            }
+            // if click!
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                x = event.button.x;
+                y = event.button.y;
+                // Quit
+                if (x >= interActiveRect[0].x && x <= interActiveRect[0].x + interActiveRect[0].w && y > interActiveRect[0].y && y <= interActiveRect[0].y + interActiveRect[0].h)
+                {
+                    done = true;
+                }
+                else if (x >= interActiveRect[1].x && x <= interActiveRect[1].x + interActiveRect[1].w && y > interActiveRect[1].y && y <= interActiveRect[1].y + interActiveRect[1].h)
+                {
+                    *aGameRoute = menuRoute;
+                    done = true;
+                }
+            }
+        }
+        if (renderText) {
+            SDL_RenderCopy(renderer, media->scoreBoardTexture, NULL, &scoreboardPos);
+            SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
+            for(int i = 0 ; i< MAX_PLAYERS; i++)
+                SDL_RenderCopy(renderer, nameTextures[i], NULL, &nameRects[i]);
+            for (int i = 0; i < 2; i++)
+                 SDL_RenderCopy(renderer, interActivesTexture[i], NULL, &interActiveRect[i]);
+            SDL_RenderPresent(renderer);
+        }
+    }
 }

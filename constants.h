@@ -11,4 +11,6 @@
 #define PUBLIC			//empty for public variables or functions
 #define PRIVATE static  //static for private variables or fuctions
 
+typedef enum { singlePlayerRoute, clientRoute, hostRoute, menuRoute, quitRoute } Game_Route;
+
 #endif /* constants_h */

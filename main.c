@@ -12,17 +12,16 @@
 int main(void) {
 
     SDL_Window* window = NULL;
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-    bool hostOrClient = true;
+    Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;;
     bool running = true;
 
     char playerName[NAME_LENGTH] = "No-alias";
     char playerIp[IP_LENGTH] = "127.0.0.1";
 
+    Game_Route gameRoute = menuRoute;
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
-
 
 
     // Initialize SDL
@@ -56,23 +55,27 @@ int main(void) {
             LoadMedia media = loadMedia(renderer, &running);
             Fonts fonts = loadFonts();
 
-            if (running) {
-                if (LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, &hostOrClient, playerName, playerIp, media, fonts, current, setup)) {
+            while (running) {
+                if (gameRoute == menuRoute || gameRoute == hostRoute || gameRoute == clientRoute) {
+                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute)) {
+                        running = false; //if user pressed quit
+                    }
                     Mix_HaltMusic();
-                    //Starts game engine
-                    if (hostOrClient)
-                        startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
-                    else
-                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, current, setup, fonts);
                 }
-                else {
-                    SDL_DestroyRenderer(renderer);
+                //Starts game engine
+                if (gameRoute == singlePlayerRoute || gameRoute == hostRoute) {
+                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
+                }
+                if(gameRoute == clientRoute){
+                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
+                }
+                if (gameRoute == quitRoute) {
+                    running = false;
                 }
             }
-            else {
-                SDL_DestroyRenderer(renderer);
-                closeFonts(fonts);
-            }
+
+            SDL_DestroyRenderer(renderer);
+            closeFonts(fonts);
         }
     }
     //Mix_FreeMusic(backgroundMusic);
