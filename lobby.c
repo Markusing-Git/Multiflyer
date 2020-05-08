@@ -200,7 +200,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 // ************************************************** PRIVATE LOBBY FUNCTIONS *****************************************************************************************
 PRIVATE Lobby createLobby(SDL_Renderer* renderer, Fonts fonts) {
-	Lobby newLobby = malloc(sizeof(struct lobby_type));;
+	Lobby newLobby = malloc(sizeof(struct lobby_type));
 
 	strcpy(newLobby->lobbyText, "Lobby");
 	strcpy(newLobby->startGame, "Start Game");
