@@ -23,6 +23,7 @@ struct loadMedia {
 	SDL_Texture* textboxTexture;
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
+	SDL_Texture* PowerUpTex[3];
 
 
 	SDL_Surface* flyTrapSurface;
@@ -37,6 +38,7 @@ struct loadMedia {
 	SDL_Surface* textboxSurface;
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
+	SDL_Surface* powerUpSurface[3];
 
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];

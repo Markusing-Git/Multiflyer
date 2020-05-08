@@ -20,7 +20,7 @@ struct powerUp_type {
 };
 
 //PRIVATE FUNCTION DECLARATIONS
-PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenHeight, int screenWidth);
+PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenWidth, int screenHeight);
 
 
 //******************************************************************************************************************************************************************************************************
@@ -72,7 +72,7 @@ void scrollBackground(LoadMedia aMedia, int *aOffset, int w, int h) {
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-PUBLIC void spawnPowerUp(PowerUp aPowerUp, int screenWidth, int screenHeight) {
+PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight) {
 	PowerUp powerUp = malloc(sizeof(struct powerUp_type));
 	int rndX = (rand() % screenWidth - 0) + 1;
 	int rndY = (rand() % screenHeight - 0) + 1;
@@ -81,27 +81,35 @@ PUBLIC void spawnPowerUp(PowerUp aPowerUp, int screenWidth, int screenHeight) {
 
 	powerUp->powerPos.x = rndX;
 	powerUp->powerPos.y = rndY;
-	//powerUp->powerPos.w 
-	//powerUp->powerPos.h 
+	powerUp->powerPos.w = 64;
+	powerUp->powerPos.h = 64;
+
 	powerUp->powerType = rndType;
 	powerUp->direction = rndDir;
-
-	aPowerUp = powerUp;
+	
+	return powerUp;
 }
 
-PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenHeight, int screenWidth) {
-	int pixelX = 0;
-	int pixelY = 0;
-	int pixelW = 0;
-	int pixelH = 0;
+PUBLIC PowerUp clientSpawnPowerUp(PowerUp aPowerUp) {
+	PowerUp newPowerUp;
+	return newPowerUp = aPowerUp;
+}
+
+PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenWidth, int screenHeight) {
+	int pixelX = 1;
+	int pixelY = 1;
+	int pixelW = 1;
+	int pixelH = 1;
 
 	//changes direction if wall is hit
 	if (aPowerUp->powerPos.x + pixelX <= 0) {
 		switch (aPowerUp->direction) {
 		case downLeft:
 			aPowerUp->direction = downRight;
+			break;
 		case upLeft:
 			aPowerUp->direction = upRight;
+			break;
 		}
 	}
 	else if ((aPowerUp->powerPos.x + aPowerUp->powerPos.w - pixelW) >= screenWidth)
@@ -109,8 +117,10 @@ PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenHeight, int scree
 		switch (aPowerUp->direction) {
 		case downRight:
 			aPowerUp->direction = downLeft;
+			break;
 		case upRight:
 			aPowerUp->direction = upLeft;
+			break;
 		}
 	}
 	else if (aPowerUp->powerPos.y + pixelY <= 0)
@@ -118,8 +128,10 @@ PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenHeight, int scree
 		switch (aPowerUp->direction) {
 		case upRight:
 			aPowerUp->direction = downRight;
+			break;
 		case upLeft:
 			aPowerUp->direction = downLeft;
+			break;
 		}
 	}
 	else if ((aPowerUp->powerPos.y + aPowerUp->powerPos.h - pixelH) >= screenHeight)
@@ -127,45 +139,60 @@ PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenHeight, int scree
 		switch (aPowerUp->direction) {
 		case downLeft:
 			aPowerUp->direction = upLeft;
+			break;
 		case downRight:
 			aPowerUp->direction = upRight;
+			break;
 		}
 	}
 }
 
 
-PUBLIC void powerUpTick(PowerUp aPowerUp, int screenHeight, int screenWidth) {
+PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight) {
 
-	powerUpWorldCollision(aPowerUp, screenHeight, screenWidth);
+	powerUpWorldCollision(aPowerUp, screenWidth, screenHeight);
 
 	switch (aPowerUp->direction) {
 	case upRight:
 		aPowerUp->powerPos.y -= POWERUP_SPEED;
 		aPowerUp->powerPos.x += POWERUP_SPEED;
+		break;
 	case downRight:
 		aPowerUp->powerPos.y += POWERUP_SPEED;
 		aPowerUp->powerPos.x += POWERUP_SPEED;
+		break;
 	case upLeft:
 		aPowerUp->powerPos.y -= POWERUP_SPEED;
 		aPowerUp->powerPos.x -= POWERUP_SPEED;
+		break;
 	case downLeft:
 		aPowerUp->powerPos.y += POWERUP_SPEED;
 		aPowerUp->powerPos.x -= POWERUP_SPEED;
+		break;
 	}
 }
 
-void renderPowerUp(PowerUp aPowerUp) {
-
+PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media) {
+	switch (aPowerUp->powerType) {
+	case life:
+		SDL_RenderCopy(renderer, media->PowerUpTex[0], NULL, &aPowerUp->powerPos);
+		break;
+	case shield:
+		SDL_RenderCopy(renderer, media->PowerUpTex[1], NULL, &aPowerUp->powerPos);
+		break;
+	case attack:
+		SDL_RenderCopy(renderer, media->PowerUpTex[2], NULL, &aPowerUp->powerPos);
+		break;
+	}
 }
 
-/*
-render powerup(power up)
-*/
 
-/*
-powerUpConsumed(Player playerList[], power up)
-
-give player power
-
-destroy power
-*/
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
+	for (int i = 0; i < playerCount; i++) {
+		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos)) {
+			free(aPowerUp);
+			return 1;
+		}
+	}
+	return 0;
+}

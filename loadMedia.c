@@ -9,6 +9,9 @@
 // https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
 // https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
 
+//PowerUps by
+//https://opengameart.org/content/pickup-items-icons artist: Cethiel
+
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
     media->flySurface = IMG_Load("bilder/startFly.png"); //Laddar in spritesheet
@@ -22,7 +25,9 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->clientButtonSurface = IMG_Load("bilder/Client.png");
     media->textboxSurface = IMG_Load("bilder/textbox1.png");
     media->scoreBackgroundSurface = IMG_Load("bilder/scoreBackground.png");
-
+    media->powerUpSurface[0] = IMG_Load("bilder/PUhealth.png");
+    media->powerUpSurface[1] = IMG_Load("bilder/PUshield.png");
+    media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
 
 
     if (media->flySurface == NULL) {
@@ -69,6 +74,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
+    for (int i = 0; i < 3; i++) {
+        if (media->powerUpSurface[i] == NULL) {
+            printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+            *running = false;
+        }
+    }
 
 
 
@@ -83,7 +94,9 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->clientButtonTexture = SDL_CreateTextureFromSurface(renderer, media->clientButtonSurface);
     media->textboxTexture = SDL_CreateTextureFromSurface(renderer, media->textboxSurface);
     media->scoreBackgroundTex = SDL_CreateTextureFromSurface(renderer, media->scoreBackgroundSurface);
-
+    media->PowerUpTex[0] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[0]);
+    media->PowerUpTex[1] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[1]);
+    media->PowerUpTex[2] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[2]);
 
 
 
@@ -134,6 +147,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    for (int i = 0; i < 3; i++) {
+        if (media->PowerUpTex[i] == NULL) {
+            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+            *running = false;
+        }
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -146,7 +165,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->clientButtonSurface);
     SDL_FreeSurface(media->textboxSurface);
     SDL_FreeSurface(media->scoreBackgroundSurface);
-
+    for (int i = 0; i < 3; i++)
+        SDL_FreeSurface(media->powerUpSurface[i]);
 
 
 

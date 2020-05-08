@@ -6,7 +6,7 @@
 #include "player.h"
 #include "loadMedia.h"
 
-#define POWERUP_SPEED 5
+#define POWERUP_SPEED 2
 
 typedef struct powerUp_type* PowerUp;
 
@@ -16,6 +16,12 @@ void worldCollision(SDL_Rect* aPlayerPos, Player aPLayer, int screenWidth, int  
 //Makes the background scroll to the left, takes a media for backround image, and the address of an offset variable for movement
 void scrollBackground(LoadMedia aMedia, int* aOffset, int w, int h);
 
-PUBLIC void spawnPowerUp(PowerUp aPowerUpWrapper, int screenWidth, int screenHeight);
+PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight);
+
+PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight);
+
+PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media);
+
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount);
 
 #endif /* world_h */
