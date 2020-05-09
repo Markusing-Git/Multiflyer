@@ -36,6 +36,9 @@ PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
 //returns player players status false: dead true: alive
 PUBLIC bool getPlayerStatus(Player aPLayer);
 
+//returns players highscore
+PUBLIC int getPlayerScore(Player aPlayer);
+
 //sets the consumed power of player
 PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType);
 

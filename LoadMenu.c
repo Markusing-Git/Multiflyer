@@ -473,12 +473,12 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute) {
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute, Player aPlayerList[]) {
 
     SDL_Event event;
     bool done = false;
     bool renderText = true;
-    int x, y;
+    int x, y, scr[MAX_PLAYERS];
     char interActives[][NAME_LENGTH] = { "Play Again", "Return to menu" };
     char gameOver[] = "GAME OVER";
     char playerNames[MAX_PLAYERS][NAME_LENGTH] = {" "};
@@ -487,23 +487,29 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     if (*aGameRoute != singlePlayerRoute) {
         for (int i = 0; i < current->nrOfPlayers; i++) {
             strcpy(playerNames[i], current->playerNames[i]);
+            sprintf(scores[i], "Score:%d", scr[i]);
         }
     }
-    else 
+    else
     {
         strcpy(playerNames[0], "Player");
+        scr[0] = getPlayerScore(aPlayerList[0]);
+        sprintf(scores[0], "Score:%d", scr[0]);
     }
 
     SDL_Rect gameOverRect;
     SDL_Rect nameRects[MAX_PLAYERS]; // för scoreboard
+    SDL_Rect scoreRects[MAX_PLAYERS]; // för scoreboard
     SDL_Rect interActiveRect[2];
 
     SDL_Surface* gameOverSurface;
     SDL_Surface* nameSurfaces[MAX_PLAYERS]; //för scoreboard
+    SDL_Surface* scoreSurfaces[MAX_PLAYERS]; //för scoreboard
     SDL_Surface* interActivesSurface[2];
 
     SDL_Texture* gameOverTexture;
     SDL_Texture* nameTextures[MAX_PLAYERS]; //för scoreboard
+    SDL_Texture* scoreTextures[MAX_PLAYERS]; //för scoreboard
     SDL_Texture* interActivesTexture[2];
 
 
@@ -517,6 +523,8 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     //Surfaces för scoreboard
     for(int i= 0; i<MAX_PLAYERS; i++)
         nameSurfaces[i] = TTF_RenderText_Solid(fonts->scoreFont_24, playerNames[i], scoresColor);
+    for (int i = 0; i < MAX_PLAYERS; i++)
+        scoreSurfaces[i] = TTF_RenderText_Solid(fonts->scoreFont_24, scores[i], scoresColor);
     for (int i = 0; i < 2; i++)
         interActivesSurface[i] = TTF_RenderText_Solid(fonts->magical_36, interActives[i], black);
 
@@ -526,6 +534,8 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     for (int i = 0; i < MAX_PLAYERS; i++)
         nameTextures[i] = SDL_CreateTextureFromSurface(renderer, nameSurfaces[i]);
     for (int i = 0; i < 2; i++)
+        scoreTextures[i] = SDL_CreateTextureFromSurface(renderer, scoreSurfaces[i]);
+    for (int i = 0; i < 2; i++)
         interActivesTexture[i] = SDL_CreateTextureFromSurface(renderer, interActivesSurface[i]);
 
 
@@ -533,6 +543,8 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     //free surfaces för scoreboard
     for (int i = 0; i <MAX_PLAYERS; i++)
         SDL_FreeSurface(nameSurfaces[i]);
+    for (int i = 0; i < MAX_PLAYERS; i++)
+        SDL_FreeSurface(scoreSurfaces[i]);
     for (int i = 0; i < 2; i++)
         SDL_FreeSurface(interActivesSurface[i]);
 
@@ -558,6 +570,15 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     nameRects[3].x = 350;
     nameRects[3].y = 335;
 
+    scoreRects[0].x = 450;
+    scoreRects[0].y = 215;
+    scoreRects[1].x = 450;
+    scoreRects[1].y = 255;
+    scoreRects[2].x = 450;
+    scoreRects[2].y = 295;
+    scoreRects[3].x = 450;
+    scoreRects[3].y = 335;
+
 
     interActiveRect[0].x = 360;
     interActiveRect[0].y = 380;
@@ -569,6 +590,8 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     // Get the size of texture (weight & high) for scoreboard
     for (int i = 0; i < MAX_PLAYERS; i++) 
         SDL_QueryTexture(nameTextures[i], NULL, NULL, &nameRects[i].w, &nameRects[i].h);
+    for (int i = 0; i < current->nrOfPlayers; i++)
+        SDL_QueryTexture(scoreTextures[i], NULL, NULL, &scoreRects[i].w, &scoreRects[i].h);
     for (int i = 0; i < 2; i++)
         SDL_QueryTexture(interActivesTexture[i], NULL, NULL, &interActiveRect[i].w, &interActiveRect[i].h);
 
@@ -630,6 +653,8 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
             for(int i = 0 ; i< MAX_PLAYERS; i++)
                 SDL_RenderCopy(renderer, nameTextures[i], NULL, &nameRects[i]);
+            for (int i = 0; i < current->nrOfPlayers; i++)
+                SDL_RenderCopy(renderer, scoreTextures[i], NULL, &scoreRects[i]);
             for (int i = 0; i < 2; i++)
                  SDL_RenderCopy(renderer, interActivesTexture[i], NULL, &interActiveRect[i]);
             SDL_RenderPresent(renderer);

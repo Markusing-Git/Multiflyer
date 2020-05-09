@@ -90,6 +90,10 @@ PUBLIC bool getPlayerStatus(Player aPlayer) {
 	return aPlayer->alive;
 }
 
+PUBLIC int getPlayerScore(Player aPlayer) {
+	return aPlayer->powerType = aPlayer->score;
+}
+
 PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType) {
 	aPlayer->powerType = aPowerType;
 }
