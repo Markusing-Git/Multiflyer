@@ -10,6 +10,13 @@
 #include "constants.h"
 #include "loadMedia.h"
 
+typedef enum powerType {
+	life,
+	shield,
+	attack,
+	none
+} PowerType;
+
 //en ADT f�r att skapa en spelare
 
 typedef struct playerType* Player;
@@ -28,6 +35,9 @@ PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
 
 //returns player players status false: dead true: alive
 PUBLIC bool getPlayerStatus(Player aPLayer);
+
+//sets the consumed power of player
+PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType);
 
 //sets the status of player false: dead true: alive
 PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive);

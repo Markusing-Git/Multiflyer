@@ -7,13 +7,6 @@ typedef enum  {
 	upLeft
 } Direction;
 
-typedef enum powerType {
-	life,
-	shield,
-	attack,
-	none
-} PowerType;
-
 struct powerUp_type {
 	SDL_Rect powerPos;
 	Direction direction;
@@ -110,7 +103,6 @@ PUBLIC PowerUp clientSpawnPowerUp(SDL_Rect powerUpRect, int powerUpDir, int powe
 	newPowerUp->powerPos = powerUpRect;
 	newPowerUp->powerType = powerUpType;
 	newPowerUp->direction = powerUpDir;
-
 
 	return newPowerUp;
 }
@@ -222,6 +214,7 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
 	for (int i = 0; i < playerCount; i++) {
 		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos)) {
+			setPlayerPower(playerList[i], aPowerUp->powerType);
 			free(aPowerUp);
 			return 1;
 		}

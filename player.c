@@ -7,6 +7,7 @@ struct playerType {
 	SDL_Rect playerPos;
 	bool alive;
 	int score;
+	PowerType powerType;
 };
 
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
@@ -20,6 +21,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->playerPos.h = playerHeight;
 	aPlayer->alive = true;
 	aPlayer->score = 0;
+	aPlayer->powerType = none;
 	return aPlayer;
 }
 
@@ -86,6 +88,10 @@ PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer) {
 
 PUBLIC bool getPlayerStatus(Player aPlayer) {
 	return aPlayer->alive;
+}
+
+PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType) {
+	aPlayer->powerType = aPowerType;
 }
 
 PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive) {
