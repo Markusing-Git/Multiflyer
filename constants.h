@@ -5,6 +5,7 @@
 #define SPLASH_FRAMES 14
 #define MAX_PLAYERS 4
 #define TIME_DELAY 1600 //A time delay based on milliseconds
+#define POWERUP_TIME_DELAY 10000 //A Time delay for spawning powerups based on milliseconds
 #define IP_LENGTH 16
 #define NAME_LENGTH 100
 

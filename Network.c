@@ -24,6 +24,7 @@ int initGamestate(Game_State current)
     current->nrOfPlayers = 0;
     current->change_flag = 0;
     current->obstacle_change_flag = 0;
+    current->powerUp_change_flag = 0;
     current->lobbyRunningFlag = 1;
     current->newPlayerFlag = 0;
     current->localPlayerNr = 0;
@@ -174,6 +175,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
 
         current->change_flag = 0;
         current->obstacle_change_flag = 0;
+        current->powerUp_change_flag = 0;
 
         free(Gupd_Sending);
     }
@@ -200,6 +202,11 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         current->obstacle_bottom = Gupd_Recive->obstacle_bottom;
         current->obstacle_top = Gupd_Recive->obstacle_top;
         current->obstacle_change_flag = Gupd_Recive->obstacle_change_flag;
+        
+        current->powerUpRect = Gupd_Recive->powerUpRect;
+        current->powerUpDir = Gupd_Recive->powerUpDir;
+        current->powerUpType = Gupd_Recive->powerUpType;
+        current->powerUp_change_flag = Gupd_Recive->powerUp_change_flag;
 
         free(Gupd_Recive);
     }
@@ -225,6 +232,7 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
         current->change_flag = 0;
         current->obstacle_change_flag = 0;
+        current->powerUp_change_flag = 0;
     }   
 
     //kollar om det finns ett packet att hämta
@@ -580,4 +588,18 @@ Obstacle ReciveObstacle(Game_State Gupd)
     Gupd->obstacle_change_flag = 0;
 
     return recive_obstacle;
+}
+
+void SetPowerUp(Game_State current, PowerUp aPowerUp) {
+    current->change_flag = 1; //sätter change flaggan så att det skickas över nätverket
+    current->powerUp_change_flag = 1; //powerup flaggan visar för klienten att en ny powerup genererats
+    current->powerUpRect = getPowerUpRect(aPowerUp); //kopierar över powerups attribut
+    current->powerUpDir = getPowerUpDir(aPowerUp); //kopierar över powerups attribut
+    current->powerUpType = getPowerUpType(aPowerUp); //kopierar över powerups attribut
+}
+
+PowerUp ReceivePowerUp(Game_State current) {
+    PowerUp newPowerUp = clientSpawnPowerUp(current->powerUpRect, current->powerUpDir, current->powerUpType);
+    current->powerUp_change_flag = 0;
+    return newPowerUp;
 }

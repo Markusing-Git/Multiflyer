@@ -10,7 +10,8 @@ typedef enum  {
 typedef enum powerType {
 	life,
 	shield,
-	attack
+	attack,
+	none
 } PowerType;
 
 struct powerUp_type {
@@ -72,6 +73,20 @@ void scrollBackground(LoadMedia aMedia, int *aOffset, int w, int h) {
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
+PUBLIC PowerUp initPowerUp(void) {
+	PowerUp powerUp = malloc(sizeof(struct powerUp_type));;
+	powerUp->powerPos.x = 0;
+	powerUp->powerPos.y = 0;
+	powerUp->powerPos.w = 0;
+	powerUp->powerPos.h = 0;
+
+	powerUp->powerType = none;
+	powerUp->direction = 0;
+
+	return powerUp;
+}
+
+
 PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight) {
 	PowerUp powerUp = malloc(sizeof(struct powerUp_type));
 	int rndX = (rand() % screenWidth - 0) + 1;
@@ -90,9 +105,26 @@ PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight) {
 	return powerUp;
 }
 
-PUBLIC PowerUp clientSpawnPowerUp(PowerUp aPowerUp) {
-	PowerUp newPowerUp;
-	return newPowerUp = aPowerUp;
+PUBLIC PowerUp clientSpawnPowerUp(SDL_Rect powerUpRect, int powerUpDir, int powerUpType) {
+	PowerUp newPowerUp = malloc(sizeof(struct powerUp_type));
+	newPowerUp->powerPos = powerUpRect;
+	newPowerUp->powerType = powerUpType;
+	newPowerUp->direction = powerUpDir;
+
+
+	return newPowerUp;
+}
+
+PUBLIC SDL_Rect getPowerUpRect(PowerUp aPowerUp) {
+	return aPowerUp->powerPos;
+}
+
+PUBLIC int getPowerUpDir(PowerUp aPowerUp) {
+	return aPowerUp->direction;
+}
+
+PUBLIC int getPowerUpType(PowerUp aPowerUp) {
+	return aPowerUp->powerType;
 }
 
 PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenWidth, int screenHeight) {

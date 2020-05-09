@@ -11,6 +11,7 @@
 #include "obstacle.h"
 #include "player.h"
 #include "constants.h"
+#include "world.h"
 
 //för att du ska få tillgång till Lobby, funktioner måste skapas för att utföra operationer.
 typedef struct lobby_type* Lobby;
@@ -45,12 +46,17 @@ struct Game_State_Type
     int nrOfPlayers;
     int change_flag;
     int obstacle_change_flag;
+    int powerUp_change_flag;
     int lobbyRunningFlag;
     int newPlayerFlag;
     int localPlayerNr;
 
     SDL_Rect obstacle_top;
     SDL_Rect obstacle_bottom;
+
+    SDL_Rect powerUpRect;
+    int powerUpDir;
+    int powerUpType;
 }; 
 typedef	struct Game_State_Type* Game_State;
 
@@ -82,6 +88,7 @@ int SetPlayerPosY(Game_State current, SDL_Rect* playerPos[]);
 int getPlayerPosX(Game_State current, int playerNr);
 int getPlayerPosY(Game_State current, int playerNr);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
+void SetPowerUp(Game_State current, PowerUp aPowerUp);
 
 int serverLobbyConnection(Game_State current); 
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
@@ -91,6 +98,7 @@ int serverStartGame(UDP_Client_Config setup, Game_State current);
 int clientStartGame(Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);
+PowerUp ReceivePowerUp(Game_State current);
 
 
 #endif /*Network_h*/

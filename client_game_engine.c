@@ -24,6 +24,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     bool running = true;
     SDL_Event event;
     Inputs input = initInputs();
+    PowerUp powerUpWrapper = initPowerUp();
 
     //Starting network   
     start_Game_state(players, current);
@@ -35,7 +36,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute);
+        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input, aGameRoute);
         
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
@@ -66,10 +67,19 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
+        //handles powerUps
+        if (current->powerUp_change_flag) {
+            powerUpWrapper = ReceivePowerUp(current);
+        }
+        powerUpTick(powerUpWrapper, w, h);
+        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers);
+
+
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
+
 
 
         //Multiplayer function
@@ -80,6 +90,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
+        renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
