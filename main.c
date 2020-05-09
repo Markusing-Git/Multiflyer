@@ -5,9 +5,7 @@
 #include "LoadMenu.h"
 #include "Network.h"
 #include "loadMedia.h"
-
-#define WINDOW_WIDTH 1000
-#define WINDOW_HEIGHT 600
+#include "constants.h"
 
 int main(void) {
 

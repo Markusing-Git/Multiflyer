@@ -96,5 +96,6 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);
+    resetClientSDLNet(setup);
     return true;
 }

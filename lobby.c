@@ -38,6 +38,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	int x, y;
 	SDL_Color selected = { 77 , 255, 0, 0 };
 	char startGame[] = "Start";
+	initGamestate(current);
 
 	//initiates with name
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
@@ -136,6 +137,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 	clientLobby = createLobby(renderer, fonts);
 	Uint32 loadingCounter = SDL_GetTicks();
 	int loadingDots = 3;
+	initGamestate(current);
 
 	//initiates with name
 	strcpy(current->ipAdressCache , playerIp);

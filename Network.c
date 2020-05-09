@@ -20,6 +20,7 @@ int initGamestate(Game_State current)
         current->player_Pos_X[i] = 0;
         current->player_Pos_Y[i] = 0;
         current->player_Alive[i] = true;
+        current->playerScore[i] = 0;
     }
     current->nrOfPlayers = 0;
     current->change_flag = 0;
@@ -57,6 +58,8 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
         exit(EXIT_FAILURE);
     }
 
+    printf("%s\n", playerIp);
+
     printf("Client sendport: %d\n", sendPort);
     printf("Client recvport: %d\n", recvPort);
    
@@ -70,6 +73,10 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
             printf("SDLNet_ResolveHost(%s %d): %s\n", playerIp, sendPort, SDLNet_GetError());
             exit(EXIT_FAILURE);
         }
+    }
+    else {
+        printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
     }
 
     //Allokerar plats för två paket
@@ -97,8 +104,8 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
     for (int i = 0; current->nrOfPlayers-1> i; i++)
     {    
         if (setup->playerIp[0][0] != '1'){
-            sendPort + i;
-            recvPort + i;
+            sendPort += i;
+            recvPort += i;
         }
 
         if (setup->recv_Sock[i] = (SDLNet_UDP_Open(recvPort))) //Öppnar en port för att kunna 
@@ -107,12 +114,16 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
 
             printf("Server sendPort: %d\n", sendPort);
             printf("Server recvPort: %d\n", recvPort);
+            printf("%s\n", setup->playerIp[i]);
 
             if (SDLNet_ResolveHost(&setup->sendingIP[i], setup->playerIp[i], sendPort) == -1) {
 
                 printf("SDLNet_ResolveHost(%s %d): %s\n", setup->playerIp[i], sendPort, SDLNet_GetError());
                 exit(EXIT_FAILURE);
             }
+        } else {
+            printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
+            exit(EXIT_FAILURE);
         }
 
     }
@@ -150,9 +161,9 @@ int sendAndReciveServer(Game_State Gupd, UDP_Client_Config setup, SDL_Rect* play
 int updateGameSending(Game_State current, SDL_Rect* playerPos[], Player players[])
 {
 
-    SetPlayerPosX(current, playerPos);
-    SetPlayerPosY(current, playerPos);
-    SetPlayerAlive(current, players);
+    SetGameStatePlayerPosX(current, playerPos);
+    SetGameStatePlayerPosY(current, playerPos);
+    SetGameStatePlayerStatus(current, players);
 
     return 0;
 }
@@ -183,6 +194,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->player_Pos_X = current->player_Pos_X[current->localPlayerNr - 1];
         Gupd_Sending->player_Pos_Y = current->player_Pos_Y[current->localPlayerNr - 1];
         Gupd_Sending->player_Alive = current->player_Alive[current->localPlayerNr - 1];
+        Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
 
         //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
 
@@ -212,6 +224,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
                 current->player_Pos_X[i] = Gupd_Recive->player_Pos_X[i];
                 current->player_Pos_Y[i] = Gupd_Recive->player_Pos_Y[i];
                 current->player_Alive[i] = Gupd_Recive->player_Alive[i];
+                current->playerScore[i] = Gupd_Recive->playerScore[i];
             }
         }
 
@@ -264,6 +277,7 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
             current->player_Pos_X[i+1] = Gupd_Recive->player_Pos_X;
             current->player_Pos_Y[i+1] = Gupd_Recive->player_Pos_Y;
             current->player_Alive[i+1] = Gupd_Recive->player_Alive;
+            current->playerScore[i+1] = Gupd_Recive->playerScore;
 
 
             free(Gupd_Recive);
@@ -288,7 +302,6 @@ int serverLobbyConnection(Game_State current)
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-
 
      SDLNet_ResolveHost(&ip1, NULL, 2002);
 
@@ -503,18 +516,36 @@ int Close_SDLNet(UDP_Client_Config setup, Game_State current)
     return 0;
 }
 
-int getPlayerPosX(Game_State current, int playerNr)
+int resetClientSDLNet(UDP_Client_Config setup)
+{
+    SDLNet_FreePacket(setup->send_Pack);
+    SDLNet_FreePacket(setup->recv_Pack);
+    SDLNet_UDP_Close(setup->recv_Sock[0]);
+    return 0;
+}
+
+int resetServerSDLNet(UDP_Client_Config setup, Game_State current)
+{
+    SDLNet_FreePacket(setup->send_Pack);
+    SDLNet_FreePacket(setup->recv_Pack);
+
+    for(int i = 0; current->nrOfPlayers-1>i;i++)
+        SDLNet_UDP_Close(setup->recv_Sock[i]);
+    return 0;
+}
+
+int getGameStatePlayerPosX(Game_State current, int playerNr)
 {
     return current->player_Pos_X[playerNr];
 }
 
-int getPlayerPosY(Game_State current, int playerNr)
+int getGameStatePlayerPosY(Game_State current, int playerNr)
 {
     return current->player_Pos_Y[playerNr];
 
 }
 
-int SetPlayerPosX(Game_State current, SDL_Rect* playerPos[])
+int SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[])
 {
     
     if (current->player_Pos_X[current->localPlayerNr-1] != playerPos[current->localPlayerNr-1]->x) {
@@ -525,7 +556,7 @@ int SetPlayerPosX(Game_State current, SDL_Rect* playerPos[])
     return 0;
 }
 
-int SetPlayerPosY(Game_State current, SDL_Rect* playerPos[])
+int SetGameStatePlayerPosY(Game_State current, SDL_Rect* playerPos[])
 {
 
     if (current->player_Pos_Y[current->localPlayerNr-1] != playerPos[current->localPlayerNr-1]->y) {
@@ -536,13 +567,20 @@ int SetPlayerPosY(Game_State current, SDL_Rect* playerPos[])
     return 0;
 }
 
-int SetPlayerAlive(Game_State current, Player players[])
+int SetGameStatePlayerStatus(Game_State current, Player players[])
 {
     if (current->player_Alive[current->localPlayerNr-1] != getPlayerStatus(players[current->localPlayerNr-1]) ) {
 
         current->change_flag = 1;
         current->player_Alive[current->localPlayerNr-1] = getPlayerStatus(players[current->localPlayerNr-1]);
     }
+
+    if (current->playerScore[current->localPlayerNr - 1] != getPlayerScore(players[current->localPlayerNr - 1])) {
+
+        current->change_flag = 1;
+        current->playerScore[current->localPlayerNr - 1] = getPlayerScore(players[current->localPlayerNr - 1]);
+    }
+
     return 0;
 }
 
