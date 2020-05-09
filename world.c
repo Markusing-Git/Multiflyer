@@ -10,7 +10,7 @@ typedef enum  {
 struct powerUp_type {
 	SDL_Rect powerPos;
 	Direction direction;
-	PowerType powerType;
+	PowerType powerType; //powerTypes in player.h 
 };
 
 //PRIVATE FUNCTION DECLARATIONS
