@@ -43,7 +43,7 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
     int recvPort;
 
 
-    if ((strcmp(playerIp, "127.0.0.1") == 0)) {
+    if ((strcmp(playerIp, "127.0.0.1") == 0) || (strstr(playerIp, "192.168.") != 0)) {
         sendPort = 2000 + current->localPlayerNr;
         recvPort = 2050 + current->localPlayerNr;
     }
