@@ -141,7 +141,14 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 	//initiates with name
 	strcpy(current->ipAdressCache , playerIp);
-	clientLobbyConnection(playerIp, playerName, current);
+
+	if (clientLobbyConnection(playerIp, playerName, current)) {
+		*aGameroute = menuRoute;
+		closeLobbyTTF(clientLobby);
+		current->nrOfPlayers = 0;
+		return 0;
+	}
+
 	for (int i = 0; current->nrOfPlayers > i; i++) {
 		playerJoined(renderer, clientLobby, fonts, current->playerNames[i]);
 	}

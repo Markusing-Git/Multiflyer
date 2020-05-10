@@ -355,6 +355,8 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
 {
 
     int port = 2002;
+    int timer = 0;
+    int connectionTime = 3;
     TCPsocket server;
     IPaddress ip1;
     char sent[10] = "NULL";
@@ -373,7 +375,12 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
 
     do {
         server = SDLNet_TCP_Open(&ip1);
-    } while (server == NULL);
+        timer++;
+    } while (server == NULL&& timer!=connectionTime);
+   
+    if (timer == connectionTime) {
+        return 1;
+    }
 
     SDLNet_TCP_Send(server, playerName, strlen(playerName) + 1);
 
