@@ -7,6 +7,7 @@
 #define TIME_DELAY 1600 //A time delay based on milliseconds
 #define IP_LENGTH 16
 #define NAME_LENGTH 100
+#define SPACE_DELAY 2500
 
 #define PUBLIC			//empty for public variables or functions
 #define PRIVATE static  //static for private variables or fuctions

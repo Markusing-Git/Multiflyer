@@ -29,6 +29,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     SDL_Event event;
     Inputs input = initInputs();
 
+    bool space = false;
+    Uint32 spaceDelay = SDL_GetTicks();
+
     //Starting network   
     start_Game_state(players, current);
     if (current->nrOfPlayers > 1)
@@ -39,7 +42,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input, aGameRoute);
+        pollInputEvents(&event, &running, players[0], input, aGameRoute, &space);
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
@@ -72,6 +75,29 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         obstacleCollision(getPlayerPosAdr(players[0]), players[0], obstacles);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
+
+        if (space == true) {
+            if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
+                for (int i = 0; i < current->nrOfPlayers; i++) {
+                    if (current->localPlayerNr - 1 != i) {
+                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), current->player_Pos_X, current->player_Pos_Y, current->nrOfPlayers, current->localPlayerNr);
+                        if (current->pushAngle[i] != 0) {
+                            current->change_flag = 1;
+                            printf("changed");
+                        }
+                    }
+                }
+                spaceDelay = SDL_GetTicks();
+            }
+        }
+
+        if (current->pushAngle[current->localPlayerNr - 1] != 0) {
+            pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
+            printf("Knuffad");
+        }
+
+
+        space = false;
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);

@@ -41,6 +41,7 @@ struct Game_State_Type
     bool player_Alive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
     char ipAdressCache[IP_LENGTH];
+    int pushAngle[MAX_PLAYERS];
 
     int nrOfPlayers;
     int change_flag;
@@ -59,6 +60,7 @@ struct Game_State_Send_Type
     int player_Pos_X;
     int player_Pos_Y;
     bool player_Alive;
+    int pushAngle[MAX_PLAYERS];
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;
 

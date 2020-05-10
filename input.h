@@ -13,6 +13,7 @@
 #define GLIDING_VELOCITY 2
 #define HOVER_VELOCITY 1
 #define HOVER_DISTANCE 15
+#define PUSH_VELOCITY 100
 
 typedef struct input_type* Inputs;
 
@@ -20,10 +21,12 @@ typedef struct input_type* Inputs;
 Inputs initInputs(void);
 
 //polling input events from keyboard
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute);
+void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space);
 
 //Adding inputs to player position
 void uppdateInputs(Player aPlayer, Inputs aInput);
+
+void pushPlayer(Player aPlayer, int pushAngle);
 
 //frees input structure from heap
 void QuitInput(Inputs aInput);

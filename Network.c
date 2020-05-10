@@ -20,6 +20,7 @@ int initGamestate(Game_State current)
         current->player_Pos_X[i] = 0;
         current->player_Pos_Y[i] = 0;
         current->player_Alive[i] = true;
+        current->pushAngle[i] = 0;
     }
     current->nrOfPlayers = 0;
     current->change_flag = 0;
@@ -163,6 +164,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->player_Pos_X = current->player_Pos_X[current->localPlayerNr - 1];
         Gupd_Sending->player_Pos_Y = current->player_Pos_Y[current->localPlayerNr - 1];
         Gupd_Sending->player_Alive = current->player_Alive[current->localPlayerNr - 1];
+        
 
         //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
 

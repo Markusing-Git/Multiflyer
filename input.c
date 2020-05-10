@@ -38,7 +38,7 @@ Inputs initInputs(void) {
 }
 
 
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute) {
+void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space) {
     while (SDL_PollEvent(aEvent))
     {
         switch (aEvent->type)
@@ -62,6 +62,9 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     break;
                 case SDLK_RIGHT:
                     aInput->push[3] = true;
+                    break;
+                case SDLK_SPACE:
+                    (*space) = true;
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
@@ -209,6 +212,27 @@ static void hoverFly(Player aPlayer, Inputs aInput) {
     }
 }
 
+void pushPlayer(Player aPlayer, int pushAngle) {
+    int speed = PUSH_VELOCITY;
+    switch (pushAngle) {
+    case 1:
+        movePlayerRight(aPlayer, speed);
+        printf("Hit");
+        break;
+    case 2:
+        movePlayerLeft(aPlayer, speed);
+        printf("Hit");
+        break;
+    case 3:
+        movePlayerDown(aPlayer, speed);
+        printf("Hit");
+        break;
+    case 4:
+        movePlayerUp(aPlayer, speed);
+        printf("Hit");
+        break;
+    }
+}
 
 void QuitInput(Inputs aInput) {
     free(aInput);
