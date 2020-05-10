@@ -39,6 +39,13 @@ PUBLIC Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom) {
     aObs->top = top;
     aObs->bottom = bottom;
     aObs->next = NULL;
+    aObs->passed = false;
+
+    aObs->x1 = WINDOW_WIDTH + 130;
+    aObs->y1 = 0;
+    aObs->x2 = WINDOW_WIDTH + 130;
+    aObs->y2 = WINDOW_HEIGHT;
+
     return aObs;
 }
 
@@ -219,6 +226,7 @@ PUBLIC void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
     Obstacle obs;
     obs = head;
     obs = obs->next;
+
     while (obs != NULL) {
         if (SDL_IntersectRectAndLine(&pixelRect, &obs->x1, &obs->y1, &obs->x2, &obs->y2)) {
             if (!obs->passed) {

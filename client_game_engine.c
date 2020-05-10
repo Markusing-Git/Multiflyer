@@ -78,7 +78,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
                         current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(playerPos[i]));
                         if (current->pushAngle[i] != 0) {
                             current->change_flag = 1;
-                            printf("Changed clinet");
+                            printf("Changed clinet %d\n",i);
                         }
                     }
                 }
@@ -89,6 +89,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         if (current->pushAngle[current->localPlayerNr - 1] != 0) {
             pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
             printf("Knuffad client");
+            current->pushAngle[current->localPlayerNr - 1] = 0; 
         }
 
 
@@ -122,5 +123,6 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);
+    resetClientSDLNet(setup);
     return true;
 }

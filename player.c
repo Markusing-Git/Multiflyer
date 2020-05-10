@@ -92,6 +92,10 @@ PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive) {
 	aPlayer->alive = deadOrAlive;
 }
 
+PUBLIC int getPlayerScore(Player aPlayer) {
+	return aPlayer->score;
+}
+
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {
 	switch (cord) {
 	case 'x':

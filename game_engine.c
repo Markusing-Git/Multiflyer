@@ -94,6 +94,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         if (current->pushAngle[current->localPlayerNr - 1] != 0) {
             pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
             printf("Knuffad");
+            current->pushAngle[current->localPlayerNr - 1] = 0;
         }
 
 
@@ -103,8 +104,12 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         scrollBackground(media, &backgroundOffset, w, h);
         
 
-        if (current->nrOfPlayers > 1)
-            sendAndReciveServer(current, setup, playerPos,players);
+        if (current->nrOfPlayers > 1) {
+            sendAndReciveServer(current, setup, playerPos, players);
+        }
+        else {
+            SetGameStatePlayerStatus(current, players);
+        }
 
 
         //*********************************  RENDERING  ***********************************************************************************
@@ -127,5 +132,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);
+    resetServerSDLNet(setup, current);
     return true;
 }

@@ -38,6 +38,9 @@ PUBLIC void setPlayerPoint(Player aPlayer, char cord, int value);
 //returns the value of player cordinate. cord: x:y:w:h
 PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 
+//Returns the score of a player
+PUBLIC int getPlayerScore(Player aPlayer);
+
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 
