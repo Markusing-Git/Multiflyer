@@ -27,14 +27,6 @@ struct UDP_Client_Config_Type{
 };
 typedef struct UDP_Client_Config_Type* UDP_Client_Config;
 
-struct Player_info_Type
-{
-    int player_Pos_X;
-    int player_Pos_Y;
-    bool player_Alive;
-};
-typedef struct Player_info_Type* Player_info;
-
 struct Game_State_Type
 {
     int player_Pos_X[MAX_PLAYERS];
@@ -42,7 +34,9 @@ struct Game_State_Type
     bool player_Alive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
     char ipAdressCache[IP_LENGTH];
+    int pushAngle[MAX_PLAYERS];
 
+    int playerScore[MAX_PLAYERS];
     int nrOfPlayers;
     int change_flag;
     int obstacle_change_flag;
@@ -64,7 +58,9 @@ struct Game_State_Send_Type
 {
     int player_Pos_X;
     int player_Pos_Y;
+    int playerScore;
     bool player_Alive;
+    int pushAngle[MAX_PLAYERS];
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;
 
@@ -81,12 +77,14 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup);
 int networkCommunicationClient(Game_State current, UDP_Client_Config setup);
 int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State current);
 int init_Server_network(UDP_Client_Config setup, Game_State current);
+int resetServerSDLNet(UDP_Client_Config setup, Game_State current);
+int resetClientSDLNet(UDP_Client_Config setup);
 
-int SetPlayerAlive(Game_State current, Player players[]);
-int SetPlayerPosX(Game_State current, SDL_Rect* playerPos[]);
-int SetPlayerPosY(Game_State current, SDL_Rect* playerPos[]);
-int getPlayerPosX(Game_State current, int playerNr);
-int getPlayerPosY(Game_State current, int playerNr);
+int SetGameStatePlayerStatus(Game_State current, Player players[]);
+int SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[]);
+int SetGameStatePlayerPosY(Game_State current, SDL_Rect* playerPos[]);
+int getGameStatePlayerPosX(Game_State current, int playerNr);
+int getGameStatePlayerPosY(Game_State current, int playerNr);
 int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
 void SetPowerUp(Game_State current, PowerUp aPowerUp);
 
@@ -94,8 +92,6 @@ int serverLobbyConnection(Game_State current);
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int clientLobbyWait(Game_State current);
 int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current);
-int serverStartGame(UDP_Client_Config setup, Game_State current);
-int clientStartGame(Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);
 PowerUp ReceivePowerUp(Game_State current);

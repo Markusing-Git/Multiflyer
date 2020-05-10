@@ -37,6 +37,8 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	hostLobby = createLobby(renderer, fonts);
 	int x, y;
 	SDL_Color selected = { 77 , 255, 0, 0 };
+	char startGame[] = "Start";
+	initGamestate(current);
 
 	//initiates with name
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
@@ -93,7 +95,12 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				y = hostLobby->event.button.y;
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
-					serverStartGame(setup, current);
+					//serverStartGame(setup, current);
+					for (int i = 0; current->nrOfPlayers - 1 > i; i++){
+						printf("sending start game\n");
+						serverSendPlayer(setup->playerIp[i], startGame, (i + 2), current);
+						printf("sent start game\n");
+					}
 					closeLobbyTTF(hostLobby);
 					current->lobbyRunningFlag = 0;
 					return 1;
@@ -106,8 +113,6 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
 
 			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
-				printf("%d\n", i);
-				printf("%s\n", setup->playerIp[i]);
 				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 2), current);
 			}
 
@@ -132,15 +137,23 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 	clientLobby = createLobby(renderer, fonts);
 	Uint32 loadingCounter = SDL_GetTicks();
 	int loadingDots = 3;
+	initGamestate(current);
 
 	//initiates with name
-	clientLobbyConnection(playerIp, playerName, current);
+	strcpy(current->ipAdressCache , playerIp);
+
+	if (clientLobbyConnection(playerIp, playerName, current)) {
+		*aGameroute = menuRoute;
+		closeLobbyTTF(clientLobby);
+		current->nrOfPlayers = 0;
+		return 0;
+	}
+
 	for (int i = 0; current->nrOfPlayers > i; i++) {
 		playerJoined(renderer, clientLobby, fonts, current->playerNames[i]);
 	}
 
 	SDL_CreateThread(clientLobbyWait, "Client_Wait_Thread", current);
-	SDL_CreateThread(clientStartGame, "Client_Start_Thread", current);
 
 	while (current->lobbyRunningFlag) {
 

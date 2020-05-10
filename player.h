@@ -48,6 +48,9 @@ PUBLIC void setPlayerPoint(Player aPlayer, char cord, int value);
 //returns the value of player cordinate. cord: x:y:w:h
 PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 
+//Returns the score of a player
+PUBLIC int getPlayerScore(Player aPlayer);
+
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 
@@ -70,6 +73,8 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 params: list of players and how many
 Uint32 delay for lastplayer splash effects
 */
+PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr);
+
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag);
 
 #endif /* player_h */
