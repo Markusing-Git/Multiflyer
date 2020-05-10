@@ -197,6 +197,11 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->player_Alive = current->player_Alive[current->localPlayerNr - 1];
         Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
 
+        for (int i = 0; current->nrOfPlayers > i; i++) {
+            Gupd_Sending->pushAngle[i] = current->pushAngle[i];
+            current->pushAngle[i] = 0;
+        }
+
         //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
 
         memcpy(setup->send_Pack->data, Gupd_Sending, sizeof(struct Game_State_Send_Type)); //kopierar Game_state till paketet
@@ -227,6 +232,12 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
                 current->player_Alive[i] = Gupd_Recive->player_Alive[i];
                 current->playerScore[i] = Gupd_Recive->playerScore[i];
             }
+
+            current->pushAngle[i] = Gupd_Recive->pushAngle[i];
+            if (Gupd_Recive->pushAngle[i] != 0)
+            {
+                printf("Angle: %d Player: %d\n", Gupd_Recive->pushAngle[i], i);
+            }
         }
 
         //printf("Reciving: %d %d\n", (int)Gupd_Recive->player_Pos_X[0], (int)Gupd_Recive->player_Pos_Y[0]);
@@ -234,6 +245,11 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         current->obstacle_bottom = Gupd_Recive->obstacle_bottom;
         current->obstacle_top = Gupd_Recive->obstacle_top;
         current->obstacle_change_flag = Gupd_Recive->obstacle_change_flag;
+
+        for (int i = 0; current->nrOfPlayers > i; i++) {
+            if (current->localPlayerNr - 1 != i)
+                current->pushAngle[i] = 0;
+        }
 
         free(Gupd_Recive);
     }
@@ -244,6 +260,37 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
 
 int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 {
+
+    for (int i = 0; current->nrOfPlayers - 1 > i; i++)
+    {
+        if (SDLNet_UDP_Recv(setup->recv_Sock[i], setup->recv_Pack)) {
+
+            current->change_flag = 1;
+
+            Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
+
+            //initGamestate(Gupd_Recive);
+
+            memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
+
+            current->player_Pos_X[i + 1] = Gupd_Recive->player_Pos_X;
+            current->player_Pos_Y[i + 1] = Gupd_Recive->player_Pos_Y;
+            current->player_Alive[i + 1] = Gupd_Recive->player_Alive;
+            current->playerScore[i + 1] = Gupd_Recive->playerScore;
+
+            for (int i = 0; current->nrOfPlayers > i; i++) {
+                if (Gupd_Recive->pushAngle[i] != 0)
+                {
+                    current->pushAngle[i] = Gupd_Recive->pushAngle[i];
+                    printf("Angle: %d Player: %d\n", Gupd_Recive->pushAngle[i],i);
+                }
+            }
+
+
+            free(Gupd_Recive);
+        }
+    }
+
 
     //Om flaggan är satt så finns det ny data att skicka
     if (current->change_flag == 1) {
@@ -259,32 +306,13 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
         current->change_flag = 0;
         current->obstacle_change_flag = 0;
+        for (int i = 0; current->nrOfPlayers > i; i++) {
+            if(current->localPlayerNr-1!=i)
+                current->pushAngle[i] = 0;
+        }
     }   
 
     //kollar om det finns ett packet att hämta
-
-    for (int i = 0; current->nrOfPlayers - 1>i; i++)
-    {
-        if (SDLNet_UDP_Recv(setup->recv_Sock[i], setup->recv_Pack)) {
-
-            current->change_flag = 1;
-
-            Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
-
-            //initGamestate(Gupd_Recive);
-
-            memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
-
-            current->player_Pos_X[i+1] = Gupd_Recive->player_Pos_X;
-            current->player_Pos_Y[i+1] = Gupd_Recive->player_Pos_Y;
-            current->player_Alive[i+1] = Gupd_Recive->player_Alive;
-            current->playerScore[i+1] = Gupd_Recive->playerScore;
-
-
-            free(Gupd_Recive);
-        }
-    }
-    
 
     return 0;
 }
@@ -369,10 +397,7 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
         exit(EXIT_FAILURE);
     }
 
-
     SDLNet_ResolveHost(&ip1, playerIp, port);
-
-
 
     do {
         server = SDLNet_TCP_Open(&ip1);

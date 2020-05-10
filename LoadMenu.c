@@ -488,7 +488,6 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
         for (int i = 0; i < current->nrOfPlayers; i++) {
             strcpy(playerNames[i], current->playerNames[i]);
             sprintf(scores[i], "%d", current->playerScore[i]);
-            printf("%d\n", current->playerScore[i]);
         }
     }
     else 

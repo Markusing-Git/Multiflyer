@@ -229,11 +229,9 @@ PUBLIC void checkIfPassed(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head) {
 
     while (obs != NULL) {
         if (SDL_IntersectRectAndLine(&pixelRect, &obs->x1, &obs->y1, &obs->x2, &obs->y2)) {
-            printf("Checking Passed\n");
             if (!obs->passed) {
                 addScore(aPlayer);
                 obs->passed = true;
-                printf("%d", getPlayerScore(aPlayer));
             }
         }
         obs = obs->next;

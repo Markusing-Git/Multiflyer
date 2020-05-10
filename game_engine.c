@@ -94,6 +94,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         if (current->pushAngle[current->localPlayerNr - 1] != 0) {
             pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
             printf("Knuffad");
+            current->pushAngle[current->localPlayerNr - 1] = 0;
         }
 
 
