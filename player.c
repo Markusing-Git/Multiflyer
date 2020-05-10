@@ -174,21 +174,19 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_DestroyTexture(media->scoreTex);
 }
 
-PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr) {
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	SDL_Rect opponentPlayer;
 	SDL_Rect pixelRect;
 
-	pixelRect.x = aPlayerPos->x;
-	pixelRect.y = aPlayerPos->y;
-	pixelRect.w = aPlayerPos->w;
-	pixelRect.h = aPlayerPos->h;
+	opponentPlayer.x = opponentPos->x;
+	opponentPlayer.y = opponentPos->y;
+	opponentPlayer.w = opponentPos->w;
+	opponentPlayer.h = opponentPos->h;
 
-	for (int i = 0; i < nrOfPlayers; i++) {
-		if (localPlayerNr - 1 != i) {
-			opponentPlayer.x = opponentPosX[i];
-			opponentPlayer.y = opponentPosY[i];
-			opponentPlayer.w = aPlayerPos->w;
-			opponentPlayer.h = aPlayerPos->h;
+	pixelRect.x = playerPos->x;
+	pixelRect.y = playerPos->y;
+	pixelRect.w = playerPos->w;
+	pixelRect.h = playerPos->h;
 
 			if (SDL_HasIntersection(&pixelRect, &opponentPlayer)) {
 
@@ -205,9 +203,9 @@ PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentP
 					return 4;
 				}
 			}
-		}
-	}
-	return 0;
+			else {
+				return 0;
+			}
 }
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {
