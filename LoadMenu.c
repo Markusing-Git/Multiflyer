@@ -102,6 +102,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 {
                     *aGameRoute = singlePlayerRoute;
                     current->nrOfPlayers = 1; //needs to be set as one for singleplayer game
+                    current->localPlayerNr = 1;
                     running = false;
                     return 1;
                 }
