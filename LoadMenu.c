@@ -584,7 +584,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
 
     SDL_QueryTexture(gameOverTexture, NULL, NULL, &gameOverRect.w, &gameOverRect.h);
     // Get the size of texture (weight & high) for scoreboard
-    for (int i = 0; i < MAX_PLAYERS; i++) {
+    for (int i = 0; i < current->nrOfPlayers; i++) {
         SDL_QueryTexture(nameTextures[i], NULL, NULL, &nameRects[i].w, &nameRects[i].h);
         SDL_QueryTexture(scoreTextures[i], NULL, NULL, &scoreRects[i].w, &scoreRects[i].h);
     }
@@ -649,7 +649,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
             for(int i = 0 ; i< MAX_PLAYERS; i++)
                 SDL_RenderCopy(renderer, nameTextures[i], NULL, &nameRects[i]);
-            for (int i = 0; i < MAX_PLAYERS; i++)
+            for (int i = 0; i < current->nrOfPlayers; i++)
                 SDL_RenderCopy(renderer, scoreTextures[i], NULL, &scoreRects[i]);
             for (int i = 0; i < 2; i++)
                  SDL_RenderCopy(renderer, interActivesTexture[i], NULL, &interActiveRect[i]);
