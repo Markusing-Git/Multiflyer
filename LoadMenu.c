@@ -488,13 +488,13 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     if (*aGameRoute != singlePlayerRoute) {
         for (int i = 0; i < current->nrOfPlayers; i++) {
             strcpy(playerNames[i], current->playerNames[i]);
-            sprintf(scores[i], "%d", current->playerScore[i]);
+            sprintf(scores[i], "Score:%d", current->playerScore[i]);
         }
     }
     else 
     {
         strcpy(playerNames[0], "Player");
-        sprintf(scores[0], "%d", current->playerScore[0]);
+        sprintf(scores[0], "Score:%d", current->playerScore[0]);
     }
 
     SDL_Rect gameOverRect;
@@ -567,13 +567,13 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     nameRects[3].x = 350;
     nameRects[3].y = 335;
 
-    scoreRects[0].x = 500;
+    scoreRects[0].x = 530;
     scoreRects[0].y = 215;
-    scoreRects[1].x = 500;
+    scoreRects[1].x = 530;
     scoreRects[1].y = 255;
-    scoreRects[2].x = 500;
+    scoreRects[2].x = 530;
     scoreRects[2].y = 295;
-    scoreRects[3].x = 500;
+    scoreRects[3].x = 530;
     scoreRects[3].y = 335;
 
 
@@ -657,4 +657,11 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             SDL_RenderPresent(renderer);
         }
     }
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        SDL_DestroyTexture(nameTextures[i]);
+        SDL_DestroyTexture(scoreTextures[i]);
+    }
+    SDL_DestroyTexture(gameOverTexture);
+    SDL_DestroyTexture(interActivesTexture[0]);
+    SDL_DestroyTexture(interActivesTexture[1]);
 }
