@@ -23,13 +23,13 @@ int initGamestate(Game_State current)
         current->pushAngle[i] = 0;
         current->playerScore[i] = 0;
     }
-    current->nrOfPlayers = 0;
+    current->nrOfPlayers = 1;
     current->change_flag = 0;
     current->obstacle_change_flag = 0;
     current->powerUp_change_flag = 0;
     current->lobbyRunningFlag = 1;
     current->newPlayerFlag = 0;
-    current->localPlayerNr = 0;
+    current->localPlayerNr = 1;
 
     return 0;
 }
