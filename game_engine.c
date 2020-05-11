@@ -29,7 +29,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     bool running = true;
     SDL_Event event;
     Inputs input = initInputs();
-    PowerUp powerUpWrapper = initPowerUp;
+    PowerUp powerUpWrapper = initPowerUp();
 
     bool space = false;
     Uint32 spaceDelay = SDL_GetTicks();
