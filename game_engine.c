@@ -97,7 +97,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             current->pushAngle[current->localPlayerNr - 1] = 0;
         }
 
-
         space = false;
 
         //Make the background scroll to the left

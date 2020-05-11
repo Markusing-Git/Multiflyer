@@ -180,36 +180,36 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 
 PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	SDL_Rect opponentPlayer;
-	SDL_Rect pixelRect;
+	SDL_Rect player;
 
 	opponentPlayer.x = opponentPos->x;
 	opponentPlayer.y = opponentPos->y;
 	opponentPlayer.w = opponentPos->w;
 	opponentPlayer.h = opponentPos->h;
 
-	pixelRect.x = playerPos->x;
-	pixelRect.y = playerPos->y;
-	pixelRect.w = playerPos->w;
-	pixelRect.h = playerPos->h;
+	player.x = playerPos->x;
+	player.y = playerPos->y;
+	player.w = playerPos->w;
+	player.h = playerPos->h;
 
-			if (SDL_HasIntersection(&pixelRect, &opponentPlayer)) {
+	if (SDL_HasIntersection(&player, &opponentPlayer)) {
 
-				if (pixelRect.x < opponentPlayer.x) {
-					return 1;
-				}
-				else if (pixelRect.x > opponentPlayer.x + opponentPlayer.w - pixelRect.w) {
-					return 2;
-				}
-				else if (pixelRect.y < opponentPlayer.y) {
-					return 3;
-				}
-				else if (pixelRect.y > opponentPlayer.y + opponentPlayer.h - pixelRect.h) {
-					return 4;
-				}
-			}
-			else {
-				return 0;
-			}
+		if (player.x < opponentPlayer.x) {
+			return 1;
+		}
+		else if (player.x > opponentPlayer.x + opponentPlayer.w - 50) {
+			return 2;
+		}
+		else if (player.y < opponentPlayer.y) {
+			return 3;
+		}
+		else if (player.y > opponentPlayer.y + opponentPlayer.h - player.h) {
+			return 4;
+		}
+	}
+	else {
+		return 0;
+	}
 }
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {
