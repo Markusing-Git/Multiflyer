@@ -176,7 +176,7 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	sprintf(scr, "Score:%d", score);
 
 	SDL_Color colorFront = { 255,255,255 };
-	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, &scr, colorFront);
+	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, scr, colorFront);
 	media->scoreTex = SDL_CreateTextureFromSurface(renderer, media->score);
 	SDL_QueryTexture(media->scoreTex, NULL, NULL, &media->scoreRect.w, &media->scoreRect.h);
 	SDL_RenderCopy(renderer, media->scoreTex, NULL, &media->scoreRect);
