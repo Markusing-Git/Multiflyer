@@ -9,6 +9,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int splashFrame[MAX_PLAYERS] = { 0 };
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
+    int nrOfPushes = 0;
     Uint32 gameOverDelay = 0;
     bool gameOverDelayFlag = false;
 
@@ -80,25 +81,30 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
-        if (space == true) {
+        if (space) {
             if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
                 for (int i = 0; i < current->nrOfPlayers; i++) {
                     if (current->localPlayerNr - 1 != i) {
-                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), current->player_Pos_X, current->player_Pos_Y, current->nrOfPlayers, current->localPlayerNr);
+                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(playerPos[i]));
                         if (current->pushAngle[i] != 0) {
                             current->change_flag = 1;
                             printf("Changed clinet %d\n",i);
+                            spaceDelay = SDL_GetTicks();
                         }
                     }
                 }
-                spaceDelay = SDL_GetTicks();
             }
         }
 
         if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-            pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
-            printf("Knuffad client");
-            current->pushAngle[current->localPlayerNr - 1] = 0; 
+            if (nrOfPushes <= 50) {
+                    pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
+                    nrOfPushes++;
+            }
+            else {
+                current->pushAngle[current->localPlayerNr - 1] = 0;
+                nrOfPushes = 0;
+            }
         }
 
 

@@ -13,7 +13,7 @@
 #define GLIDING_VELOCITY 2
 #define HOVER_VELOCITY 1
 #define HOVER_DISTANCE 15
-#define PUSH_VELOCITY 100
+#define PUSH_VELOCITY 2
 
 typedef struct input_type* Inputs;
 
@@ -26,6 +26,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
 //Adding inputs to player position
 void uppdateInputs(Player aPlayer, Inputs aInput);
 
+//Calls movePlayer-function based on the pushAngle in case of a push
 void pushPlayer(Player aPlayer, int pushAngle);
 
 //frees input structure from heap

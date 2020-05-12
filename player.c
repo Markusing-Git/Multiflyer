@@ -184,37 +184,33 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_DestroyTexture(media->scoreTex);
 }
 
-PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr) {
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	SDL_Rect opponentPlayer;
-	SDL_Rect pixelRect;
+	SDL_Rect player;
 
-	pixelRect.x = aPlayerPos->x;
-	pixelRect.y = aPlayerPos->y;
-	pixelRect.w = aPlayerPos->w;
-	pixelRect.h = aPlayerPos->h;
+	opponentPlayer.x = opponentPos->x;
+	opponentPlayer.y = opponentPos->y;
+	opponentPlayer.w = opponentPos->w;
+	opponentPlayer.h = opponentPos->h;
 
-	for (int i = 0; i < nrOfPlayers; i++) {
-		if (localPlayerNr - 1 != i) {
-			opponentPlayer.x = opponentPosX[i];
-			opponentPlayer.y = opponentPosY[i];
-			opponentPlayer.w = aPlayerPos->w;
-			opponentPlayer.h = aPlayerPos->h;
+	player.x = playerPos->x;
+	player.y = playerPos->y;
+	player.w = playerPos->w;
+	player.h = playerPos->h;
 
-			if (SDL_HasIntersection(&pixelRect, &opponentPlayer)) {
+	if (SDL_HasIntersection(&player, &opponentPlayer)) {
 
-				if (pixelRect.x < opponentPlayer.x) {
-					return 1;
-				}
-				else if (pixelRect.x > opponentPlayer.x + opponentPlayer.w - pixelRect.w) {
-					return 2;
-				}
-				else if (pixelRect.y < opponentPlayer.y) {
-					return 3;
-				}
-				else if (pixelRect.y > opponentPlayer.y + opponentPlayer.h - pixelRect.h) {
-					return 4;
-				}
-			}
+		if (player.x < opponentPlayer.x - opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+			return 1;
+		}
+		else if (player.x > opponentPlayer.x + opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+			return 2;
+		}
+		else if (player.y < opponentPlayer.y - opponentPlayer.h / 2) {
+			return 3;
+		}
+		else if (player.y > opponentPlayer.y + opponentPlayer.h / 2) {
+			return 4;
 		}
 	}
 	return 0;

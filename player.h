@@ -73,7 +73,9 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 params: list of players and how many
 Uint32 delay for lastplayer splash effects
 */
-PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr);
+
+//Checks if there is contact between players in case of a push
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag);
 

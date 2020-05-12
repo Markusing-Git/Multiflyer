@@ -162,7 +162,7 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
                 }
             }
         }
-        hoverFly(aPLayer, aInput);
+        //hoverFly(aPLayer, aInput);
     }
 }
 
@@ -217,19 +217,15 @@ void pushPlayer(Player aPlayer, int pushAngle) {
     switch (pushAngle) {
     case 1:
         movePlayerRight(aPlayer, speed);
-        printf("Hit");
         break;
     case 2:
         movePlayerLeft(aPlayer, speed);
-        printf("Hit");
         break;
     case 3:
         movePlayerDown(aPlayer, speed);
-        printf("Hit");
         break;
     case 4:
         movePlayerUp(aPlayer, speed);
-        printf("Hit");
         break;
     }
 }
