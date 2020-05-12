@@ -211,7 +211,8 @@ PUBLIC void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle hea
     obs = obs->next;
     while (obs != NULL) {
         if (SDL_HasIntersection(&pixelRect, &obs->top) || SDL_HasIntersection(&pixelRect, &obs->bottom)) {
-            setPlayerStatus(aPlayer, false);
+            if(!getPlayerImmunity(aPlayer))
+                setPlayerStatus(aPlayer, false);
         }
         obs = obs->next;
     }

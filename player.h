@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "loadMedia.h"
 
+//statemachine for different powerUp modes
 typedef enum powerType {
 	life,
 	shield,
@@ -36,8 +37,14 @@ PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
 //returns player players status false: dead true: alive
 PUBLIC bool getPlayerStatus(Player aPLayer);
 
+//returns the consumed power of player
+PUBLIC int getPlayerPower(Player aPlayer);
+
 //sets the consumed power of player
 PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType);
+
+//returns true if player is immune of obstacles and false if not.
+PUBLIC bool getPlayerImmunity(Player aPlayer);
 
 //sets the status of player false: dead true: alive
 PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive);
@@ -69,14 +76,16 @@ PUBLIC void addScore(Player aPlayer);
 //Renders player score
 PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
+//Checks if there is contact between players in case of a push
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
+
+//resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
+PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, int *splashFrame);
+
 /*checks if all players are dead and game is over,
 params: list of players and how many
 Uint32 delay for lastplayer splash effects
 */
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag);
-
-//Checks if there is contact between players in case of a push
-PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
-
 
 #endif /* player_h */

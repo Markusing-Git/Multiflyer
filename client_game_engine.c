@@ -10,6 +10,8 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
     int nrOfPushes = 0;
+    Uint32 resurectDelay = 0;
+    Uint32 resurectImmunDelay = 0;
     Uint32 gameOverDelay = 0;
     bool gameOverDelayFlag = false;
 
@@ -58,26 +60,23 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         for (int i = 0; i < current->nrOfPlayers; i++) {
             if (splashFrame[i] != SPLASH_FRAMES * 11 && getPlayerStatus(players[i]) == false) {
                 splashFrame[i]++;
-                if (splashFrame[i] / 13 == SPLASH_FRAMES) {
-                    splashFrame[i] = 0;
-                }
             }
         }
 
         //handles obstacles
-        if (current->obstacle_change_flag) {
+        if (current->obstacle_change_flag) 
             newClientObstacle(ReciveObstacle(current), obstacles);
-        }
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
         //handles powerUps
-        if (current->powerUp_change_flag) {
+        if (current->powerUp_change_flag) 
             powerUpWrapper = ReceivePowerUp(current);
-        }
         powerUpTick(powerUpWrapper, w, h);
         powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers);
 
+        //resurects player if player has extra life
+        resurectPlayer(players[0], &resurectDelay, &resurectImmunDelay, &splashFrame[0]);
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
@@ -107,13 +106,10 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
             }
         }
 
-
         space = false;
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
-
-
 
         //Multiplayer function
         sendAndReciveClient(current, setup, playerPos, players);

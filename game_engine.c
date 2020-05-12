@@ -10,6 +10,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     Uint32 obstacleDelay = SDL_GetTicks();
     Uint32 gameOverDelay = 0;
     Uint32 PUSpawnTime = SDL_GetTicks() + POWERUP_TIME_DELAY;
+    Uint32 resurectDelay = 0;
+    Uint32 resurectImmunDelay = 0;
     bool gameOverDelayFlag = false;
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
@@ -62,9 +64,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         for (int i = 0; i < current->nrOfPlayers; i++) {
             if (splashFrame[i] != SPLASH_FRAMES * 11 && getPlayerStatus(players[i]) == false) {
                 splashFrame[i]++;
-                if (splashFrame[i] / 13 == SPLASH_FRAMES) {
-                    splashFrame[i] = 0;
-                }
             }
         }
 
@@ -87,6 +86,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             PUSpawnTime = (SDL_GetTicks() + POWERUP_TIME_DELAY);
         powerUpTick(powerUpWrapper, w, h);
 
+        //resurects player if player has extra life
+        resurectPlayer(players[0], &resurectDelay, &resurectImmunDelay, &splashFrame[0]);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
