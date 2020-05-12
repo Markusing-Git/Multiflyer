@@ -78,7 +78,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         //handles powerUps
         if (PUSpawnTime <= SDL_GetTicks()) {
-            powerUpWrapper = serverSpawnPowerUp(w, h);
+            powerUpWrapper = serverSpawnPowerUp(w, h, powerUpWrapper);
             SetPowerUp(current, powerUpWrapper);
             PUSpawnTime = SDL_GetTicks() + 1000000;
         }

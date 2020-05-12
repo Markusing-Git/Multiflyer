@@ -16,11 +16,11 @@ void worldCollision(SDL_Rect* aPlayerPos, Player aPLayer, int screenWidth, int  
 //Makes the background scroll to the left, takes a media for backround image, and the address of an offset variable for movement
 void scrollBackground(LoadMedia aMedia, int* aOffset, int w, int h);
 
-//initiates a Null powerUp struct
+//initiates a empty powerUp struct
 PUBLIC PowerUp initPowerUp(void);
 
 //spawns a serverside powerUp with a random powerType and direction
-PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight);
+PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp oldPowerUp);
 
 //spawns a clientside poweUp used for networkPurpuses
 PUBLIC PowerUp clientSpawnPowerUp(SDL_Rect powerUpRect, int powerUpDir, int powerUpType);

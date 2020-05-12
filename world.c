@@ -80,8 +80,8 @@ PUBLIC PowerUp initPowerUp(void) {
 }
 
 
-PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight) {
-	PowerUp powerUp = malloc(sizeof(struct powerUp_type));
+PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp oldPowerUp) {
+	PowerUp powerUp = realloc(oldPowerUp, sizeof(struct powerUp_type));
 	int rndX = (rand() % screenWidth - 0) + 1;
 	int rndY = (rand() % screenHeight - 0) + 1;
 	int rndType = (rand() % 3 - 0);
@@ -213,9 +213,9 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 
 PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
 	for (int i = 0; i < playerCount; i++) {
-		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos)) {
+		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos) && aPowerUp->powerType != none) {
 			setPlayerPower(playerList[i], aPowerUp->powerType);
-			free(aPowerUp);
+			aPowerUp->powerType = none;
 			return 1;
 		}
 	}
