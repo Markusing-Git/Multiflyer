@@ -12,6 +12,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     bool gameOverDelayFlag = false;
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
+    int nrOfPushes = 0;
 
 
     // struct to hold the position and size of the sprite
@@ -76,7 +77,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
-        if (space == true) {
+        if (space) {
             if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
                 for (int i = 0; i < current->nrOfPlayers; i++) {
                     if (current->localPlayerNr - 1 != i) {
@@ -84,17 +85,22 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
                         if (current->pushAngle[i] != 0) {
                             current->change_flag = 1;
                             printf("changed");
+                            spaceDelay = SDL_GetTicks();
                         }
                     }
                 }
-                spaceDelay = SDL_GetTicks();
             }
         }
 
         if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-            pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
-            printf("Knuffad");
-            current->pushAngle[current->localPlayerNr - 1] = 0;
+            if (nrOfPushes <= 50) {
+                    pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
+                    nrOfPushes++;
+            }
+            else {
+                current->pushAngle[current->localPlayerNr - 1] = 0;
+                nrOfPushes = 0;
+            }
         }
 
         space = false;

@@ -194,22 +194,20 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 
 	if (SDL_HasIntersection(&player, &opponentPlayer)) {
 
-		if (player.x < opponentPlayer.x) {
+		if (player.x < opponentPlayer.x - opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
 			return 1;
 		}
-		else if (player.x > opponentPlayer.x + opponentPlayer.w - 50) {
+		else if (player.x > opponentPlayer.x + opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
 			return 2;
 		}
-		else if (player.y < opponentPlayer.y) {
+		else if (player.y < opponentPlayer.y - opponentPlayer.h / 2) {
 			return 3;
 		}
-		else if (player.y > opponentPlayer.y + opponentPlayer.h - player.h) {
+		else if (player.y > opponentPlayer.y + opponentPlayer.h / 2) {
 			return 4;
 		}
 	}
-	else {
-		return 0;
-	}
+	return 0;
 }
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {

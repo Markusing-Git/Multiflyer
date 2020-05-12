@@ -26,6 +26,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
 //Adding inputs to player position
 void uppdateInputs(Player aPlayer, Inputs aInput);
 
+//Calls movePlayer-function based on the pushAngle in case of a push
 void pushPlayer(Player aPlayer, int pushAngle);
 
 //frees input structure from heap
