@@ -51,6 +51,8 @@ PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 //Returns the score of a player
 PUBLIC int getPlayerScore(Player aPlayer);
 
+PUBLIC bool setPlayerAttack(Player aPlayer);
+
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 
@@ -76,5 +78,8 @@ Uint32 delay for lastplayer splash effects
 PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr);
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag);
+
+PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame);
+
 
 #endif /* player_h */

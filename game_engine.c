@@ -7,6 +7,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame[MAX_PLAYERS] = { 0 };
+    int attackFrame[MAX_PLAYERS] = { 0 };
     Uint32 obstacleDelay = SDL_GetTicks();
     Uint32 gameOverDelay = 0;
     Uint32 PUSpawnTime = SDL_GetTicks() + POWERUP_TIME_DELAY;
@@ -89,7 +90,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
-        if (space == true) {
+        if (setPlayerAttack(players[current->localPlayerNr - 1]) == true) {
             if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
                 for (int i = 0; i < current->nrOfPlayers; i++) {
                     if (current->localPlayerNr - 1 != i) {
@@ -132,6 +133,15 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
+        if(players[current->localPlayerNr -1])
+        {
+            for (int i = 0; i < current->nrOfPlayers; i++) {
+                attackFrame[i]++;
+                if (attackFrame[i] / 3 == ATTACK_FRAMES)
+                    attackFrame[i] = 0;
+            }
+        }
+        renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[0], media, renderer, fonts);
         SDL_RenderPresent(renderer);

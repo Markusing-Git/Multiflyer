@@ -64,7 +64,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = true;
                     break;
                 case SDLK_SPACE:
-                    (*space) = true;
+                    setPlayerAttack(aPlayer);
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
@@ -73,7 +73,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                 }
             }
             break;
-        case SDL_KEYUP: //Släpper knappen
+        case SDL_KEYUP: //Slï¿½pper knappen
             if (getPlayerStatus(aPlayer) == true) {
                 switch (aEvent->key.keysym.sym)
                 {

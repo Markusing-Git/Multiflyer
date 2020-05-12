@@ -24,6 +24,7 @@ struct loadMedia {
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
 	SDL_Texture* PowerUpTex[3];
+	SDL_Texture* attackTex;
 
 
 	SDL_Surface* flyTrapSurface;
@@ -39,6 +40,7 @@ struct loadMedia {
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
 	SDL_Surface* powerUpSurface[3];
+	SDL_Surface* attackSurface;
 
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
@@ -46,6 +48,7 @@ struct loadMedia {
 	SDL_Rect startFlyRed[PLAYER_FRAMES];
 	SDL_Rect startFlyYellow[PLAYER_FRAMES];
 	SDL_Rect splashSprites[SPLASH_FRAMES];
+	SDL_Rect attackRect[ATTACK_FRAMES];
 	SDL_Rect scrollingBackground[2];
 	SDL_Rect scoreBackgroundRect;
 	SDL_Rect scoreRect;

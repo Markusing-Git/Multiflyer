@@ -28,6 +28,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->powerUpSurface[0] = IMG_Load("bilder/PUhealth.png");
     media->powerUpSurface[1] = IMG_Load("bilder/PUshield.png");
     media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
+    media->attackSurface = IMG_Load("bilder/attacksheet.png");
 
 
     if (media->flySurface == NULL) {
@@ -80,6 +81,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->attackSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
 
@@ -97,6 +102,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->PowerUpTex[0] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[0]);
     media->PowerUpTex[1] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[1]);
     media->PowerUpTex[2] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[2]);
+    media->attackTex = SDL_CreateTextureFromSurface(renderer,media->attackSurface);
 
 
 
@@ -153,6 +159,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->attackTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -167,6 +177,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->scoreBackgroundSurface);
     for (int i = 0; i < 3; i++)
         SDL_FreeSurface(media->powerUpSurface[i]);
+    SDL_FreeSurface(media->attackSurface);
 
 
 
@@ -288,6 +299,21 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
 
     media->scoreRect.x = 740;
     media->scoreRect.y = 25;
+
+    media->attackRect[0].x = 0;
+    media->attackRect[0].y = 0;
+    media->attackRect[0].w = 125;
+    media->attackRect[0].h = 122;
+
+    media->attackRect[1].x = 125;
+    media->attackRect[1].y = 0;
+    media->attackRect[1].w = 125;
+    media->attackRect[1].h = 122;
+
+    media->attackRect[2].x = 250;
+    media->attackRect[2].y = 0;
+    media->attackRect[2].w = 125;
+    media->attackRect[2].h = 122;
 
     //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {

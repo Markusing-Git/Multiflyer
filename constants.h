@@ -4,6 +4,7 @@
 #define PLAYER_FRAMES 2 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
 #define MAX_PLAYERS 4
+#define ATTACK_FRAMES 3
 #define TIME_DELAY 1600 //A time delay based on milliseconds
 #define POWERUP_TIME_DELAY 10000 //A Time delay for spawning powerups based on milliseconds
 #define IP_LENGTH 16

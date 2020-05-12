@@ -8,6 +8,7 @@ struct playerType {
 	bool alive;
 	int score;
 	PowerType powerType;
+	bool attack;
 };
 
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
@@ -100,6 +101,10 @@ PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive) {
 
 PUBLIC int getPlayerScore(Player aPlayer) {
 	return aPlayer->score;
+}
+
+PUBLIC bool setPlayerAttack(Player aPlayer){
+	return aPlayer->attack;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {
@@ -242,4 +247,11 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 	}
 
 	return allDead;
+}
+
+PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame)
+{
+	for (int i = 0; i < playerCount; i++)
+		if (playerList[i]->attack)
+			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[ attackFrame/ATTACK_FRAMES ], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
 }
