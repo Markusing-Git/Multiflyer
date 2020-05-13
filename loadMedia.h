@@ -64,6 +64,7 @@ struct loadFonts {
 	TTF_Font* cuvert_24;
 	TTF_Font* cuvert_28;
 	TTF_Font* cuvert_48;
+	TTF_Font* cuvert_60;
 	TTF_Font* ka1_60;
 	TTF_Font* scoreFont_40;
 	TTF_Font* scoreFont_24;
