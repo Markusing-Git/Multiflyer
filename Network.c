@@ -88,8 +88,8 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
 int init_Server_network(UDP_Client_Config setup, Game_State current)
 {
 
-    int sendPort = 2052;
-    int recvPort = 2002;
+    int sendPort = 2002;
+    int recvPort = 2052;
 
     //Öppnar en socket för att ta skicka data
     if (!(setup->send_Sock = (SDLNet_UDP_Open(0))))
