@@ -1,13 +1,13 @@
 #include "loadMedia.h"
 
 // MenuBackground by 
-// https://www.freeiconspng.com/img/26394
-// https://wallpapertag.com/game-background
-// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
-// https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
-// https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
-// https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
-// https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
+// https://www.freeiconspng.com/img/26394 artist: Ahkâm
+// https://wallpapertag.com/game-background artist: Unknown
+// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artist : Bevouliin.com
+// https://opengameart.org/content/blue-bat-sprites artist: bevouliin.com
+// https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
+// https://opengameart.org/content/happy-fly-enemy-game-character artist: bevouliin.com
+// https://opengameart.org/content/grumpy-bee-enemy-game-character  artist: bevouliin.com
 
 //PowerUps by
 //https://opengameart.org/content/pickup-items-icons artist: Cethiel
@@ -335,6 +335,7 @@ Fonts loadFonts(void) {
     fonts->cuvert_24 = TTF_OpenFont("fonts/Curvert.otf", 24);
     fonts->cuvert_28 = TTF_OpenFont("fonts/Curvert.otf", 28);
     fonts->cuvert_48 = TTF_OpenFont("fonts/Curvert.otf", 48);
+    fonts->cuvert_60 = TTF_OpenFont("fonts/Curvert.otf", 60);
     fonts->ka1_60 = TTF_OpenFont("fonts/ka1.ttf", 60);
     fonts->scoreFont_40 = TTF_OpenFont("fonts/ScoreFont.ttf", 40);
     fonts->scoreFont_24 = TTF_OpenFont("fonts/ScoreFont.ttf", 24);
@@ -353,6 +354,10 @@ Fonts loadFonts(void) {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
     if (fonts->cuvert_48 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->cuvert_60 == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
@@ -382,6 +387,7 @@ void closeFonts(Fonts mediaFonts) {
     TTF_CloseFont(mediaFonts->cuvert_24);
     TTF_CloseFont(mediaFonts->cuvert_28);
     TTF_CloseFont(mediaFonts->cuvert_48);
+    TTF_CloseFont(mediaFonts->cuvert_60);
     TTF_CloseFont(mediaFonts->ka1_60);
     TTF_CloseFont(mediaFonts->scoreFont_40);
     TTF_CloseFont(mediaFonts->scoreFont_24);
