@@ -28,6 +28,9 @@ PUBLIC Player createPlayer(int x, int y);
 //renders players dead or alive
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media);
 
+//Renders player score
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
+
 //creates a new player and adds to the list of players
 PUBLIC void initPlayers(Player playerList[], int playerCount);
 
@@ -72,9 +75,6 @@ PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 //Adds one to a players score
 PUBLIC void addScore(Player aPlayer);
-
-//Renders player score
-PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
 //Checks if there is contact between players in case of a push
 PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);

@@ -12,8 +12,18 @@ struct playerType {
 	PowerType powerType;
 };
 
+
+//PRIVATE FUNCTIONS*****************************************************************************************************************************
+
+//Renders each player
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
 	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects);
+
+//Renders playerpower effects
+PRIVATE void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
+
+//END OF PRIVATE FUNCTIONS*****************************************************************************************************************************
+
 
 PUBLIC Player createPlayer(int x, int y) {
 	Player aPlayer = malloc(sizeof(struct playerType));
@@ -31,6 +41,9 @@ PUBLIC Player createPlayer(int x, int y) {
 
 
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media) {
+
+	renderPlayerPower(renderer, media, playerList, playerCount);
+
 	switch (playerCount) {
 	case 1:
 		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
@@ -86,6 +99,25 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_RenderCopy(renderer, media->scoreTex, NULL, &media->scoreRect);
 	SDL_FreeSurface(media->score);
 	SDL_DestroyTexture(media->scoreTex);
+}
+
+PRIVATE void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount) {
+
+	if (playerList[0]->powerType == life && playerList[0]->resurected == false) {
+		SDL_RenderCopy(renderer, media->heartTex[1], NULL, &media->heartRect);
+	}
+	else if(playerList[0]->alive == true || playerList[0]->resurected == true){
+		SDL_RenderCopy(renderer, media->heartTex[0], NULL, &media->heartRect);
+	}
+
+	/*for (int i = 0; i < playerCount; i++) {
+		switch (playerList[i]->powerType) {
+		case shield:
+			break;
+		case attack:
+			break;
+		}
+	}*/
 }
 
 void getSoundEffect(int alive, Mix_Chunk* soundEffect)
@@ -261,17 +293,6 @@ PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immuni
 		}
 	}
 }
-
-/*
-
-renderPlayerPower()
-if life
-	render heart
-if shield
-	render blue orb behind player
-if attack
-	render orange orb behind player
-*/
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {
 

@@ -28,6 +28,9 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->powerUpSurface[0] = IMG_Load("bilder/PUhealth.png");
     media->powerUpSurface[1] = IMG_Load("bilder/PUshield.png");
     media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
+    media->heartSurface[0] = IMG_Load("bilder/heart1.png");
+    media->heartSurface[1] = IMG_Load("bilder/heart2.png");
+
 
 
     if (media->flySurface == NULL) {
@@ -80,6 +83,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    for (int i = 0; i < 2; i++) {
+        if (media->heartSurface[i] == NULL) {
+            printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+            *running = false;
+        }
+    }
 
 
 
@@ -97,6 +106,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->PowerUpTex[0] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[0]);
     media->PowerUpTex[1] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[1]);
     media->PowerUpTex[2] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[2]);
+    media->heartTex[0] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[0]);
+    media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
 
 
 
@@ -153,6 +164,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    for (int i = 0; i < 2; i++) {
+        if (media->heartTex[i] == NULL) {
+            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+            *running = false;
+        }
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -167,6 +184,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->scoreBackgroundSurface);
     for (int i = 0; i < 3; i++)
         SDL_FreeSurface(media->powerUpSurface[i]);
+    for (int i = 0; i < 2; i++)
+        SDL_FreeSurface(media->heartSurface[i]);
 
 
 
@@ -288,6 +307,15 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
 
     media->scoreRect.x = 740;
     media->scoreRect.y = 25;
+
+    media->heartRect[1].x = media->heartRect[0].x = 5;
+    media->heartRect[1].y = media->heartRect[0].y = 25;
+    media->heartRect[0].w = 130;
+    media->heartRect[0].h = 54;
+    media->heartRect[1].w = 280;
+    media->heartRect[1].h = 54;
+
+
 
     //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
