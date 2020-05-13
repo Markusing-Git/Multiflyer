@@ -8,7 +8,7 @@ typedef struct menu {
     SDL_Texture* textures[NUM_MENU];
 }Menu;
 
-PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts);
+PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts, LoadMedia media);
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings)
 {
@@ -22,7 +22,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
     Mix_PlayMusic(media->menuMusic, -1);
 
     Menu newMenu1;
-    newMenu1 = createMenu(renderer, fonts);
+    newMenu1 = createMenu(renderer, fonts, media);
     bool running = true;
     int x, y;
     SDL_Color selected = { 77 , 255, 0, 0 };
@@ -52,6 +52,13 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);
                     }
+                    else if (x >= media->storeRect.x && x <= media->storeRect.x + media->storeRect.w && y > media->storeRect.y && y <= media->storeRect.y + media->storeRect.h)
+                    {
+                        SDL_DestroyTexture(newMenu1.textures[5]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->magical_36, newMenu1.menuChoices[5], selected);
+                        newMenu1.textures[5] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                    }
                     else
                     {
                         SDL_DestroyTexture(newMenu1.textures[i]);
@@ -59,6 +66,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                         newMenu1.textures[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);
                     }
+                    
                 }
             }
             // if click!
@@ -66,7 +74,17 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
             {
                 x = event.button.x;
                 y = event.button.y;
-               //Quit
+                //Store picture
+                if (x >= media->storeRect.x && x <= media->storeRect.x + media->storeRect.w && y > media->storeRect.y && y <= media->storeRect.y + media->storeRect.h)
+                {
+                    printf("Hey");
+                }
+                //Store
+                if (x >= newMenu1.pos[5].x && x <= newMenu1.pos[5].x + newMenu1.pos[5].w && y > newMenu1.pos[5].y && y <= newMenu1.pos[5].y + newMenu1.pos[5].h)
+                {
+                    printf("Hej");
+                }
+                //Quit
                 if (x >= newMenu1.pos[4].x && x <= newMenu1.pos[4].x + newMenu1.pos[4].w && y > newMenu1.pos[4].y && y <= newMenu1.pos[4].y + newMenu1.pos[4].h)
                 {
                     running = false;
@@ -134,8 +152,9 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 
         // Clear screen
         SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, media->menuBackgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
         //Draw
+        SDL_RenderCopyEx(renderer, media->menuBackgroundTexture, NULL, NULL, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopy(renderer, media->storeTex, NULL, &media->storeRect);
         for (int i = 0; i < NUM_MENU; i++)
             SDL_RenderCopy(renderer, newMenu1.textures[i], NULL, &newMenu1.pos[i]);
         //show what was drawn
@@ -157,7 +176,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
+PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts, LoadMedia media)
 {
     // Init Menu choices 
     Menu newMenu;
@@ -166,6 +185,7 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
     strcpy(newMenu.menuChoices[2], "Controls");
     strcpy(newMenu.menuChoices[3], "Settings");
     strcpy(newMenu.menuChoices[4], "Quit");
+    strcpy(newMenu.menuChoices[5], "Store");
 
     // Set text color to white 
     newMenu.color.r = 0;
@@ -174,12 +194,16 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
     newMenu.color.a = 0;
 
     // Render text, create texture and realease resources 
-    for (int i = 0; i < NUM_MENU; i++)
+    for (int i = 0; i < OPTIONS; i++) {
         newMenu.menuSurface[i] = TTF_RenderText_Solid(fonts->magical_45, newMenu.menuChoices[i], newMenu.color);
-    for (int i = 0; i < NUM_MENU; i++)
+    }
+    newMenu.menuSurface[5] = TTF_RenderText_Solid(fonts->magical_36, newMenu.menuChoices[5], newMenu.color);
+    for (int i = 0; i < NUM_MENU; i++) {
         newMenu.textures[i] = SDL_CreateTextureFromSurface(renderer, newMenu.menuSurface[i]);
-    for (int i = 0; i < NUM_MENU; i++)
+    }
+    for (int i = 0; i < NUM_MENU; i++) {
         SDL_FreeSurface(newMenu.menuSurface[i]);
+    }
 
     // Define position for texture 
     newMenu.pos[0].x = 450;
@@ -192,11 +216,16 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
     newMenu.pos[3].y = 350;
     newMenu.pos[4].x = 450;
     newMenu.pos[4].y = 395;
+    newMenu.pos[5].x = 30;
+    newMenu.pos[5].y = 469;
+    media->storeRect.x = 10;
+    media->storeRect.y = 490;
 
     // Get the size of texture (weight & high)
     for (int i = 0; i < NUM_MENU; i++) {
         SDL_QueryTexture(newMenu.textures[i], NULL, NULL, &newMenu.pos[i].w, &newMenu.pos[i].h);
     }
+    SDL_QueryTexture(media->storeTex, NULL, NULL, &media->storeRect.w, &media->storeRect.h);
 
     return newMenu;
 }
@@ -204,7 +233,7 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
-//*********************************************************************************    OPTIONS    *********************************************************************************************************
+//*********************************************************************************    Controls    *********************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
@@ -805,7 +834,7 @@ void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings
             {
                 x = event.motion.x;
                 y = event.motion.y;
-                for (int i = 0; i < NUM_MENU; i++)
+                for (int i = 0; i < OPTIONS; i++)
                 {
                     //Om fokus, andra till gron text
                     if (x >= settings->changing_Rect[i].x && x <= settings->changing_Rect[i].x + settings->changing_Rect[i].w && y > settings->changing_Rect[i].y && y <= settings->changing_Rect[i].y + settings->changing_Rect[i].h)
@@ -952,7 +981,7 @@ void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings
     SDL_DestroyTexture(settings->headLine_Tex);
     SDL_DestroyTexture(settings->bMusic_Tex);
     SDL_DestroyTexture(settings->sEffects_Tex);
-    for (int i = 0; i < NUM_MENU; i++)
+    for (int i = 0; i < OPTIONS; i++)
     {
         SDL_DestroyTexture(settings->changing_Tex[i]);
         if(i < 2)

@@ -16,7 +16,8 @@
 #include "Network.h"
 #include "constants.h"
 
-#define NUM_MENU 5
+#define NUM_MENU 6
+#define OPTIONS 5
 #define VOL_SURFACES 10
 #define VOL_DUPLICATES 2
 

@@ -23,6 +23,7 @@ struct loadMedia {
 	SDL_Texture* textboxTexture;
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
+	SDL_Texture* storeTex;
 	SDL_Texture* PowerUpTex[3];
 
 
@@ -38,6 +39,7 @@ struct loadMedia {
 	SDL_Surface* textboxSurface;
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
+	SDL_Surface* storeSurface;
 	SDL_Surface* powerUpSurface[3];
 
 
@@ -49,6 +51,7 @@ struct loadMedia {
 	SDL_Rect scrollingBackground[2];
 	SDL_Rect scoreBackgroundRect;
 	SDL_Rect scoreRect;
+	SDL_Rect storeRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
@@ -68,7 +71,6 @@ struct loadFonts {
 	TTF_Font* ka1_60;
 	TTF_Font* scoreFont_40;
 	TTF_Font* scoreFont_24;
-
 };
 
 typedef struct loadFonts* Fonts;
