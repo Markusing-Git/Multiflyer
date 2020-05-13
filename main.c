@@ -83,4 +83,6 @@ int main(void) {
     SDL_DestroyWindow(window);
     IMG_Quit();
     SDL_Quit();
+
+    return 0;
 }
