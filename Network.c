@@ -179,6 +179,7 @@ int updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players
             playerPos[i]->x = current->player_Pos_X[i];
             playerPos[i]->y = current->player_Pos_Y[i];
             setPlayerStatus(players[i], current->player_Alive[i]);
+            
         }
     }
     return 0;
@@ -199,8 +200,14 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
 
         for (int i = 0; current->nrOfPlayers > i; i++) {
-            Gupd_Sending->pushAngle[i] = current->pushAngle[i];
-            current->pushAngle[i] = 0;
+            
+            if (current->localPlayerNr - 1 != i) {
+                Gupd_Sending->pushAngle[i] = current->pushAngle[i];
+                current->pushAngle[i] = 0;
+            }
+            else {
+                Gupd_Sending->pushAngle[i] = 0;
+            }
         }
 
         //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
@@ -235,7 +242,12 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
                 current->playerScore[i] = Gupd_Recive->playerScore[i];
             }
 
-            current->pushAngle[i] = Gupd_Recive->pushAngle[i];
+            if (Gupd_Recive->pushAngle[current->localPlayerNr - 1] != 0) {
+                current->pushAngle[current->localPlayerNr - 1] = Gupd_Recive->pushAngle[current->localPlayerNr - 1];
+            }
+            
+
+
             if (Gupd_Recive->pushAngle[i] != 0)
             {
                 printf("Angle: %d Player: %d\n", Gupd_Recive->pushAngle[i], i);
@@ -276,8 +288,6 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
             current->change_flag = 1;
 
             Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
-
-            //initGamestate(Gupd_Recive);
 
             memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
 
@@ -621,7 +631,6 @@ int SetGameStatePlayerStatus(Game_State current, Player players[])
         current->change_flag = 1;
         current->playerScore[current->localPlayerNr - 1] = getPlayerScore(players[current->localPlayerNr - 1]);
     }
-
     return 0;
 }
 
