@@ -9,6 +9,7 @@
 //yjvhuhuhuhhuhuhuuhuuuhuhuhuhuuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuhhuhuhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuh
 int main(void) {
 
+//Ggggg
     SDL_Window* window = NULL;
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;;
     bool running = true;
