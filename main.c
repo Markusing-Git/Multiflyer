@@ -6,7 +6,7 @@
 #include "Network.h"
 #include "loadMedia.h"
 #include "constants.h"
-//HEYHEJ
+
 int main(void) {
 
     SDL_Window* window = NULL;
@@ -83,4 +83,6 @@ int main(void) {
     SDL_DestroyWindow(window);
     IMG_Quit();
     SDL_Quit();
+
+    return 0;
 }
