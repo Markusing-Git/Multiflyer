@@ -19,9 +19,6 @@ struct playerType {
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
 	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects);
 
-//Renders playerpower effects
-PRIVATE void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
-
 //END OF PRIVATE FUNCTIONS*****************************************************************************************************************************
 
 
@@ -41,8 +38,6 @@ PUBLIC Player createPlayer(int x, int y) {
 
 
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media) {
-
-	renderPlayerPower(renderer, media, playerList, playerCount);
 
 	switch (playerCount) {
 	case 1:
@@ -101,13 +96,14 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_DestroyTexture(media->scoreTex);
 }
 
-PRIVATE void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount) {
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount) {
 
-	if (playerList[0]->powerType == life && playerList[0]->resurected == false) {
-		SDL_RenderCopy(renderer, media->heartTex[1], NULL, &media->heartRect);
+	//renders players health
+	if (playerList[playerCount]->powerType == life && playerList[playerCount]->resurected == false) {
+		SDL_RenderCopy(renderer, media->heartTex[1], NULL, media->heartRect);
 	}
-	else if(playerList[0]->alive == true || playerList[0]->resurected == true){
-		SDL_RenderCopy(renderer, media->heartTex[0], NULL, &media->heartRect);
+	else if(playerList[playerCount]->alive == true || playerList[playerCount]->resurected == true){
+		SDL_RenderCopy(renderer, media->heartTex[0], NULL, media->heartRect);
 	}
 
 	/*for (int i = 0; i < playerCount; i++) {
@@ -144,6 +140,14 @@ PUBLIC bool getPlayerStatus(Player aPlayer) {
 
 PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive) {
 	aPlayer->alive = deadOrAlive;
+}
+
+PUBLIC bool getPlayerResurect(Player aPlayer) {
+	return aPlayer->resurected;
+}
+
+PUBLIC void setPlayerResurect(Player aPlayer, bool resurected) {
+	aPlayer->resurected = resurected;
 }
 
 PUBLIC int getPlayerPower(Player aPlayer) {
@@ -262,7 +266,7 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	return 0;
 }
 
-PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, int *splashFrame) {
+PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
 
 	//complicated algorithm to make timing of resurection and obstacle immunity work
 	if ((aPlayer->powerType == life && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
@@ -287,7 +291,6 @@ PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immuni
 				aPlayer->powerType = none;
 				aPlayer->resurected = false;
 				aPlayer->immunity = false;
-				*splashFrame = 0;
 				printf("stepfour\n");
 			}
 		}

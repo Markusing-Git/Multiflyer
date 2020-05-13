@@ -12,6 +12,9 @@
 //PowerUps by
 //https://opengameart.org/content/pickup-items-icons artist: Cethiel
 
+//Hearts by
+//https://opengameart.org/content/health artist: knik1985
+
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
     media->flySurface = IMG_Load("bilder/startFly.png"); //Laddar in spritesheet

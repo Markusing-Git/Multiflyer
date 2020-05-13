@@ -65,6 +65,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             if (splashFrame[i] != SPLASH_FRAMES * 11 && getPlayerStatus(players[i]) == false) {
                 splashFrame[i]++;
             }
+            else if (getPlayerStatus(players[i]) == true) {
+                splashFrame[i] = 0;
+            }
         }
 
         //handles obstacles
@@ -87,7 +90,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         powerUpTick(powerUpWrapper, w, h);
 
         //resurects player if player has extra life
-        resurectPlayer(players[0], &resurectDelay, &resurectImmunDelay, &splashFrame[0]);
+        resurectPlayer(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
@@ -136,6 +139,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
+        renderPlayerPower(renderer, media, players, current->localPlayerNr - 1);
         renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
