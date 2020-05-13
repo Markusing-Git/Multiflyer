@@ -116,6 +116,16 @@ PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player pl
 	}*/
 }
 
+PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int *immunityFrames) {
+	if (aPlayer->immunity) {
+		(*immunityFrames)++;
+		SDL_RenderCopyEx(renderer, media->immunityTex, &media->immunitySprites[(*immunityFrames) / IMMUNITY_FRAMES], &media->immunityRect, 0, NULL, SDL_FLIP_NONE);
+	}
+	else {
+		*immunityFrames = 0;
+	}
+}
+
 void getSoundEffect(int alive, Mix_Chunk* soundEffect)
 {
 	if(alive==1)
@@ -268,30 +278,26 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 
 PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
 
-	//complicated algorithm to make timing of resurection and obstacle immunity work
+	//algorithm to make timing of resurection and obstacle immunity work
 	if ((aPlayer->powerType == life && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
 		if (aPlayer->resurected == false) {
 			(*resurectTimer) = SDL_GetTicks();
 			aPlayer->resurected = true;
-			printf("stepOne\n");
 		}
 		else if(SDL_GetTicks() >= ((*resurectTimer) + 3000)) { //resurects player after a timer has been set
 			if (!aPlayer->alive) {
 				aPlayer->playerPos.x = 50;
 				aPlayer->playerPos.y = 100;
 				aPlayer->alive = true;
-				printf("stepTwo\n");
 			}
 			else if (aPlayer->immunity == false) {
 				(*immunityTimer) = SDL_GetTicks();
 				aPlayer->immunity = true;
-				printf("stepThree\n");
 			}
 			else if (SDL_GetTicks() >= ((*immunityTimer) + 2000)) { // makes player immune from obstacles until timer is set
 				aPlayer->powerType = none;
 				aPlayer->resurected = false;
 				aPlayer->immunity = false;
-				printf("stepfour\n");
 			}
 		}
 	}

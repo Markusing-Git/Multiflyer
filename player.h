@@ -34,6 +34,9 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 //Renders playerpower effects
 PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
 
+//renders immunity bar if player is immune
+PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
+
 //creates a new player and adds to the list of players
 PUBLIC void initPlayers(Player playerList[], int playerCount);
 

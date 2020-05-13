@@ -10,6 +10,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
     int nrOfPushes = 0;
+    int immunityFrame = 0;
     Uint32 resurectDelay = 0;
     Uint32 resurectImmunDelay = 0;
     Uint32 gameOverDelay = 0;
@@ -127,6 +128,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
+        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
         SDL_RenderPresent(renderer);
 
         //scoreboard

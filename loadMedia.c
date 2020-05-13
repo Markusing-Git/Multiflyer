@@ -33,6 +33,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
     media->heartSurface[0] = IMG_Load("bilder/heart1.png");
     media->heartSurface[1] = IMG_Load("bilder/heart2.png");
+    media->immunitySurface = IMG_Load("bilder/immunityBar.png");
 
 
 
@@ -92,6 +93,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->immunitySurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
 
@@ -111,6 +116,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->PowerUpTex[2] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[2]);
     media->heartTex[0] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[0]);
     media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
+    media->immunityTex = SDL_CreateTextureFromSurface(renderer, media->immunitySurface);
+
 
 
 
@@ -173,6 +180,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->immunityTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -189,6 +200,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         SDL_FreeSurface(media->powerUpSurface[i]);
     for (int i = 0; i < 2; i++)
         SDL_FreeSurface(media->heartSurface[i]);
+    SDL_FreeSurface(media->immunitySurface);
+
 
 
 
@@ -318,6 +331,68 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartRect[1].w = 280;
     media->heartRect[1].h = 54;
 
+    //Immunity sprites https://opengameart.org/content/health-bar Artist: ab_dias
+
+    media->immunityRect.x = 120;
+    media->immunityRect.y = 25;
+    media->immunityRect.w = 250;
+    media->immunityRect.h = 50;
+
+
+    media->immunitySprites[0].x = 0;
+    media->immunitySprites[0].y = 30;
+    media->immunitySprites[0].w = 552;
+    media->immunitySprites[0].h = 55;
+
+    media->immunitySprites[1].x = 0;
+    media->immunitySprites[1].y = 92;
+    media->immunitySprites[1].w = 552;
+    media->immunitySprites[1].h = 55;
+
+    media->immunitySprites[2].x = 0;
+    media->immunitySprites[2].y = 155;
+    media->immunitySprites[2].w = 552;
+    media->immunitySprites[2].h = 55;
+
+    media->immunitySprites[3].x = 0;
+    media->immunitySprites[3].y = 218;
+    media->immunitySprites[3].w = 552;
+    media->immunitySprites[3].h = 55;
+
+    media->immunitySprites[4].x = 0;
+    media->immunitySprites[4].y = 282;
+    media->immunitySprites[4].w = 552;
+    media->immunitySprites[4].h = 55;
+
+    media->immunitySprites[5].x = 0;
+    media->immunitySprites[5].y = 346;
+    media->immunitySprites[5].w = 552;
+    media->immunitySprites[5].h = 55;
+
+    media->immunitySprites[6].x = 0;
+    media->immunitySprites[6].y = 409;
+    media->immunitySprites[6].w = 552;
+    media->immunitySprites[6].h = 55;
+
+    media->immunitySprites[7].x = 0;
+    media->immunitySprites[7].y = 472;
+    media->immunitySprites[7].w = 552;
+    media->immunitySprites[7].h = 55;
+
+    media->immunitySprites[8].x = 0;
+    media->immunitySprites[8].y = 536;
+    media->immunitySprites[8].w = 552;
+    media->immunitySprites[8].h = 55;
+
+    media->immunitySprites[9].x = 0;
+    media->immunitySprites[9].y = 601;
+    media->immunitySprites[9].w = 552;
+    media->immunitySprites[9].h = 55;
+
+    media->immunitySprites[10].x = 0;
+    media->immunitySprites[10].y = 665;
+    media->immunitySprites[10].w = 552;
+    media->immunitySprites[10].h = 55;
 
 
     //*****************************************AUDIO********************************************************
