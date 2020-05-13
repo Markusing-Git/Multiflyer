@@ -64,7 +64,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = true;
                     break;
                 case SDLK_SPACE:
-                    setPlayerAttack(aPlayer);
+                    setPlayerAttack(aPlayer,true);
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
@@ -92,6 +92,9 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                 case SDLK_RIGHT:
                     aInput->push[3] = false;
                     aInput->released[3] = true;
+                    break;
+                case SDLK_SPACE:
+                    setPlayerAttack(aPlayer,false);
                     break;
                 }
             }

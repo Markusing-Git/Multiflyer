@@ -51,7 +51,9 @@ PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 //Returns the score of a player
 PUBLIC int getPlayerScore(Player aPlayer);
 
-PUBLIC bool setPlayerAttack(Player aPlayer);
+PUBLIC bool getPlayerAttack(Player aPlayer);
+
+PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot);
 
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);

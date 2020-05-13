@@ -103,8 +103,12 @@ PUBLIC int getPlayerScore(Player aPlayer) {
 	return aPlayer->score;
 }
 
-PUBLIC bool setPlayerAttack(Player aPlayer){
+PUBLIC bool getPlayerAttack(Player aPlayer){
 	return aPlayer->attack;
+}
+PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot)
+{
+	aPlayer->attack = attackOrNot;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {
