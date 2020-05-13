@@ -386,6 +386,6 @@ void closeFonts(Fonts mediaFonts) {
     TTF_CloseFont(mediaFonts->scoreFont_40);
     TTF_CloseFont(mediaFonts->scoreFont_24);
     free(mediaFonts);
-    TTF_Quit;
+    TTF_Quit();
 }
 

@@ -88,7 +88,6 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
                         current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
                         if (current->pushAngle[i] != 0) {
                             current->change_flag = 1;
-                            printf("Changed clinet %d\n",i);
                             spaceDelay = SDL_GetTicks();
                         }
                     }

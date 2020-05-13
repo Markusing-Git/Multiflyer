@@ -97,7 +97,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
                         current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
                         if (current->pushAngle[i] != 0) {
                             current->change_flag = 1;
-                            printf("changed");
                             spaceDelay = SDL_GetTicks();
                         }
                     }

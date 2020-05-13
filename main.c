@@ -79,6 +79,9 @@ int main(void) {
     //Mix_FreeMusic(backgroundMusic);
     Mix_CloseAudio();
     SDL_DestroyWindow(window);
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
+
+    return 0;
 }
