@@ -74,7 +74,6 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
             }
             break;
         case SDL_KEYUP: //Släpper knappen
-            if (getPlayerStatus(aPlayer) == true) {
                 switch (aEvent->key.keysym.sym)
                 {
                 case SDLK_UP:
@@ -94,7 +93,6 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->released[3] = true;
                     break;
                 }
-            }
             break;
         }
     }

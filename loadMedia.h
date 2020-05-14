@@ -24,6 +24,8 @@ struct loadMedia {
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
 	SDL_Texture* PowerUpTex[3];
+	SDL_Texture* heartTex[2];
+	SDL_Texture* immunityTex;
 
 
 	SDL_Surface* flyTrapSurface;
@@ -39,6 +41,8 @@ struct loadMedia {
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
 	SDL_Surface* powerUpSurface[3];
+	SDL_Surface* heartSurface[2];
+	SDL_Surface* immunitySurface;
 
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
@@ -49,6 +53,9 @@ struct loadMedia {
 	SDL_Rect scrollingBackground[2];
 	SDL_Rect scoreBackgroundRect;
 	SDL_Rect scoreRect;
+	SDL_Rect heartRect[2];
+	SDL_Rect immunitySprites[IMMUNITY_FRAMES];
+	SDL_Rect immunityRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;

@@ -213,7 +213,7 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 
 PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
 	for (int i = 0; i < playerCount; i++) {
-		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos) && aPowerUp->powerType != none) {
+		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos) && (aPowerUp->powerType != none) && getPlayerStatus(playerList[i])) {
 			setPlayerPower(playerList[i], aPowerUp->powerType);
 			aPowerUp->powerType = none;
 			return 1;
