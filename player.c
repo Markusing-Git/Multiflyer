@@ -32,7 +32,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->immunity = false;
 	aPlayer->resurected = false;
 	aPlayer->score = 0;
-	aPlayer->powerType = life;
+	aPlayer->powerType = none;
 	return aPlayer;
 }
 

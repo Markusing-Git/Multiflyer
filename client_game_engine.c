@@ -123,12 +123,12 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
+        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
         renderPlayerPower(renderer, media, players, current->localPlayerNr - 1);
         renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
-        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
         SDL_RenderPresent(renderer);
 
         //scoreboard
