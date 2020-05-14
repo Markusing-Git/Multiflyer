@@ -81,31 +81,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
-        if (space) {
-            if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
-                for (int i = 0; i < current->nrOfPlayers; i++) {
-                    if (current->localPlayerNr - 1 != i) {
-                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
-                        if (current->pushAngle[i] != 0) {
-                            current->change_flag = 1;
-                            spaceDelay = SDL_GetTicks();
-                        }
-                    }
-                }
-            }
-        }
-
-        if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-            if (nrOfPushes <= 50) {
-                    pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
-                    nrOfPushes++;
-            }
-            else {
-                current->pushAngle[current->localPlayerNr - 1] = 0;
-                nrOfPushes = 0;
-            }
-        }
-
+        void playerAttack(Game_State current, Player players[], Uint32 * spaceDelay, int* nrOfPushes, bool space);
 
         space = false;
 

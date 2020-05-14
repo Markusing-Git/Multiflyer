@@ -90,30 +90,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
-        if (space) {
-            if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
-                for (int i = 0; i < current->nrOfPlayers; i++) {
-                    if (current->localPlayerNr - 1 != i) {
-                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
-                        if (current->pushAngle[i] != 0) {
-                            current->change_flag = 1;
-                            spaceDelay = SDL_GetTicks();
-                        }
-                    }
-                }
-            }
-        }
+       // attack(current->nrOfPlayers, current->localPlayerNr, current->pushAngle, players, &current->change_flag, &spaceDelay, space, nrOfPushes);
 
-        if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-            if (nrOfPushes <= 50) {
-                    pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
-                    nrOfPushes++;
-            }
-            else {
-                current->pushAngle[current->localPlayerNr - 1] = 0;
-                nrOfPushes = 0;
-            }
-        }
+        playerAttack(current, players, &spaceDelay, &nrOfPushes, space);
 
         space = false;
 

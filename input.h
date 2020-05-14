@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include "player.h"
 #include "constants.h"
+#include "Network.h"
 
 //change player speeds here
 #define PLAYER_VELOCITY 5
@@ -28,6 +29,10 @@ void uppdateInputs(Player aPlayer, Inputs aInput);
 
 //Calls movePlayer-function based on the pushAngle in case of a push
 void pushPlayer(Player aPlayer, int pushAngle);
+
+//void attack(int nrOfPlayers, int localPlayerNr, int* pushAngle[], Player players[], int* change_flag, Uint32* spaceDelay, bool space, int* nrOfPushes);
+
+void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes, bool space);
 
 //frees input structure from heap
 void QuitInput(Inputs aInput);
