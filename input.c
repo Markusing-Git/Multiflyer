@@ -160,7 +160,7 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
                 }
             }
         }
-        //hoverFly(aPLayer, aInput);
+        hoverFly(aPLayer, aInput);
     }
 }
 
