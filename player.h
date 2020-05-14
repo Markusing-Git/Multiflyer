@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "loadMedia.h"
 
+//statemachine for different powerUp modes
 typedef enum powerType {
 	life,
 	shield,
@@ -27,6 +28,15 @@ PUBLIC Player createPlayer(int x, int y);
 //renders players dead or alive
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media);
 
+//Renders player score
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
+
+//Renders playerpower effects
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
+
+//renders immunity bar if player is immune
+PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
+
 //creates a new player and adds to the list of players
 PUBLIC void initPlayers(Player playerList[], int playerCount);
 
@@ -36,11 +46,23 @@ PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
 //returns player players status false: dead true: alive
 PUBLIC bool getPlayerStatus(Player aPLayer);
 
+//sets the status of player false: dead true: alive
+PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive);
+
+//returns player resurection status: true if resurected false: dead or alive
+PUBLIC bool getPlayerResurect(Player aPlayer);
+
+//sets players resurected status
+PUBLIC void setPlayerResurect(Player aPlayer, bool resurected);
+
+//returns the consumed power of player
+PUBLIC int getPlayerPower(Player aPlayer);
+
 //sets the consumed power of player
 PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType);
 
-//sets the status of player false: dead true: alive
-PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive);
+//returns true if player is immune of obstacles and false if not.
+PUBLIC bool getPlayerImmunity(Player aPlayer);
 
 //sets cordinates of a players x:y:w:h, value represents the value to be set
 PUBLIC void setPlayerPoint(Player aPlayer, char cord, int value);
@@ -66,8 +88,11 @@ PUBLIC void freePlayers(Player playerList[], int playerCount);
 //Adds one to a players score
 PUBLIC void addScore(Player aPlayer);
 
-//Renders player score
-PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
+//Checks if there is contact between players in case of a push
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
+
+//resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
+PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
 
 /*checks if all players are dead and game is over,
 params: list of players and how many

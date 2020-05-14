@@ -22,6 +22,7 @@ int initGamestate(Game_State current)
         current->player_Alive[i] = true;
         current->pushAngle[i] = 0;
         current->playerScore[i] = 0;
+        current->resurected[i] = false;
     }
     current->nrOfPlayers = 0;
     current->change_flag = 0;
@@ -179,6 +180,7 @@ int updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players
             playerPos[i]->x = current->player_Pos_X[i];
             playerPos[i]->y = current->player_Pos_Y[i];
             setPlayerStatus(players[i], current->player_Alive[i]);
+            setPlayerResurect(players[i], current->resurected[i]);
         }
     }
     return 0;
@@ -197,10 +199,17 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->player_Pos_Y = current->player_Pos_Y[current->localPlayerNr - 1];
         Gupd_Sending->player_Alive = current->player_Alive[current->localPlayerNr - 1];
         Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
+        Gupd_Sending->resurected = current->resurected[current->localPlayerNr - 1];
 
         for (int i = 0; current->nrOfPlayers > i; i++) {
-            Gupd_Sending->pushAngle[i] = current->pushAngle[i];
-            current->pushAngle[i] = 0;
+            
+            if (current->localPlayerNr - 1 != i) {
+                Gupd_Sending->pushAngle[i] = current->pushAngle[i];
+                current->pushAngle[i] = 0;
+            }
+            else {
+                Gupd_Sending->pushAngle[i] = 0;
+            }
         }
 
         //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
@@ -233,9 +242,15 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
                 current->player_Pos_Y[i] = Gupd_Recive->player_Pos_Y[i];
                 current->player_Alive[i] = Gupd_Recive->player_Alive[i];
                 current->playerScore[i] = Gupd_Recive->playerScore[i];
+                current->resurected[i] = Gupd_Recive->resurected[i];
             }
 
-            current->pushAngle[i] = Gupd_Recive->pushAngle[i];
+            if (Gupd_Recive->pushAngle[current->localPlayerNr - 1] != 0) {
+                current->pushAngle[current->localPlayerNr - 1] = Gupd_Recive->pushAngle[current->localPlayerNr - 1];
+            }
+            
+
+
             if (Gupd_Recive->pushAngle[i] != 0)
             {
                 printf("Angle: %d Player: %d\n", Gupd_Recive->pushAngle[i], i);
@@ -277,14 +292,13 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
             Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
 
-            //initGamestate(Gupd_Recive);
-
             memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
 
             current->player_Pos_X[i + 1] = Gupd_Recive->player_Pos_X;
             current->player_Pos_Y[i + 1] = Gupd_Recive->player_Pos_Y;
             current->player_Alive[i + 1] = Gupd_Recive->player_Alive;
             current->playerScore[i + 1] = Gupd_Recive->playerScore;
+            current->resurected[i + 1] = Gupd_Recive->resurected;
 
             for (int i = 0; current->nrOfPlayers > i; i++) {
                 if (Gupd_Recive->pushAngle[i] != 0)
@@ -620,6 +634,12 @@ int SetGameStatePlayerStatus(Game_State current, Player players[])
 
         current->change_flag = 1;
         current->playerScore[current->localPlayerNr - 1] = getPlayerScore(players[current->localPlayerNr - 1]);
+    }
+
+    if (current->resurected[current->localPlayerNr - 1] != getPlayerResurect(players[current->localPlayerNr - 1])) {
+
+        current->change_flag = 1;
+        current->resurected[current->localPlayerNr - 1] = getPlayerResurect(players[current->localPlayerNr - 1]);
     }
 
     return 0;
