@@ -84,7 +84,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
-        void playerAttack(Game_State current, Player players[], Uint32 * spaceDelay, int* nrOfPushes, bool space);
+        playerAttack(current, players, &spaceDelay, &nrOfPushes, space);
 
         space = false;
 

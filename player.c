@@ -260,17 +260,20 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 
 	if (SDL_HasIntersection(&player, &opponentPlayer)) {
 
-		if (player.x < opponentPlayer.x - opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+		if (player.x < opponentPlayer.x - opponentPlayer.w / 10 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
 			return 1;
 		}
-		else if (player.x > opponentPlayer.x + opponentPlayer.w / 2 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+		else if (player.x > opponentPlayer.x + opponentPlayer.w / 10 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
 			return 2;
 		}
-		else if (player.y < opponentPlayer.y - opponentPlayer.h / 2) {
+		else if (player.y < opponentPlayer.y - opponentPlayer.h / 10) {
 			return 3;
 		}
-		else if (player.y > opponentPlayer.y + opponentPlayer.h / 2) {
+		else if (player.y > opponentPlayer.y + opponentPlayer.h / 10) {
 			return 4;
+		}
+		else if (opponentPlayer.x - 10 < player.x < opponentPlayer.x + 10 && opponentPlayer.y + 10 < player.y < opponentPlayer.y - 10) {
+			return (rand() % 4 - 0) + 1;
 		}
 	}
 	return 0;

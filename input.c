@@ -212,7 +212,6 @@ static void hoverFly(Player aPlayer, Inputs aInput) {
 
 void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes, bool space) {
     if (space) {
-        printf("Efter space");
         if (SDL_GetTicks() >= *spaceDelay + SPACE_DELAY) {
             for (int i = 0; i < current->nrOfPlayers; i++) {
                 if (current->localPlayerNr - 1 != i) {
