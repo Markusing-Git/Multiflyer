@@ -191,6 +191,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->player_Pos_Y = current->player_Pos_Y[current->localPlayerNr - 1];
         Gupd_Sending->player_Alive = current->player_Alive[current->localPlayerNr - 1];
         Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
+        Gupd_Sending->localPlayerNr = current->localPlayerNr;
 
         for (int i = 0; current->nrOfPlayers > i; i++) {
             Gupd_Sending->pushAngle[i] = current->pushAngle[i];
@@ -265,7 +266,7 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++)
     {
-        if (SDLNet_UDP_Recv(setup->recv_Sock[i], setup->recv_Pack)) {
+        if (SDLNet_UDP_Recv(setup->recv_Sock[0], setup->recv_Pack)) {
 
             current->change_flag = 1;
 
@@ -275,10 +276,10 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
             memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
 
-            current->player_Pos_X[i + 1] = Gupd_Recive->player_Pos_X;
-            current->player_Pos_Y[i + 1] = Gupd_Recive->player_Pos_Y;
-            current->player_Alive[i + 1] = Gupd_Recive->player_Alive;
-            current->playerScore[i + 1] = Gupd_Recive->playerScore;
+            current->player_Pos_X[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->player_Pos_X;
+            current->player_Pos_Y[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->player_Pos_Y;
+            current->player_Alive[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->player_Alive;
+            current->playerScore[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->playerScore;
 
             for (int i = 0; current->nrOfPlayers > i; i++) {
                 if (Gupd_Recive->pushAngle[i] != 0)

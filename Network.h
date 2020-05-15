@@ -61,6 +61,7 @@ struct Game_State_Send_Type
     int playerScore;
     bool player_Alive;
     int pushAngle[MAX_PLAYERS];
+    int localPlayerNr;
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;
 
