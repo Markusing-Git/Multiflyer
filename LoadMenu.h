@@ -15,6 +15,7 @@
 #include "loadMedia.h"
 #include "Network.h"
 #include "constants.h"
+#include "Store.h"
 
 #define NUM_MENU 6
 #define OPTIONS 5
@@ -53,7 +54,7 @@ struct audio
 typedef struct audio* Audio;
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[],
-	LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings);
+	LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings, int* coins, bool* skinChoice[]);
 void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
 void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]);
 void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
