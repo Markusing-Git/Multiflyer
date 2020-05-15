@@ -6,10 +6,8 @@
 #include "Network.h"
 #include "loadMedia.h"
 #include "constants.h"
-//yjvhuhuhuhhuhuhuuhuuuhuhuhuhuuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuhhuhuhuhuhuhuhuhuhuhuhuhuhuhuhhuhuhuh
-int main(void) {
 
-//Ggggg
+int main(void) {
     SDL_Window* window = NULL;
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;;
     bool running = true;
@@ -21,10 +19,12 @@ int main(void) {
 
     Game_Route gameRoute = menuRoute;
     Audio settings = malloc(sizeof(struct audio));
+    Store status = malloc(sizeof(struct store));
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
     initSettings(settings);
+    initStore(status);
 
 
     // Initialize SDL
@@ -60,7 +60,7 @@ int main(void) {
 
             while (running) {
                 if (gameRoute == menuRoute || gameRoute == hostRoute || gameRoute == clientRoute) {
-                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, settings, &coins, skinChoice)) {
+                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, settings, status, &coins, skinChoice)) {
                         running = false; //if user pressed quit
                     }
                     Mix_HaltMusic();
