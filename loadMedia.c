@@ -393,6 +393,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->immunitySprites[10].y = 665;
     media->immunitySprites[10].w = 552;
     media->immunitySprites[10].h = 55;
+    
 
 
     //*****************************************AUDIO********************************************************
