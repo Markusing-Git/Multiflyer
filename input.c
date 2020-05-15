@@ -244,6 +244,7 @@ PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDela
             (*nrOfPushes) = 0;
         }
     }
+
 }
 
 PRIVATE void pushPlayer(Player aPlayer, int pushAngle, bool attackPower) {
@@ -251,7 +252,7 @@ PRIVATE void pushPlayer(Player aPlayer, int pushAngle, bool attackPower) {
     int speed;
 
     if (attackPower)
-        speed = PUSH_VELOCITY * 5;
+        speed = PUSH_VELOCITY * 2;
     else
         speed = PUSH_VELOCITY;
 

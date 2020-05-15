@@ -32,7 +32,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->immunity = false;
 	aPlayer->resurected = false;
 	aPlayer->score = 0;
-	aPlayer->powerType = none;
+	aPlayer->powerType = attack;
 	return aPlayer;
 }
 
@@ -110,19 +110,19 @@ PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player pl
 		switch (playerList[i]->powerType) {
 		case shield:
 			if (playerList[i]->alive) {
-				media->glowRect.x = playerList[i]->playerPos.x - 20;
-				media->glowRect.y = playerList[i]->playerPos.y - 10;
-				media->glowRect.w = playerList[i]->playerPos.w + 35;
-				media->glowRect.h = playerList[i]->playerPos.h + 32;
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
 				SDL_RenderCopy(renderer, media->PowerUpTex[1], NULL, &media->glowRect);
 			}
 			break;
 		case attack:
 			if (playerList[i]->alive) {
-				media->glowRect.x = playerList[i]->playerPos.x - 20;
-				media->glowRect.y = playerList[i]->playerPos.y - 10;
-				media->glowRect.w = playerList[i]->playerPos.w + 35;
-				media->glowRect.h = playerList[i]->playerPos.h + 32;
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
 				SDL_RenderCopy(renderer, media->PowerUpTex[2], NULL, &media->glowRect);
 			}
 			break;
@@ -317,6 +317,12 @@ PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immuni
 				aPlayer->immunity = false;
 			}
 		}
+	}
+}
+
+PUBLIC void clearPowerUps(Player aPlayer, Uint32* powerDurationTimer) {
+	if ((SDL_GetTicks() >= ((*powerDurationTimer) + SHIELD_DURATION)) && aPlayer->powerType == shield) {
+		aPlayer->powerType = none;
 	}
 }
 

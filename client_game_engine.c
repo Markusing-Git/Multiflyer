@@ -14,6 +14,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     Uint32 resurectDelay = 0;
     Uint32 resurectImmunDelay = 0;
     Uint32 gameOverDelay = 0;
+    Uint32 PowerDuration = 0;
     bool gameOverDelayFlag = false;
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
@@ -77,10 +78,11 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         if (current->powerUp_change_flag) 
             powerUpWrapper = ReceivePowerUp(current);
         powerUpTick(powerUpWrapper, w, h);
-        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers);
+        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &PowerDuration);
 
         //resurects player if player has extra life
         resurectPlayer(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay);
+        clearPowerUps(players[current->localPlayerNr - 1], &PowerDuration);
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
