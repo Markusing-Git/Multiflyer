@@ -52,7 +52,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
-        uppdateInputs(players[0], input);
+        uppdateInputs(players[0], input, current);
 
         worldCollision(getPlayerPosAdr(players[0]), players[0], w, h);
 

@@ -100,7 +100,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
 
 
 //************************* MOVES PLAYER AND SETS PLAYER SPEED *****************************
-void uppdateInputs(Player aPLayer, Inputs aInput) {
+void uppdateInputs(Player aPLayer, Inputs aInput,Game_State current) {
 
     if (getPlayerStatus(aPLayer) == true) {
         if (aInput->push[0] || aInput->released[0])
@@ -160,7 +160,9 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
                 }
             }
         }
-        hoverFly(aPLayer, aInput);
+        if (current->pushAngle[current->localPlayerNr - 1] == 0) {
+            hoverFly(aPLayer, aInput);
+        }
     }
 }
 
@@ -226,7 +228,7 @@ void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int*
     }
 
     if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-        if (*nrOfPushes <= 50) {
+        if (*nrOfPushes <= 40) {
             pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
             (*nrOfPushes)++;
         }
