@@ -96,24 +96,38 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 	SDL_DestroyTexture(media->scoreTex);
 }
 
-PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount) {
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount) {
 
 	//renders players health
-	if (playerList[playerCount]->powerType == life && playerList[playerCount]->resurected == false) {
+	if (playerList[localPlayer]->powerType == life && playerList[localPlayer]->resurected == false) {
 		SDL_RenderCopy(renderer, media->heartTex[1], NULL, media->heartRect);
 	}
-	else if(playerList[playerCount]->alive == true || playerList[playerCount]->resurected == true){
+	else if(playerList[localPlayer]->alive == true || playerList[localPlayer]->resurected == true){
 		SDL_RenderCopy(renderer, media->heartTex[0], NULL, media->heartRect);
 	}
 
-	/*for (int i = 0; i < playerCount; i++) {
+	for (int i = 0; i < playerCount; i++) {
 		switch (playerList[i]->powerType) {
 		case shield:
+			if (playerList[i]->alive) {
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
+				SDL_RenderCopy(renderer, media->PowerUpTex[1], NULL, &media->glowRect);
+			}
 			break;
 		case attack:
+			if (playerList[i]->alive) {
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
+				SDL_RenderCopy(renderer, media->PowerUpTex[2], NULL, &media->glowRect);
+			}
 			break;
 		}
-	}*/
+	}
 }
 
 PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int *immunityFrames) {
@@ -303,6 +317,12 @@ PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immuni
 				aPlayer->immunity = false;
 			}
 		}
+	}
+}
+
+PUBLIC void clearPowerUps(Player aPlayer, Uint32* powerDurationTimer) {
+	if ((SDL_GetTicks() >= ((*powerDurationTimer) + SHIELD_DURATION)) && aPlayer->powerType == shield) {
+		aPlayer->powerType = none;
 	}
 }
 

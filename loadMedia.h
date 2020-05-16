@@ -27,7 +27,6 @@ struct loadMedia {
 	SDL_Texture* heartTex[2];
 	SDL_Texture* immunityTex;
 
-
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
 	SDL_Surface* flySplashSurface;
@@ -56,6 +55,7 @@ struct loadMedia {
 	SDL_Rect heartRect[2];
 	SDL_Rect immunitySprites[IMMUNITY_FRAMES];
 	SDL_Rect immunityRect;
+	SDL_Rect glowRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;

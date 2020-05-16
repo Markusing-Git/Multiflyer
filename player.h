@@ -33,7 +33,7 @@ PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playe
 PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
 //Renders playerpower effects
-PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount);
 
 //renders immunity bar if player is immune
 PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
@@ -94,6 +94,9 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 
 //resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
 PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
+
+//clearsPowerUps if used (timer for shield usage for attack)
+PUBLIC void clearPowerUps(Player aPlayer, Uint32* powerDurationTimer);
 
 /*checks if all players are dead and game is over,
 params: list of players and how many

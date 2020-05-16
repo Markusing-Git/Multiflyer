@@ -211,10 +211,13 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 }
 
 
-PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount, Uint32 *powerDurationTimer) {
 	for (int i = 0; i < playerCount; i++) {
 		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos) && (aPowerUp->powerType != none) && getPlayerStatus(playerList[i])) {
 			setPlayerPower(playerList[i], aPowerUp->powerType);
+			if (aPowerUp->powerType == shield) {
+				*powerDurationTimer = SDL_GetTicks();
+			}
 			aPowerUp->powerType = none;
 			return 1;
 		}

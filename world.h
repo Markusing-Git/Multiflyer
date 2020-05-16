@@ -41,6 +41,6 @@ PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight);
 PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media);
 
 //checkes if player has collided with a powerUp and consumes it
-PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount);
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount, Uint32 *powerDurationTimer);
 
 #endif /* world_h */
