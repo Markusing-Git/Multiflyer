@@ -40,9 +40,9 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
     status->surfaces[2] = TTF_RenderText_Solid(fonts->cuvert_28, status->coins, status->white);
     status->surfaces[3] = TTF_RenderText_Solid(fonts->cuvert_28, status->purchased, status->white);
     status->surfaces[4] = TTF_RenderText_Solid(fonts->cuvert_48, status->backToMenu, status->white);
-    for (int i = 5; i < STORE_SURFACES; i++)
+    for (int i = 0; i < OPTIONS; i++)
     {
-        status->surfaces[i] = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i-5], status->white);
+        status->surfaces[i+5] = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
     }
 
     //Skapar textures från surfaces
@@ -51,9 +51,9 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
     status->coins_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[2]);
     status->purchased_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[3]);
     status->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[4]);
-    for (int i = 5; i < STORE_SURFACES; i++)
+    for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Tex[i-5] = SDL_CreateTextureFromSurface(renderer, status->surfaces[i]);
+        status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, status->surfaces[i+5]);
     }
 
     //Free surfaces 
@@ -85,10 +85,10 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
 
 	for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Rect[i].x = (125 + a);
+        status->price_Rect[i].x = (100 + a);
         status->price_Rect[i].y = 400;
         SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
-        a  = (a + 200);
+        a  = (a + 220);
     }
 
     //Val av status
@@ -149,7 +149,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
                         status->renderText = true;
 
                     SDL_DestroyTexture(status->price_Tex[i]);
-                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, status->price[i], status->white);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
                     status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
                     SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
                     SDL_FreeSurface(temp);
