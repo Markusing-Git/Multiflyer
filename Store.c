@@ -27,7 +27,7 @@ void initStore(Store status)
 void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool* skinChoice[])
 {
     SDL_Event event;
-    int x, y, a=0;
+    int x, y, a = 0;
     strcpy(status->coins, "hej"); //Tillfällig
 
     //Set Bools
@@ -42,7 +42,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
     status->surfaces[4] = TTF_RenderText_Solid(fonts->cuvert_48, status->backToMenu, status->white);
     for (int i = 5; i < STORE_SURFACES; i++)
     {
-        status->surfaces[i] = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
+        status->surfaces[i] = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i-5], status->white);
     }
 
     //Skapar textures från surfaces
@@ -53,7 +53,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
     status->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[4]);
     for (int i = 5; i < STORE_SURFACES; i++)
     {
-        status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, status->surfaces[i]);
+        status->price_Tex[i-5] = SDL_CreateTextureFromSurface(renderer, status->surfaces[i]);
     }
 
     //Free surfaces 
@@ -85,10 +85,10 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
 
 	for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Rect[i].x = (50 + a);
-        status->price_Rect[i].y = 300;
+        status->price_Rect[i].x = (125 + a);
+        status->price_Rect[i].y = 400;
         SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
-        a  = (a + 100);
+        a  = (a + 200);
     }
 
     //Val av status
