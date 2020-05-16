@@ -9,6 +9,7 @@ struct playerType {
 	bool immunity;
 	bool resurected;
 	int score;
+	int coins;
 	PowerType powerType;
 };
 
@@ -19,6 +20,14 @@ struct playerType {
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
 	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects);
 
+//adds coin to player coins if coin power up is consumed
+PRIVATE void addCoinToPlayer(Player aPlayer);
+
+//clearsPowerUps if used (timer for shield usage for attack)
+PRIVATE void clearShield(Player aPlayer, Uint32* powerDurationTimer);
+
+//resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
 //END OF PRIVATE FUNCTIONS*****************************************************************************************************************************
 
 
@@ -293,7 +302,7 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	return 0;
 }
 
-PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
 
 	//algorithm to make timing of resurection and obstacle immunity work
 	if ((aPlayer->powerType == life && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
@@ -320,10 +329,23 @@ PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immuni
 	}
 }
 
-PUBLIC void clearPowerUps(Player aPlayer, Uint32* powerDurationTimer) {
+PRIVATE void clearShield(Player aPlayer, Uint32* powerDurationTimer) {
 	if ((SDL_GetTicks() >= ((*powerDurationTimer) + SHIELD_DURATION)) && aPlayer->powerType == shield) {
 		aPlayer->powerType = none;
 	}
+}
+
+PRIVATE void addCoinToPlayer(Player aPlayer) {
+	if (aPlayer->powerType == coin) {
+		aPlayer->coins++;
+		aPlayer->powerType = none;
+	}
+}
+
+PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer) {
+	resurectPlayer(aPlayer, resurectTimer, immunityTimer);
+	clearShield(aPlayer, powerDurationTimer);
+	addCoinToPlayer(aPlayer);
 }
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {

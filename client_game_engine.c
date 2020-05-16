@@ -11,10 +11,11 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     int backgroundOffset = 0;
     int nrOfPushes = 0;
     int immunityFrame = 0;
+    int coinFrame = 0;
     Uint32 resurectDelay = 0;
     Uint32 resurectImmunDelay = 0;
     Uint32 gameOverDelay = 0;
-    Uint32 PowerDuration = 0;
+    Uint32 powerDuration = 0;
     bool gameOverDelayFlag = false;
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
@@ -78,11 +79,10 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         if (current->powerUp_change_flag) 
             powerUpWrapper = ReceivePowerUp(current);
         powerUpTick(powerUpWrapper, w, h);
-        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &PowerDuration);
+        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration);
 
-        //resurects player if player has extra life
-        resurectPlayer(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay);
-        clearPowerUps(players[current->localPlayerNr - 1], &PowerDuration);
+        //handle player powers
+        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
@@ -103,7 +103,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
         renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
-        renderPowerUp(renderer, powerUpWrapper, media);
+        renderPowerUp(renderer, powerUpWrapper, media, &coinFrame);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
