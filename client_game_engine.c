@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -39,6 +39,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     start_Game_state(players, current);
     init_client_network(playerIp, setup, current);
     printf("%d\n", current->localPlayerNr);
+
+    //add coins from previous games
+    setPlayerCoins(players[current->localPlayerNr - 1], storeStatus->playerCoins);
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
@@ -117,6 +120,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
             }
         }
     }
+
+    //add coins from current games
+    storeStatus->playerCoins = getPlayerCoins(players[current->localPlayerNr - 1]);
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);

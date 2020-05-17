@@ -41,6 +41,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->immunity = false;
 	aPlayer->resurected = false;
 	aPlayer->score = 0;
+	aPlayer->coins = 0;
 	aPlayer->powerType = none;
 	return aPlayer;
 }
@@ -197,6 +198,14 @@ PUBLIC bool getPlayerImmunity(Player aPlayer) {
 
 PUBLIC int getPlayerScore(Player aPlayer) {
 	return aPlayer->score;
+}
+
+PUBLIC int getPlayerCoins(Player aPlayer) {
+	return aPlayer->coins;
+}
+
+PUBLIC void setPlayerCoins(Player aPlayer, int coins) {
+	aPlayer->coins = coins;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {

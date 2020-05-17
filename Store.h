@@ -22,6 +22,9 @@ struct store
 {
     bool done;
     bool renderText;
+    bool skinChoices[OPTIONS];
+
+    int playerCoins;
 
     char coins[NAME_LENGTH];
     char headLine[NAME_LENGTH];
@@ -53,6 +56,6 @@ struct store
 typedef struct store* Store;
 
 void initStore(Store status);
-void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool skinChoice[]);
+void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status);
 
 #endif // !STORE_H

@@ -75,6 +75,12 @@ PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 //Returns the score of a player
 PUBLIC int getPlayerScore(Player aPlayer);
 
+//returns number of coins player has accumulated
+PUBLIC int getPlayerCoins(Player aPlayer);
+
+//sets player coins
+PUBLIC void setPlayerCoins(Player aPlayer, int coins);
+
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 

@@ -1,122 +1,127 @@
 #include "Store.h"
 
-void initStore(Store status)
+void initStore(Store storeStatus)
 {
-    //Coloring
-    status->white.r = 255;
-    status->white.g = 255;
-    status->white.b = 255;
-    status->white.a = 0;
+    storeStatus->playerCoins = 0;
+    for (int i = 0; i < OPTIONS; i++)
+        storeStatus->skinChoices[i] = false;
 
-    status->green.r = 77;
-    status->green.g = 255;
-    status->green.b = 0;
-    status->green.a = 0;
+    //Coloring
+    storeStatus->white.r = 255;
+    storeStatus->white.g = 255;
+    storeStatus->white.b = 255;
+    storeStatus->white.a = 0;
+
+    storeStatus->green.r = 77;
+    storeStatus->green.g = 255;
+    storeStatus->green.b = 0;
+    storeStatus->green.a = 0;
 
     int offset = 0;
     for (int i = 0; i < OPTIONS; i++) {
-        status->skins[i].x = 85 + offset;
-        status->skins[i].y = 200;
-        status->skins[i].w = 150;
-        status->skins[i].h = 138;
+        storeStatus->skins[i].x = 85 + offset;
+        storeStatus->skins[i].y = 200;
+        storeStatus->skins[i].w = 150;
+        storeStatus->skins[i].h = 138;
         offset += 230;
     }
 
     offset = 0;
     for (int i = 0; i < OPTIONS; i++) {
-        status->skinBackgroundRect[i].x = 65 + offset;
-        status->skinBackgroundRect[i].y = 200;
-        status->skinBackgroundRect[i].w = 200;
-        status->skinBackgroundRect[i].h = 150;
+        storeStatus->skinBackgroundRect[i].x = 65 + offset;
+        storeStatus->skinBackgroundRect[i].y = 200;
+        storeStatus->skinBackgroundRect[i].w = 200;
+        storeStatus->skinBackgroundRect[i].h = 150;
         offset += 225;
     }
 
     //Text
-    strcpy(status->headLine, "Store");
-    strcpy(status->backToMenu, "Back to menu");
-    strcpy(status->bank, "Coins:");
-    strcpy(status->purchased, "Purchased");
-    strcpy(status->price[0], "Cost: 5");
-    strcpy(status->price[1], "Cost: 10");
-    strcpy(status->price[2], "Cost: 15");
-    strcpy(status->price[3], "Cost: 20");
+    strcpy(storeStatus->headLine, "Store");
+    strcpy(storeStatus->backToMenu, "Back to menu");
+    strcpy(storeStatus->bank, "Coins:");
+    strcpy(storeStatus->purchased, "Purchased");
+    strcpy(storeStatus->price[0], "Cost: 5");
+    strcpy(storeStatus->price[1], "Cost: 10");
+    strcpy(storeStatus->price[2], "Cost: 15");
+    strcpy(storeStatus->price[3], "Cost: 20");
 }
 
-void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool skinChoice[])
+void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStatus)
 {
     SDL_Event event;
     int x, y, a = 0;
-    strcpy(status->coins, "hej"); //Tillfällig
+    //strcpy(storeStatus->coins, "hej"); //Tillfällig
+    sprintf(storeStatus->coins, "%d", storeStatus->playerCoins);
 
     //Set Bools
-    status->done = false;
-    status->renderText = true;
+    storeStatus->done = false;
+    storeStatus->renderText = true;
 
     //Skapar surfaces
-    status->surfaces[0] = TTF_RenderText_Solid(fonts->cuvert_60, status->headLine, status->white);
-    status->surfaces[1] = TTF_RenderText_Solid(fonts->cuvert_28, status->bank, status->white);
-    status->surfaces[2] = TTF_RenderText_Solid(fonts->cuvert_28, status->coins, status->white);
-    status->surfaces[3] = TTF_RenderText_Solid(fonts->cuvert_28, status->purchased, status->white);
-    status->surfaces[4] = TTF_RenderText_Solid(fonts->cuvert_48, status->backToMenu, status->white);
+    storeStatus->surfaces[0] = TTF_RenderText_Solid(fonts->cuvert_60, storeStatus->headLine, storeStatus->white);
+    storeStatus->surfaces[1] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->bank, storeStatus->white);
+    storeStatus->surfaces[2] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->coins, storeStatus->white);
+    storeStatus->surfaces[3] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->purchased, storeStatus->white);
+    storeStatus->surfaces[4] = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->white);
     for (int i = 0; i < OPTIONS; i++)
     {
-        status->surfaces[i+5] = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
+        storeStatus->surfaces[i+5] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
     }
 
     //Skapar textures från surfaces
-    status->headLine_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[0]);
-    status->bank_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[1]);
-    status->coins_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[2]);
-    status->purchased_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[3]);
-    status->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, status->surfaces[4]);
+    storeStatus->headLine_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[0]);
+    storeStatus->bank_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[1]);
+    storeStatus->coins_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[2]);
+    storeStatus->purchased_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[3]);
+    storeStatus->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[4]);
     for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, status->surfaces[i+5]);
+        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[i+5]);
     }
 
     //Free surfaces 
 	for (int i = 0; i < STORE_SURFACES; i++)
     {
-		SDL_FreeSurface(status->surfaces[i]);
+		SDL_FreeSurface(storeStatus->surfaces[i]);
     }
 
     //Positioner for rects
-    status->headLine_Rect.x = 370;
-    status->headLine_Rect.y = 10;
-    SDL_QueryTexture(status->headLine_Tex, NULL, NULL, &status->headLine_Rect.w, &status->headLine_Rect.h);
+    storeStatus->headLine_Rect.x = 370;
+    storeStatus->headLine_Rect.y = 10;
+    SDL_QueryTexture(storeStatus->headLine_Tex, NULL, NULL, &storeStatus->headLine_Rect.w, &storeStatus->headLine_Rect.h);
 
-    status->bank_Rect.x = 800;
-    status->bank_Rect.y = 10;
-    SDL_QueryTexture(status->bank_Tex, NULL, NULL, &status->bank_Rect.w, &status->bank_Rect.h);
+    storeStatus->bank_Rect.x = 800;
+    storeStatus->bank_Rect.y = 10;
+    SDL_QueryTexture(storeStatus->bank_Tex, NULL, NULL, &storeStatus->bank_Rect.w, &storeStatus->bank_Rect.h);
 
-    status->coins_Rect.x = 920;
-    status->coins_Rect.y = 10;
-    SDL_QueryTexture(status->coins_Tex, NULL, NULL, &status->coins_Rect.w, &status->coins_Rect.h);
+    storeStatus->coins_Rect.x = 920;
+    storeStatus->coins_Rect.y = 10;
+    SDL_QueryTexture(storeStatus->coins_Tex, NULL, NULL, &storeStatus->coins_Rect.w, &storeStatus->coins_Rect.h);
 
-    status->purchased_Rect.x = 50;
-    status->purchased_Rect.y = 400;
-    SDL_QueryTexture(status->purchased_Tex, NULL, NULL, &status->purchased_Rect.w, &status->purchased_Rect.h);
+    storeStatus->purchased_Rect.x = 50;
+    storeStatus->purchased_Rect.y = 400;
+    SDL_QueryTexture(storeStatus->purchased_Tex, NULL, NULL, &storeStatus->purchased_Rect.w, &storeStatus->purchased_Rect.h);
 
-    status->backToMenu_Rect.x = 300;
-    status->backToMenu_Rect.y = 500;
-    SDL_QueryTexture(status->backToMenu_Tex, NULL, NULL, &status->backToMenu_Rect.w, &status->backToMenu_Rect.h);
+    storeStatus->backToMenu_Rect.x = 300;
+    storeStatus->backToMenu_Rect.y = 500;
+    SDL_QueryTexture(storeStatus->backToMenu_Tex, NULL, NULL, &storeStatus->backToMenu_Rect.w, &storeStatus->backToMenu_Rect.h);
 
 	for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Rect[i].x = (73 + a);
-        status->price_Rect[i].y = 355;
-        SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
+        storeStatus->price_Rect[i].x = (73 + a);
+        storeStatus->price_Rect[i].y = 355;
+        SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
         a  = (a + 225);
     }
 
     //Val av status
-    while(!status->done)
+    while(!storeStatus->done)
     {
         while(SDL_PollEvent(&event))
         {
             if(event.type == SDL_QUIT)
             {
-                status->done = true;
+                storeStatus->done = true;
             }
             else if (event.type == SDL_MOUSEMOTION) 
             {
@@ -125,33 +130,33 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
                 for (int i = 0; i < OPTIONS; i++)
                 {
                     //Om fokus, andra till gron text
-                    if (x >= status->price_Rect[i].x && x <= status->price_Rect[i].x + status->price_Rect[i].w && y > status->price_Rect[i].y && y <= status->price_Rect[i].y + status->price_Rect[i].h)
+                    if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
                     {
-                        SDL_DestroyTexture(status->price_Tex[i]);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->green);
-                        status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->green);
+                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);
                     }
-                    else if (x >= status->backToMenu_Rect.x && x <= status->backToMenu_Rect.x + status->backToMenu_Rect.w && y > status->backToMenu_Rect.y && y <= status->backToMenu_Rect.y + status->backToMenu_Rect.h)
+                    else if (x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
                     {
-                        SDL_DestroyTexture(status->backToMenu_Tex);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, status->backToMenu, status->green);
-                        status->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_DestroyTexture(storeStatus->backToMenu_Tex);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->green);
+                        storeStatus->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, temp);
                         SDL_FreeSurface(temp);
                     }
                     else
                     {
-                        SDL_DestroyTexture(status->price_Tex[i]);
-                        SDL_DestroyTexture(status->backToMenu_Tex);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
-                        SDL_Surface* tmp = TTF_RenderText_Solid(fonts->cuvert_48, status->backToMenu, status->white);
-                        status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                        status->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, tmp);
+                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                        SDL_DestroyTexture(storeStatus->backToMenu_Tex);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                        SDL_Surface* tmp = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->white);
+                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        storeStatus->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, tmp);
                         SDL_FreeSurface(temp);
                         SDL_FreeSurface(tmp);
                     }
                 }
-                status->renderText = true;
+                storeStatus->renderText = true;
 			}
             //Om knapptryck 
             else if(event.type==SDL_MOUSEBUTTONDOWN)
@@ -161,60 +166,60 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
                 for (int i = 0; i < OPTIONS; i++)
                 {
                     //Tryck pa nagot skin
-                    if(x >= status->price_Rect[i].x && x <= status->price_Rect[i].x + status->price_Rect[i].w && y > status->price_Rect[i].y && y <= status->price_Rect[i].y + status->price_Rect[i].h)
+                    if(x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
                     {
-                        strcpy(status->price[i], status->purchased);
-                        status->renderText = true;
+                        strcpy(storeStatus->price[i], storeStatus->purchased);
+                        storeStatus->renderText = true;
 
-                    SDL_DestroyTexture(status->price_Tex[i]);
-                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, status->price[i], status->white);
-                    status->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                    SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
+                    SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                    storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
                     SDL_FreeSurface(temp);
-                    status->renderText = true;
+                    storeStatus->renderText = true;
                     }
                     //Tryck pa back to menu
-                    else if(x >= status->backToMenu_Rect.x && x <= status->backToMenu_Rect.x + status->backToMenu_Rect.w && y > status->backToMenu_Rect.y && y <= status->backToMenu_Rect.y + status->backToMenu_Rect.h)
+                    else if(x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
                     {
-                        status->renderText = true;
-                        status->done = true;
+                        storeStatus->renderText = true;
+                        storeStatus->done = true;
                     }
                 }
             }
         }
 
         //Rendrar
-        if(status->renderText)
+        if(storeStatus->renderText)
         {
             SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, status->headLine_Tex, NULL, &status->headLine_Rect);
-            SDL_RenderCopy(renderer, status->bank_Tex, NULL, &status->bank_Rect);
-            SDL_RenderCopy(renderer, status->coins_Tex, NULL, &status->coins_Rect);
-            SDL_RenderCopy(renderer, status->backToMenu_Tex, NULL, &status->backToMenu_Rect);
+            SDL_RenderCopy(renderer, storeStatus->headLine_Tex, NULL, &storeStatus->headLine_Rect);
+            SDL_RenderCopy(renderer, storeStatus->bank_Tex, NULL, &storeStatus->bank_Rect);
+            SDL_RenderCopy(renderer, storeStatus->coins_Tex, NULL, &storeStatus->coins_Rect);
+            SDL_RenderCopy(renderer, storeStatus->backToMenu_Tex, NULL, &storeStatus->backToMenu_Rect);
             for (int i = 0; i < OPTIONS; i++) {
-                SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &status->skinBackgroundRect[i]);
+                SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
             }
-            SDL_RenderCopy(renderer, media->flyTex, &media->startFlyGreen[1], &status->skins[0]);
-            SDL_RenderCopy(renderer, media->hornedFlyTex, &media->hornedFlyGreen[0], &status->skins[1]);
-            SDL_RenderCopy(renderer, media->goggleEyeFlyTex, &media->goggleEyesFlyGreen[0], &status->skins[2]);
-            SDL_RenderCopy(renderer, media->angryFlyTex, &media->angryFlyGreen[0], &status->skins[3]);
+            SDL_RenderCopy(renderer, media->flyTex, &media->startFlyGreen[1], &storeStatus->skins[0]);
+            SDL_RenderCopy(renderer, media->hornedFlyTex, &media->hornedFlyGreen[0], &storeStatus->skins[1]);
+            SDL_RenderCopy(renderer, media->goggleEyeFlyTex, &media->goggleEyesFlyGreen[0], &storeStatus->skins[2]);
+            SDL_RenderCopy(renderer, media->angryFlyTex, &media->angryFlyGreen[0], &storeStatus->skins[3]);
             for (int i = 0; i < OPTIONS; i++)
             {
-                SDL_RenderCopy(renderer, status->price_Tex[i], NULL, &status->price_Rect[i]);
+                SDL_RenderCopy(renderer, storeStatus->price_Tex[i], NULL, &storeStatus->price_Rect[i]);
             }
             SDL_RenderPresent(renderer);
-            status->renderText = false;
+            storeStatus->renderText = false;
         }
     }
 
     //Destroy textures
-    SDL_DestroyTexture(status->headLine_Tex);
-    SDL_DestroyTexture(status->bank_Tex);
-    SDL_DestroyTexture(status->coins_Tex);
-    SDL_DestroyTexture(status->purchased_Tex);
-    SDL_DestroyTexture(status->backToMenu_Tex);
+    SDL_DestroyTexture(storeStatus->headLine_Tex);
+    SDL_DestroyTexture(storeStatus->bank_Tex);
+    SDL_DestroyTexture(storeStatus->coins_Tex);
+    SDL_DestroyTexture(storeStatus->purchased_Tex);
+    SDL_DestroyTexture(storeStatus->backToMenu_Tex);
     for (int i = 0; i < OPTIONS; i++)
     {
-        SDL_DestroyTexture(status->price_Tex[i]);
+        SDL_DestroyTexture(storeStatus->price_Tex[i]);
     }
 }

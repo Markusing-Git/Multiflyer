@@ -10,7 +10,7 @@ typedef struct menu {
 
 PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts, LoadMedia media);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings, Store status, int* coins, bool* skinChoice[])
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings, Store storeStatus)
 {
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
@@ -77,12 +77,12 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 //Store picture
                 if (x >= media->storeRect.x && x <= media->storeRect.x + media->storeRect.w && y > media->storeRect.y && y <= media->storeRect.y + media->storeRect.h)
                 {
-                    store(renderer, media, fonts, status, &coins, skinChoice);
+                    store(renderer, media, fonts, storeStatus);
                 }
                 //Store
                 if (x >= newMenu1.pos[5].x && x <= newMenu1.pos[5].x + newMenu1.pos[5].w && y > newMenu1.pos[5].y && y <= newMenu1.pos[5].y + newMenu1.pos[5].h)
                 {
-                    store(renderer, media, fonts, status, &coins, skinChoice);
+                    store(renderer, media, fonts, storeStatus);
                 }
                 //Quit
                 if (x >= newMenu1.pos[4].x && x <= newMenu1.pos[4].x + newMenu1.pos[4].w && y > newMenu1.pos[4].y && y <= newMenu1.pos[4].y + newMenu1.pos[4].h)
