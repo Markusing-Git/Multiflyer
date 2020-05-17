@@ -23,6 +23,7 @@ struct loadMedia {
 	SDL_Texture* textboxTexture;
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
+	SDL_Texture* storeTex;
 	SDL_Texture* PowerUpTex[3];
 	SDL_Texture* heartTex[2];
 	SDL_Texture* immunityTex;
@@ -40,6 +41,7 @@ struct loadMedia {
 	SDL_Surface* textboxSurface;
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
+	SDL_Surface* storeSurface;
 	SDL_Surface* powerUpSurface[3];
 	SDL_Surface* heartSurface[2];
 	SDL_Surface* immunitySurface;
@@ -56,6 +58,7 @@ struct loadMedia {
 	SDL_Rect heartRect[2];
 	SDL_Rect immunitySprites[IMMUNITY_FRAMES];
 	SDL_Rect immunityRect;
+	SDL_Rect storeRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
@@ -75,7 +78,6 @@ struct loadFonts {
 	TTF_Font* ka1_60;
 	TTF_Font* scoreFont_40;
 	TTF_Font* scoreFont_24;
-
 };
 
 typedef struct loadFonts* Fonts;

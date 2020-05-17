@@ -1,15 +1,17 @@
 #include "loadMedia.h"
 
-// MenuBackground by 
+// MenuBackground by:
 // https://www.freeiconspng.com/img/26394 artist: Ahkâm
 // https://wallpapertag.com/game-background artist: Unknown
-// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artist : Bevouliin.com
+// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artist: Bevouliin.com
 // https://opengameart.org/content/blue-bat-sprites artist: bevouliin.com
 // https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
 // https://opengameart.org/content/happy-fly-enemy-game-character artist: bevouliin.com
-// https://opengameart.org/content/grumpy-bee-enemy-game-character  artist: bevouliin.com
+// https://opengameart.org/content/grumpy-bee-enemy-game-character artist: bevouliin.com
+// https://pixabay.com/illustrations/store-icon-awning-exterior-shop-4433328/ artist: AnnaliseArt
 
-//PowerUps by
+
+//PowerUps by:
 //https://opengameart.org/content/pickup-items-icons artist: Cethiel
 
 //Hearts by
@@ -31,6 +33,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->powerUpSurface[0] = IMG_Load("bilder/PUhealth.png");
     media->powerUpSurface[1] = IMG_Load("bilder/PUshield.png");
     media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
+    media->storeSurface = IMG_Load("bilder/Store.png");
     media->heartSurface[0] = IMG_Load("bilder/heart1.png");
     media->heartSurface[1] = IMG_Load("bilder/heart2.png");
     media->immunitySurface = IMG_Load("bilder/immunityBar.png");
@@ -87,6 +90,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->storeSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
     for (int i = 0; i < 2; i++) {
         if (media->heartSurface[i] == NULL) {
             printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
@@ -118,6 +125,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
     media->immunityTex = SDL_CreateTextureFromSurface(renderer, media->immunitySurface);
 
+    media->storeTex = SDL_CreateTextureFromSurface(renderer, media->storeSurface);
 
 
 
@@ -174,6 +182,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    if (media->storeTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
     for (int i = 0; i < 2; i++) {
         if (media->heartTex[i] == NULL) {
             printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
@@ -195,13 +207,16 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->hostButtonSurface);
     SDL_FreeSurface(media->clientButtonSurface);
     SDL_FreeSurface(media->textboxSurface);
+    SDL_FreeSurface(media->storeSurface);
     SDL_FreeSurface(media->scoreBackgroundSurface);
     for (int i = 0; i < 3; i++)
+    {
         SDL_FreeSurface(media->powerUpSurface[i]);
     for (int i = 0; i < 2; i++)
         SDL_FreeSurface(media->heartSurface[i]);
     SDL_FreeSurface(media->immunitySurface);
 
+    }
 
 
 
