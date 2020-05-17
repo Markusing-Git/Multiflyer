@@ -38,7 +38,9 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	int x, y;
 	SDL_Color selected = { 77 , 255, 0, 0 };
 	char startGame[] = "Start";
+	TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 	initGamestate(current);
+	initTCPCom(communication);
 
 	//initiates with name
 	strcpy(current->playerNames[current->nrOfPlayers], playerName);
@@ -98,7 +100,8 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 					//serverStartGame(setup, current);
 					for (int i = 0; current->nrOfPlayers - 1 > i; i++){
 						printf("sending start game\n");
-						serverSendPlayer(setup->playerIp[i], startGame, (i + 2), current);
+						communication->startGame = 1;
+						sendToClient(communication, setup->playerIp[i], current);
 						printf("sent start game\n");
 					}
 					closeLobbyTTF(hostLobby);
@@ -115,7 +118,8 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		
 
 			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
-				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 2), current);
+				strncpy(communication->playerName, current->playerNames[current->nrOfPlayers - 1], NAME_LENGTH);
+				sendToClient(communication, setup->playerIp[i], current);
 			}
 
 			current->newPlayerFlag = 0;

@@ -105,7 +105,7 @@ void SetPowerUp(Game_State current, PowerUp aPowerUp);
 int serverLobbyConnection(Game_State current); 
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int clientLobbyWait(Game_State current);
-int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current);
+int sendToClient(TCP_Communication communication,char playerIp[], Game_State current);
 void renderConnections(Game_State current); 
 
 Obstacle ReciveObstacle(Game_State Gupd);

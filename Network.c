@@ -373,7 +373,8 @@ int serverLobbyConnection(Game_State current)
 
              for (int i = 0; current->nrOfPlayers-1 > i; i++) {
                  strncpy(communication->playerName, current->playerNames[i], NAME_LENGTH);
-                 if (current->nrOfPlayers - 2 > i) {
+                 if (current->nrOfPlayers - 2 == i) {
+                     printf("Sending close\n");
                      communication->connectionOpen = 0; 
                  }
                  communication->recived = 1;
@@ -450,7 +451,7 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
     return 0;
 }
 
-int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current)
+int sendToClient(TCP_Communication communication, char playerIp[], Game_State current)
 {
 
     int port;
@@ -458,7 +459,6 @@ int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game
     IPaddress ip1;
     char sent[10] = "NULL";
     port = 2002;
-    TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 
     initTCPCom(communication);
 
@@ -473,13 +473,7 @@ int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game
         server = SDLNet_TCP_Open(&ip1);
     } while (server == NULL);
 
-    strncpy(communication->playerName, playerName, NAME_LENGTH);
-
     SDLNet_TCP_Send(server, communication, sizeof(struct TCP_Communication_Type));
-
-    do {
-        SDLNet_TCP_Recv(server, communication, NAME_LENGTH);
-    } while (communication->connectionOpen);
 
     free(communication);
     SDLNet_TCP_Close(server);
@@ -491,8 +485,6 @@ int clientLobbyWait(Game_State current)
 {
     IPaddress ip1;
     int port;
-    TCPsocket server = SDLNet_TCP_Open(&ip1);
-    TCPsocket client;
     port = 2002;
     TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 
@@ -506,8 +498,10 @@ int clientLobbyWait(Game_State current)
     }
 
     initTCPCom(communication);
-
     SDLNet_ResolveHost(&ip1, NULL, port);
+
+    TCPsocket server = SDLNet_TCP_Open(&ip1);
+    TCPsocket client;
 
     do {
 
@@ -525,11 +519,6 @@ int clientLobbyWait(Game_State current)
                     current->nrOfPlayers++;
                     current->newPlayerFlag = 1;
                 }
-
-
-            communication->connectionOpen = 0;
-            SDLNet_TCP_Send(client, communication, sizeof(struct TCP_Communication_Type));
-            SDL_Delay(100);
         }
 
     } while (current->lobbyRunningFlag);
