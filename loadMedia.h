@@ -13,6 +13,9 @@
 struct loadMedia {
 	SDL_Texture* flyTrapTex;
 	SDL_Texture* flyTex;
+	SDL_Texture* hornedFlyTex;
+	SDL_Texture* goggleEyeFlyTex;
+	SDL_Texture* angryFlyTex;
 	SDL_Texture* flySplashTex;
 	SDL_Texture* backgroundTex;
 	SDL_Texture* scoreBoardTexture;
@@ -28,9 +31,13 @@ struct loadMedia {
 	SDL_Texture* heartTex[2];
 	SDL_Texture* immunityTex;
 	SDL_Texture* coinTex;
+	SDL_Texture* skinBackgroundTex;
 
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
+	SDL_Surface* hornedFlySurface;
+	SDL_Surface* goggleEyesFlySurface;
+	SDL_Surface* angryFlySurface;
 	SDL_Surface* flySplashSurface;
 	SDL_Surface* backgroundSurface;
 	SDL_Surface* scoreboardSurface;
@@ -46,11 +53,28 @@ struct loadMedia {
 	SDL_Surface* heartSurface[2];
 	SDL_Surface* immunitySurface;
 	SDL_Surface* coinSurface;
+	SDL_Surface* skinBackgroundSurface;
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
 	SDL_Rect startFlyGreen[PLAYER_FRAMES];
 	SDL_Rect startFlyRed[PLAYER_FRAMES];
 	SDL_Rect startFlyYellow[PLAYER_FRAMES];
+
+	SDL_Rect hornedFlyBlue[PLAYER_FRAMES];
+	SDL_Rect hornedFlyGreen[PLAYER_FRAMES];
+	SDL_Rect hornedFlyRed[PLAYER_FRAMES];
+	SDL_Rect hornedFlyYellow[PLAYER_FRAMES];
+
+	SDL_Rect goggleEyesFlyBlue[PLAYER_FRAMES];
+	SDL_Rect goggleEyesFlyGreen[PLAYER_FRAMES];
+	SDL_Rect goggleEyesFlyRed[PLAYER_FRAMES];
+	SDL_Rect goggleEyesFlyYellow[PLAYER_FRAMES];
+
+	SDL_Rect angryFlyBlue[PLAYER_FRAMES];
+	SDL_Rect angryFlyGreen[PLAYER_FRAMES];
+	SDL_Rect angryFlyRed[PLAYER_FRAMES];
+	SDL_Rect angryFlyYellow[PLAYER_FRAMES];
+
 	SDL_Rect splashSprites[SPLASH_FRAMES];
 	SDL_Rect scrollingBackground[2];
 	SDL_Rect scoreBackgroundRect;
@@ -61,6 +85,7 @@ struct loadMedia {
 	SDL_Rect glowRect;
 	SDL_Rect coinSprites[COIN_FRAMES];
 	SDL_Rect storeRect;
+	SDL_Rect skinBackgroundRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;

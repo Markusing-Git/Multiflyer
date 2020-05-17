@@ -13,6 +13,7 @@
 #include "loadMedia.h"
 #include "constants.h"
 #include "player.h"
+#include "Network.h"
 
 #define OPTIONS 4
 #define STORE_SURFACES 9
@@ -43,6 +44,8 @@ struct store
 	SDL_Rect purchased_Rect;
     SDL_Rect backToMenu_Rect;
     SDL_Rect price_Rect[OPTIONS];
+    SDL_Rect skins[OPTIONS];
+    SDL_Rect skinBackgroundRect[OPTIONS];
 
     SDL_Color white;
     SDL_Color green;
@@ -50,6 +53,6 @@ struct store
 typedef struct store* Store;
 
 void initStore(Store status);
-void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool* skinChoice[]);
+void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool skinChoice[]);
 
 #endif // !STORE_H

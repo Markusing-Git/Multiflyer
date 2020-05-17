@@ -20,6 +20,9 @@
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
     media->flySurface = IMG_Load("bilder/startFly.png"); //Laddar in spritesheet
+    media->hornedFlySurface = IMG_Load("bilder/hornedFly.png");
+    media->goggleEyesFlySurface = IMG_Load("bilder/goggleEyesFly.png");
+    media->angryFlySurface = IMG_Load("bilder/angryFly.png");
     media->flyTrapSurface = IMG_Load("bilder/electricTrap.png"); //Laddar in spritesheet
     media->flySplashSurface = IMG_Load("bilder/bloodsplat.png");
     media->backgroundSurface = IMG_Load("bilder/background.png");
@@ -38,11 +41,23 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartSurface[1] = IMG_Load("bilder/heart2.png");
     media->immunitySurface = IMG_Load("bilder/immunityBar.png");
     media->coinSurface = IMG_Load("bilder/coinsprites.png");
-
+    media->skinBackgroundSurface = IMG_Load("bilder/skinBackground.png");
 
 
 
     if (media->flySurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->hornedFlySurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->goggleEyesFlySurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->angryFlySurface == NULL) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
@@ -110,9 +125,15 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
-
+    if (media->skinBackgroundSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
     media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
+    media->hornedFlyTex = SDL_CreateTextureFromSurface(renderer, media->hornedFlySurface);
+    media->goggleEyeFlyTex = SDL_CreateTextureFromSurface(renderer, media->goggleEyesFlySurface);
+    media->angryFlyTex = SDL_CreateTextureFromSurface(renderer, media->angryFlySurface);
     media->flyTrapTex = SDL_CreateTextureFromSurface(renderer, media->flyTrapSurface);
     media->flySplashTex = SDL_CreateTextureFromSurface(renderer, media->flySplashSurface);
     media->backgroundTex = SDL_CreateTextureFromSurface(renderer, media->backgroundSurface);
@@ -132,12 +153,27 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->coinTex = SDL_CreateTextureFromSurface(renderer, media->coinSurface);
 
     media->storeTex = SDL_CreateTextureFromSurface(renderer, media->storeSurface);
-
+    media->skinBackgroundTex = SDL_CreateTextureFromSurface(renderer, media->skinBackgroundSurface);
 
 
 
 
     if (media->flyTex == NULL)
+    {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->hornedFlyTex == NULL)
+    {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->goggleEyeFlyTex == NULL)
+    {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->angryFlyTex == NULL)
     {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
@@ -206,8 +242,15 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    if (media->skinBackgroundTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
+    SDL_FreeSurface(media->hornedFlySurface);
+    SDL_FreeSurface(media->goggleEyesFlySurface);
+    SDL_FreeSurface(media->angryFlySurface);
     SDL_FreeSurface(media->flyTrapSurface);
     SDL_FreeSurface(media->flySplashSurface);
     SDL_FreeSurface(media->backgroundSurface);
@@ -220,14 +263,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->storeSurface);
     SDL_FreeSurface(media->scoreBackgroundSurface);
     for (int i = 0; i < 3; i++)
-    {
         SDL_FreeSurface(media->powerUpSurface[i]);
     for (int i = 0; i < 2; i++)
         SDL_FreeSurface(media->heartSurface[i]);
     SDL_FreeSurface(media->immunitySurface);
     SDL_FreeSurface(media->coinSurface);
-
-    }
+    SDL_FreeSurface(media->skinBackgroundSurface);
 
 
 
@@ -274,6 +315,132 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->startFlyYellow[1].y = 405;
     media->startFlyYellow[1].w = 150;
     media->startFlyYellow[1].h = 135;
+
+    //Horned fly sprite by https://opengameart.org/content/red-horned-bee-fly-game-sprites-character artist: bevouliin.com
+
+    media->hornedFlyBlue[0].x = 0;
+    media->hornedFlyBlue[0].y = 0;
+    media->hornedFlyBlue[0].w = 150;
+    media->hornedFlyBlue[0].h = 132;
+
+    media->hornedFlyBlue[1].x = 150;
+    media->hornedFlyBlue[1].y = 0;
+    media->hornedFlyBlue[1].w = 150;
+    media->hornedFlyBlue[1].h = 132;
+
+    media->hornedFlyGreen[0].x = 0;
+    media->hornedFlyGreen[0].y = 138;
+    media->hornedFlyGreen[0].w = 150;
+    media->hornedFlyGreen[0].h = 132;
+
+    media->hornedFlyGreen[1].x = 150;
+    media->hornedFlyGreen[1].y = 138;
+    media->hornedFlyGreen[1].w = 150;
+    media->hornedFlyGreen[1].h = 132;
+
+    media->hornedFlyRed[0].x = 0;
+    media->hornedFlyRed[0].y = 272;
+    media->hornedFlyRed[0].w = 150;
+    media->hornedFlyRed[0].h = 132;
+
+    media->hornedFlyRed[1].x = 150;
+    media->hornedFlyRed[1].y = 272;
+    media->hornedFlyRed[1].w = 150;
+    media->hornedFlyRed[1].h = 132;
+
+    media->hornedFlyYellow[0].x = 0;
+    media->hornedFlyYellow[0].y = 410;
+    media->hornedFlyYellow[0].w = 150;
+    media->hornedFlyYellow[0].h = 132;
+
+    media->hornedFlyYellow[1].x = 150;
+    media->hornedFlyYellow[1].y = 410;
+    media->hornedFlyYellow[1].w = 150;
+    media->hornedFlyYellow[1].h = 132;
+
+    //Gogle eyes fly by https://opengameart.org/content/goggle-eye-bee-enemy-game-character artist: bevouliin.com
+
+    media->goggleEyesFlyBlue[0].x = 0;
+    media->goggleEyesFlyBlue[0].y = 0;
+    media->goggleEyesFlyBlue[0].w = 150;
+    media->goggleEyesFlyBlue[0].h = 103;
+
+    media->goggleEyesFlyBlue[1].x = 150;
+    media->goggleEyesFlyBlue[1].y = 0;
+    media->goggleEyesFlyBlue[1].w = 150;
+    media->goggleEyesFlyBlue[1].h = 103;
+
+    media->goggleEyesFlyGreen[0].x = 0;
+    media->goggleEyesFlyGreen[0].y = 103;
+    media->goggleEyesFlyGreen[0].w = 150;
+    media->goggleEyesFlyGreen[0].h = 103;
+
+    media->goggleEyesFlyGreen[1].x = 150;
+    media->goggleEyesFlyGreen[1].y = 103;
+    media->goggleEyesFlyGreen[1].w = 150;
+    media->goggleEyesFlyGreen[1].h = 103;
+
+    media->goggleEyesFlyRed[0].x = 0;
+    media->goggleEyesFlyRed[0].y = 206;
+    media->goggleEyesFlyRed[0].w = 150;
+    media->goggleEyesFlyRed[0].h = 103;
+
+    media->goggleEyesFlyRed[1].x = 150;
+    media->goggleEyesFlyRed[1].y = 206;
+    media->goggleEyesFlyRed[1].w = 150;
+    media->goggleEyesFlyRed[1].h = 103;
+
+    media->goggleEyesFlyYellow[0].x = 0;
+    media->goggleEyesFlyYellow[0].y = 309;
+    media->goggleEyesFlyYellow[0].w = 150;
+    media->goggleEyesFlyYellow[0].h = 103;
+
+    media->goggleEyesFlyYellow[1].x = 150;
+    media->goggleEyesFlyYellow[1].y = 309;
+    media->goggleEyesFlyYellow[1].w = 150;
+    media->goggleEyesFlyYellow[1].h = 103;
+
+    //Angry fly by https://opengameart.org/content/grumpy-bee-enemy-game-character by: bevouliin.com
+
+    media->angryFlyBlue[0].x = 0;
+    media->angryFlyBlue[0].y = 0;
+    media->angryFlyBlue[0].w = 150;
+    media->angryFlyBlue[0].h = 117;
+
+    media->angryFlyBlue[1].x = 150;
+    media->angryFlyBlue[1].y = 0;
+    media->angryFlyBlue[1].w = 150;
+    media->angryFlyBlue[1].h = 117;
+
+    media->angryFlyGreen[0].x = 0;
+    media->angryFlyGreen[0].y = 117;
+    media->angryFlyGreen[0].w = 150;
+    media->angryFlyGreen[0].h = 117;
+
+    media->angryFlyGreen[1].x = 150;
+    media->angryFlyGreen[1].y = 117;
+    media->angryFlyGreen[1].w = 150;
+    media->angryFlyGreen[1].h = 117;
+
+    media->angryFlyRed[0].x = 0;
+    media->angryFlyRed[0].y = 234;
+    media->angryFlyRed[0].w = 150;
+    media->angryFlyRed[0].h = 117;
+
+    media->angryFlyRed[1].x = 150;
+    media->angryFlyRed[1].y = 234;
+    media->angryFlyRed[1].w = 150;
+    media->angryFlyRed[1].h = 117;
+
+    media->angryFlyYellow[0].x = 0;
+    media->angryFlyYellow[0].y = 351;
+    media->angryFlyYellow[0].w = 150;
+    media->angryFlyYellow[0].h = 117;
+
+    media->angryFlyYellow[1].x = 150;
+    media->angryFlyYellow[1].y = 351;
+    media->angryFlyYellow[1].w = 150;
+    media->angryFlyYellow[1].h = 117;
 
     //splash sprites by https://opengameart.org/users/pwl artist: PWL
 
@@ -451,7 +618,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->coinSprites[5].w = 100;
     media->coinSprites[5].h = 100;
 
-    
+    media->skinBackgroundRect.x = 0;
+    media->skinBackgroundRect.y = 0;
+    media->skinBackgroundRect.w = 200;
+    media->skinBackgroundRect.h = 150;
 
 
     //*****************************************AUDIO********************************************************

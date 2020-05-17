@@ -13,10 +13,28 @@ void initStore(Store status)
     status->green.b = 0;
     status->green.a = 0;
 
+    int offset = 0;
+    for (int i = 0; i < OPTIONS; i++) {
+        status->skins[i].x = 85 + offset;
+        status->skins[i].y = 200;
+        status->skins[i].w = 150;
+        status->skins[i].h = 138;
+        offset += 230;
+    }
+
+    offset = 0;
+    for (int i = 0; i < OPTIONS; i++) {
+        status->skinBackgroundRect[i].x = 65 + offset;
+        status->skinBackgroundRect[i].y = 200;
+        status->skinBackgroundRect[i].w = 200;
+        status->skinBackgroundRect[i].h = 150;
+        offset += 225;
+    }
+
     //Text
     strcpy(status->headLine, "Store");
     strcpy(status->backToMenu, "Back to menu");
-    strcpy(status->bank, "Money in bank: ");
+    strcpy(status->bank, "Coins:");
     strcpy(status->purchased, "Purchased");
     strcpy(status->price[0], "Cost: 5");
     strcpy(status->price[1], "Cost: 10");
@@ -24,7 +42,7 @@ void initStore(Store status)
     strcpy(status->price[3], "Cost: 20");
 }
 
-void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool* skinChoice[])
+void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, int* coins, bool skinChoice[])
 {
     SDL_Event event;
     int x, y, a = 0;
@@ -67,7 +85,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
     status->headLine_Rect.y = 10;
     SDL_QueryTexture(status->headLine_Tex, NULL, NULL, &status->headLine_Rect.w, &status->headLine_Rect.h);
 
-    status->bank_Rect.x = 650;
+    status->bank_Rect.x = 800;
     status->bank_Rect.y = 10;
     SDL_QueryTexture(status->bank_Tex, NULL, NULL, &status->bank_Rect.w, &status->bank_Rect.h);
 
@@ -85,10 +103,10 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
 
 	for (int i = 0; i < OPTIONS; i++)
     {
-        status->price_Rect[i].x = (100 + a);
+        status->price_Rect[i].x = (73 + a);
         status->price_Rect[i].y = 400;
         SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
-        a  = (a + 220);
+        a  = (a + 225);
     }
 
     //Val av status
@@ -173,6 +191,13 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
             SDL_RenderCopy(renderer, status->bank_Tex, NULL, &status->bank_Rect);
             SDL_RenderCopy(renderer, status->coins_Tex, NULL, &status->coins_Rect);
             SDL_RenderCopy(renderer, status->backToMenu_Tex, NULL, &status->backToMenu_Rect);
+            for (int i = 0; i < OPTIONS; i++) {
+                SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &status->skinBackgroundRect[i]);
+            }
+            SDL_RenderCopy(renderer, media->flyTex, &media->startFlyGreen[1], &status->skins[0]);
+            SDL_RenderCopy(renderer, media->hornedFlyTex, &media->hornedFlyGreen[0], &status->skins[1]);
+            SDL_RenderCopy(renderer, media->goggleEyeFlyTex, &media->goggleEyesFlyGreen[0], &status->skins[2]);
+            SDL_RenderCopy(renderer, media->angryFlyTex, &media->angryFlyGreen[0], &status->skins[3]);
             for (int i = 0; i < OPTIONS; i++)
             {
                 SDL_RenderCopy(renderer, status->price_Tex[i], NULL, &status->price_Rect[i]);
