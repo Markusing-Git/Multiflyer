@@ -109,8 +109,10 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 		if (current->newPlayerFlag) {
 			playerJoined(renderer, hostLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
-			printf("%d", current->nrOfPlayers);
+			printf("%d", current->nrOfPlayers); 
 			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
+			//setup->playerIp= current->ipAdressCache; //Test för snabbare koppling
+		
 
 			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
 				serverSendPlayer(setup->playerIp[i], current->playerNames[current->nrOfPlayers - 1], (i + 2), current);

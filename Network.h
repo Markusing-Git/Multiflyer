@@ -21,6 +21,7 @@ struct UDP_Client_Config_Type{
     UDPsocket recv_Sock[MAX_PLAYERS];
     IPaddress sendingIP[MAX_PLAYERS];
     char playerIp[MAX_PLAYERS][IP_LENGTH];
+    //const char *playerIp; //Test Snabbare koppling
     UDPpacket *send_Pack;
     UDPpacket *recv_Pack;
     int port[MAX_PLAYERS];
@@ -33,8 +34,10 @@ struct Game_State_Type
     int player_Pos_Y[MAX_PLAYERS];
     bool player_Alive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
+    //char *ipAdressCache; //Test Snabbare koppling
     char ipAdressCache[IP_LENGTH];
     int pushAngle[MAX_PLAYERS];
+    int connectionTimers[MAX_PLAYERS];
 
     int playerScore[MAX_PLAYERS];
     int nrOfPlayers;
@@ -93,6 +96,7 @@ int serverLobbyConnection(Game_State current);
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int clientLobbyWait(Game_State current);
 int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current);
+void renderConnections(Game_State current); 
 
 Obstacle ReciveObstacle(Game_State Gupd);
 PowerUp ReceivePowerUp(Game_State current);

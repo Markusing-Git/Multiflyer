@@ -124,6 +124,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetGameStatePlayerStatus(current, players);
         }
 
+        renderConnections(current); 
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
@@ -133,7 +134,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
-        renderScore(players[0], media, renderer, fonts);
+        renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
         SDL_RenderPresent(renderer);
 
         //if game over

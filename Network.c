@@ -22,6 +22,7 @@ int initGamestate(Game_State current)
         current->player_Alive[i] = true;
         current->pushAngle[i] = 0;
         current->playerScore[i] = 0;
+        current->connectionTimers[i] = 0;
     }
     current->nrOfPlayers = 0;
     current->change_flag = 0;
@@ -42,7 +43,7 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
     int sendPort;
     int recvPort;
 
-    sendPort = 2052;
+    sendPort = 2002;
     recvPort = 2002;
 
 
@@ -89,7 +90,7 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
 {
 
     int sendPort = 2002;
-    int recvPort = 2052;
+    int recvPort = 2002;
 
     //Öppnar en socket för att ta skicka data
     if (!(setup->send_Sock = (SDLNet_UDP_Open(0))))
@@ -105,7 +106,7 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
         printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-
+ 
     for (int i = 0; current->nrOfPlayers-1> i; i++)
     {    
 
@@ -114,7 +115,7 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
 
             printf("Server sendPort: %d\n", sendPort);
             printf("Server recvPort: %d\n", recvPort);
-            printf("%s\n", setup->playerIp[i]);
+            //printf("%s\n", setup->playerIp[i]);
 
             if (SDLNet_ResolveHost(&setup->sendingIP[i], setup->playerIp[i], sendPort) == -1) {
 
@@ -263,18 +264,22 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
 
 int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 {
+    for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+        current->connectionTimers[i]++;
+    }
+
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++)
     {
+
         if (SDLNet_UDP_Recv(setup->recv_Sock[0], setup->recv_Pack)) {
 
             current->change_flag = 1;
 
             Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
-
-            //initGamestate(Gupd_Recive);
-
             memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
+
+            current->connectionTimers[Gupd_Recive->localPlayerNr] = 0;
 
             current->player_Pos_X[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->player_Pos_X;
             current->player_Pos_Y[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->player_Pos_Y;
@@ -329,6 +334,7 @@ int serverLobbyConnection(Game_State current)
     IPaddress ip_Recive;
     char playerName[100] = "NULL";
     char close[] = "Close";
+    int port = 2002;
 
     if (SDLNet_Init() < 0)
     {
@@ -336,11 +342,11 @@ int serverLobbyConnection(Game_State current)
         exit(EXIT_FAILURE);
     }
 
-     SDLNet_ResolveHost(&ip1, NULL, 2002);
+     SDLNet_ResolveHost(&ip1, NULL, port);
 
      TCPsocket server = SDLNet_TCP_Open(&ip1);
      TCPsocket client;
-         
+       
      do {
 
          client = SDLNet_TCP_Accept(server);
@@ -354,6 +360,9 @@ int serverLobbyConnection(Game_State current)
                  printf("%s", playerName);
                  if (playerName != "NULL") {
                      ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
+               
+                     //current->ipAdressCache = SDLNet_ResolveIP(&ip_Recive); //Test snabbare koppling
+
                      strncpy(current->ipAdressCache, SDLNet_ResolveIP(&ip_Recive), IP_LENGTH);
                      strcpy(current->playerNames[current->nrOfPlayers],playerName);
                      current->nrOfPlayers++;
@@ -441,7 +450,7 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
     return 0;
 }
 
-int serverSendPlayer(char playerIp[], char playerName[],int localPlayerNr, Game_State current)
+int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game_State current)
 {
 
     int port;
@@ -449,8 +458,7 @@ int serverSendPlayer(char playerIp[], char playerName[],int localPlayerNr, Game_
     IPaddress ip1;
     char sent[10] = "NULL";
 
-
-        port = 2006;
+        port = 2002;
 
     if (SDLNet_Init() < 0)
     {
@@ -458,10 +466,7 @@ int serverSendPlayer(char playerIp[], char playerName[],int localPlayerNr, Game_
         exit(EXIT_FAILURE);
     }
 
-    SDLNet_ResolveHost(&ip1,playerIp, port);
-
-    printf("%s\n", playerIp);
-
+    SDLNet_ResolveHost(&ip1, playerIp, port);
     do {
         server = SDLNet_TCP_Open(&ip1);
     } while (server == NULL);
@@ -482,7 +487,7 @@ int clientLobbyWait(Game_State current)
     IPaddress ip1;
     int port;
 
-    port = 2006;
+    port = 2002;
  
 
     char playerName[100] = "NULL";
@@ -558,7 +563,7 @@ int resetServerSDLNet(UDP_Client_Config setup, Game_State current)
     SDLNet_FreePacket(setup->recv_Pack);
 
     for(int i = 0; current->nrOfPlayers-1>i;i++)
-        SDLNet_UDP_Close(setup->recv_Sock[i]);
+        SDLNet_UDP_Close(setup->recv_Sock[0]);
     return 0;
 }
 
@@ -644,4 +649,17 @@ PowerUp ReceivePowerUp(Game_State current) {
     PowerUp newPowerUp = clientSpawnPowerUp(current->powerUpRect, current->powerUpDir, current->powerUpType);
     current->powerUp_change_flag = 0;
     return newPowerUp;
+}
+
+void renderConnections(Game_State current) {
+
+    int max_disconnection_Time = 10;
+
+    for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+        
+        if (current->connectionTimers[i] < max_disconnection_Time) {
+            printf("Player: %s disconnected\n", current->playerNames[i]);
+        }
+    }
+
 }
