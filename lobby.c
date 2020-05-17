@@ -268,7 +268,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 		}
 
 		if (current->serverConnection) {
-			*aGameroute = quitRoute;
+			*aGameroute = menuRoute;
 			closeLobbyTTF(clientLobby);
 			current->lobbyRunningFlag = 0;
 			current->nrOfPlayers = 0;
