@@ -68,9 +68,19 @@ struct Game_State_Send_Type
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;
 
+struct TCP_Communication_Type
+{
+    char playerName[NAME_LENGTH];
+    int recived;
+    int startGame;
+    int leftGame;
+    int connectionOpen;
+};
+typedef	struct TCP_Communication_Type * TCP_Communication;
 
 int start_Game_state(Player playerList[], Game_State current);
 int initGamestate(Game_State current);
+int initTCPCom(TCP_Communication communication);
 
 int sendAndReciveServer(Game_State Gupd, UDP_Client_Config setup, SDL_Rect* playerPos[], Player players[]);
 int sendAndReciveClient(Game_State Gupd, UDP_Client_Config setup, SDL_Rect* playerPos[], Player players[]);

@@ -335,6 +335,9 @@ int serverLobbyConnection(Game_State current)
     char playerName[100] = "NULL";
     char close[] = "Close";
     int port = 2002;
+    TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
+
+    initTCPCom(communication);
 
     if (SDLNet_Init() < 0)
     {
@@ -355,36 +358,33 @@ int serverLobbyConnection(Game_State current)
          if (client)
          {
              
-             do {
-                 SDLNet_TCP_Recv(client, playerName, 100); //Tar emot namnet som skickas över strömmen
-                 printf("%s", playerName);
-                 if (playerName != "NULL") {
+                 SDLNet_TCP_Recv(client, communication, sizeof(struct TCP_Communication_Type)); //Tar emot namnet som skickas över strömmen
+
                      ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
                
                      //current->ipAdressCache = SDLNet_ResolveIP(&ip_Recive); //Test snabbare koppling
 
                      strncpy(current->ipAdressCache, SDLNet_ResolveIP(&ip_Recive), IP_LENGTH);
-                     strcpy(current->playerNames[current->nrOfPlayers],playerName);
+                     strncpy(current->playerNames[current->nrOfPlayers],communication->playerName,NAME_LENGTH);
                      current->nrOfPlayers++;
                      current->newPlayerFlag = 1;
-                 }
-             } while (!strcmp(playerName, "NULL"));
 
              
 
              for (int i = 0; current->nrOfPlayers-1 > i; i++) {
-                 SDLNet_TCP_Send(client, current->playerNames[i], strlen(current->playerNames[i])+1);
+                 strncpy(communication->playerName, current->playerNames[i], NAME_LENGTH);
+                 if (current->nrOfPlayers - 2 > i) {
+                     communication->connectionOpen = 0; 
+                 }
+                 communication->recived = 1;
+                 SDLNet_TCP_Send(client, communication, sizeof(struct TCP_Communication_Type));
                  SDL_Delay(150);
              }
-
-             SDLNet_TCP_Send(client, close, strlen(close) + 1);
-
-             SDL_Delay(150);
          }
-
      } while (current->lobbyRunningFlag);
 
 
+     free(communication);
      SDLNet_TCP_Close(server);
      SDLNet_Quit();
 
@@ -401,8 +401,11 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
     int connectionTime = 3;
     TCPsocket server;
     IPaddress ip1;
+    TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
     char sent[10] = "NULL";
 
+    initTCPCom(communication);
+    strncpy(communication->playerName, playerName, NAME_LENGTH);
 
     if (SDLNet_Init() < 0)
     {
@@ -421,30 +424,27 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
         return 1;
     }
 
-    SDLNet_TCP_Send(server, playerName, strlen(playerName) + 1);
+    SDLNet_TCP_Send(server, communication, sizeof(struct TCP_Communication_Type));
 
     do {    
-            SDLNet_TCP_Recv(server, sent, NAME_LENGTH);
+            SDLNet_TCP_Recv(server, communication, sizeof(struct TCP_Communication_Type));
 
-            if ((strcmp(sent, "Close") != 0)) {
-                SDLNet_TCP_Send(server, playerName, strlen(playerName) + 1); //Skickar namnet på spelaren.
-            }
-
-            if ((strcmp(sent, "NULL")!=0) && (strcmp(sent, "Close") != 0)) {
+            if (communication->recived) {
                 
-                strcpy(current->playerNames[current->nrOfPlayers], sent);
+                strcpy(current->playerNames[current->nrOfPlayers], communication->playerName);
                 current->nrOfPlayers++;
                 current->localPlayerNr++;
-                strcpy(sent, "NULL");
+                communication->recived = 1;
             }
             
-    } while ((strcmp(sent, "Close")!=0));
+    } while (communication->connectionOpen);
 
 
     strcpy(current->playerNames[current->nrOfPlayers], playerName);
     current->nrOfPlayers++;
     current->localPlayerNr++;
 
+    free(communication);
     SDLNet_TCP_Close(server);
 
     return 0;
@@ -457,8 +457,10 @@ int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game
     TCPsocket server;
     IPaddress ip1;
     char sent[10] = "NULL";
+    port = 2002;
+    TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 
-        port = 2002;
+    initTCPCom(communication);
 
     if (SDLNet_Init() < 0)
     {
@@ -471,12 +473,15 @@ int serverSendPlayer(char playerIp[], char playerName[], int localPlayerNr, Game
         server = SDLNet_TCP_Open(&ip1);
     } while (server == NULL);
 
-    SDLNet_TCP_Send(server, playerName, strlen(playerName) + 1);
+    strncpy(communication->playerName, playerName, NAME_LENGTH);
+
+    SDLNet_TCP_Send(server, communication, sizeof(struct TCP_Communication_Type));
 
     do {
-        SDLNet_TCP_Recv(server, sent, NAME_LENGTH);
-    } while ((strcmp(sent, "Close") != 0));
+        SDLNet_TCP_Recv(server, communication, NAME_LENGTH);
+    } while (communication->connectionOpen);
 
+    free(communication);
     SDLNet_TCP_Close(server);
 
     return 0;
@@ -486,9 +491,10 @@ int clientLobbyWait(Game_State current)
 {
     IPaddress ip1;
     int port;
-
+    TCPsocket server = SDLNet_TCP_Open(&ip1);
+    TCPsocket client;
     port = 2002;
- 
+    TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 
     char playerName[100] = "NULL";
     char close[] = "Close";
@@ -499,10 +505,9 @@ int clientLobbyWait(Game_State current)
         exit(EXIT_FAILURE);
     }
 
-    SDLNet_ResolveHost(&ip1, NULL, port);
+    initTCPCom(communication);
 
-    TCPsocket server = SDLNet_TCP_Open(&ip1);
-    TCPsocket client;
+    SDLNet_ResolveHost(&ip1, NULL, port);
 
     do {
 
@@ -510,25 +515,26 @@ int clientLobbyWait(Game_State current)
 
         if (client)
         {
-            do {
-                SDLNet_TCP_Recv(client, playerName, 100); //Tar emot namnet som skickas över strömmen
+                SDLNet_TCP_Recv(client, communication, sizeof(struct TCP_Communication_Type)); //Tar emot namnet som skickas över strömmen
 
-                if (!strcmp(playerName, "Start")) {
+                if (!communication->startGame) {
                     current->lobbyRunningFlag = 0;
                 }
-                else if (playerName != "NULL") {
-                    strcpy(current->playerNames[current->nrOfPlayers], playerName);
+                else{
+                    strcpy(current->playerNames[current->nrOfPlayers], communication->playerName);
                     current->nrOfPlayers++;
                     current->newPlayerFlag = 1;
                 }
-            } while (!strcmp(playerName, "NULL"));
 
-            SDLNet_TCP_Send(client, close, strlen(close) + 1);
+
+            communication->connectionOpen = 0;
+            SDLNet_TCP_Send(client, communication, sizeof(struct TCP_Communication_Type));
             SDL_Delay(100);
         }
 
     } while (current->lobbyRunningFlag);
 
+    free(communication);
     SDLNet_TCP_Close(server);
     SDLNet_Quit();
 
@@ -662,4 +668,13 @@ void renderConnections(Game_State current) {
         }
     }
 
+}
+
+int initTCPCom(TCP_Communication communication) {
+    communication->leftGame = 0;
+    communication->connectionOpen = 1;
+    communication->startGame = 0;
+    communication->recived = 0;
+
+    return 0;
 }
