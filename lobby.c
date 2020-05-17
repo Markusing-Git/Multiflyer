@@ -269,7 +269,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 		if (current->serverConnection) {
 			*aGameroute = quitRoute;
-			closeLobbyTTF(hostLobby);
+			closeLobbyTTF(clientLobby);
 			current->lobbyRunningFlag = 0;
 			current->nrOfPlayers = 0;
 			printf("Host disconnected\n");

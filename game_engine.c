@@ -124,7 +124,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetGameStatePlayerStatus(current, players);
         }
 
-        renderConnections(current); 
+        renderConnectionsServer(current); 
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);

@@ -216,8 +216,12 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         free(Gupd_Sending);
     }
 
+    current->connectionTimers[0]++;
+
     //kollar om det finns ett packet att hämta
     if (SDLNet_UDP_Recv(setup->recv_Sock[0], setup->recv_Pack)) {
+
+        current->connectionTimers[0] = 0;
 
         Game_State Gupd_Recive = malloc(sizeof(struct Game_State_Type));
 
@@ -686,17 +690,30 @@ PowerUp ReceivePowerUp(Game_State current) {
     return newPowerUp;
 }
 
-void renderConnections(Game_State current) {
+void renderConnectionsServer(Game_State current) {
 
-    int max_disconnection_Time = 10;
+    int max_disconnection_Time = 200;
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
         
-        if (current->connectionTimers[i] < max_disconnection_Time) {
+        if (current->connectionTimers[i] == max_disconnection_Time) {
+            current->player_Alive[i+1] = 0;
             printf("Player: %s disconnected\n", current->playerNames[i]);
         }
     }
 
+}
+
+void renderConnectionsClient(Game_State current) {
+
+    int max_disconnection_Time = 200;
+
+        if (current->connectionTimers[0] == max_disconnection_Time) {
+            printf("Player(Host): %s disconnected\n", current->playerNames[0]);
+            return 1;
+        }
+
+        return 0;
 }
 
 void removePlayerLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr){
