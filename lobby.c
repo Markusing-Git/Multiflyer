@@ -134,7 +134,16 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				playerJoined(renderer, hostLobby, fonts, current->playerNames[i]);
 				printf("updated list\n");
 			}
+
 			hostLobby->playerCount = hostLobby->playerCount - 1;
+
+			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
+				sendToClient(communication, setup->playerIp[i], current);
+			}
+			
+			communication->leftGame = 0;
+			current->disconnectionCache = 0;
+
 		}
 
 		if (hostLobby->renderText) {
@@ -221,6 +230,21 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			playerJoined(renderer, clientLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
 			current->newPlayerFlag = 0;
 		}
+
+		if (current->disconnectionCache != 0) {
+			printf("Disconnection recived\n");
+			removePlayerLobby(current, NULL, current->disconnectionCache);
+			clientLobby->playerCount = 0;
+
+			for (int i = 0; current->nrOfPlayers + 1 > i; i++) {
+				playerJoined(renderer, clientLobby, fonts, current->playerNames[i]);
+				printf("updated list\n");
+			}
+
+			clientLobby->playerCount = clientLobby->playerCount - 1;
+			current->disconnectionCache = 0;
+		}
+
 		if (clientLobby->renderText) {
 			renderLobby(renderer, false, clientLobby);
 		}

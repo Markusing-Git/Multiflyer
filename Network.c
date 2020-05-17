@@ -363,6 +363,7 @@ int serverLobbyConnection(Game_State current)
 
             if (communication->leftGame) {
                 current->disconnectionCache = communication->localPlayerNr;
+                communication->leftGame = 0;
             }
             else {
 
@@ -518,7 +519,10 @@ int clientLobbyWait(Game_State current)
                 if (communication->startGame) {
                     current->lobbyRunningFlag = 0;
                 }
-                else{
+                else if(communication->leftGame){
+                    communication->leftGame = 0;
+                    current->disconnectionCache = communication->localPlayerNr;
+                }else{
                     strcpy(current->playerNames[current->nrOfPlayers], communication->playerName);
                     current->nrOfPlayers++;
                     current->newPlayerFlag = 1;
@@ -696,13 +700,15 @@ void removePlayerLobby(Game_State current, UDP_Client_Config setup, int localPla
     if (current->nrOfPlayers > 2 && localPlayerNr != current->nrOfPlayers) {
             for (int i = localPlayerNr - 1; current->nrOfPlayers > i; i++) {
                 strncpy(current->playerNames[i], current->playerNames[i + 1], NAME_LENGTH);
-                strncpy(setup->playerIp[i], setup->playerIp[i + 1],IP_LENGTH);
+                if (setup->playerIp[0] != NULL) {
+                    strncpy(setup->playerIp[i], setup->playerIp[i + 1], IP_LENGTH);
+                }
+                
             }
     }
 
     strcpy(current->playerNames[current->nrOfPlayers - 1], "*empty*");
     current->nrOfPlayers = current->nrOfPlayers - 1;
-    current->disconnectionCache = 0;
 }
 
 int initTCPCom(TCP_Communication communication) {
