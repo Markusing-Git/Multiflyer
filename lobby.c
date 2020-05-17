@@ -126,12 +126,15 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 
 		if (current->disconnectionCache != 0){
+			printf("Disconnection recived\n");
 			removePlayerLobby(current, setup, current->disconnectionCache);
 			hostLobby->playerCount = 0;
 			
-			for (int i = 0; current->nrOfPlayers > i; i++) {
+			for (int i = 0; current->nrOfPlayers+1 > i; i++) {
 				playerJoined(renderer, hostLobby, fonts, current->playerNames[i]);
+				printf("updated list\n");
 			}
+			hostLobby->playerCount = hostLobby->playerCount - 1;
 		}
 
 		if (hostLobby->renderText) {
@@ -201,13 +204,16 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 				closeLobbyTTF(clientLobby);
 				disconnectFromServer(playerIp, current);
 				current->nrOfPlayers = 0;
+				current->lobbyRunningFlag = 0;
 				return 0;
 			}
 			else if(clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				*aGameroute = menuRoute;
 				closeLobbyTTF(clientLobby);
+				disconnectFromServer(playerIp, current);
 				current->nrOfPlayers = 0;
+				current->lobbyRunningFlag = 0;
 				return 0;
 			}
 		}

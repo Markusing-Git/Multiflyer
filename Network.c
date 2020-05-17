@@ -680,7 +680,7 @@ PowerUp ReceivePowerUp(Game_State current) {
 
 void renderConnections(Game_State current) {
 
-    int max_disconnection_Time = 100;
+    int max_disconnection_Time = 10;
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
         

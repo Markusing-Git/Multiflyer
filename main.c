@@ -14,7 +14,7 @@ int main(void) {
     bool running = true;
 
     char playerName[NAME_LENGTH] = "No-alias";
-    char playerIp[IP_LENGTH] = "127.0.0.1";
+    char playerIp[IP_LENGTH] = "192.168.0.14";
 
     Game_Route gameRoute = menuRoute;
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
