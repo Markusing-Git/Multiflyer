@@ -84,7 +84,7 @@ PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp old
 	PowerUp powerUp = realloc(oldPowerUp, sizeof(struct powerUp_type));
 	int rndX = (rand() % screenWidth - 0) + 1;
 	int rndY = (rand() % screenHeight - 0) + 1;
-	int rndType = (rand() % 3 - 0);
+	int rndType = (rand() % 4 - 0);
 	int rndDir = (rand() % 4 - 0);
 
 	powerUp->powerPos.x = rndX;
@@ -196,7 +196,10 @@ PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight) {
 	}
 }
 
-PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media) {
+PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media, int *coinFrames) {
+
+	
+
 	switch (aPowerUp->powerType) {
 	case life:
 		SDL_RenderCopy(renderer, media->PowerUpTex[0], NULL, &aPowerUp->powerPos);
@@ -207,14 +210,24 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 	case attack:
 		SDL_RenderCopy(renderer, media->PowerUpTex[2], NULL, &aPowerUp->powerPos);
 		break;
+	case coin:
+		SDL_RenderCopyEx(renderer, media->coinTex, &media->coinSprites[(*coinFrames) / COIN_FRAMES], &aPowerUp->powerPos, 0, NULL, SDL_FLIP_NONE);
+		(*coinFrames)++;
+		if ((*coinFrames) / 6 == COIN_FRAMES) {
+			(*coinFrames) = 0;
+		}
+		break;
 	}
 }
 
 
-PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount) {
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount, Uint32 *powerDurationTimer) {
 	for (int i = 0; i < playerCount; i++) {
 		if (SDL_HasIntersection(getPlayerPosAdr(playerList[i]), &aPowerUp->powerPos) && (aPowerUp->powerType != none) && getPlayerStatus(playerList[i])) {
 			setPlayerPower(playerList[i], aPowerUp->powerType);
+			if (aPowerUp->powerType == shield) {
+				*powerDurationTimer = SDL_GetTicks();
+			}
 			aPowerUp->powerType = none;
 			return 1;
 		}

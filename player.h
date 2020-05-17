@@ -16,6 +16,7 @@ typedef enum powerType {
 	life,
 	shield,
 	attack,
+	coin,
 	none
 } PowerType;
 
@@ -33,7 +34,7 @@ PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playe
 PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
 
 //Renders playerpower effects
-PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int playerCount);
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount);
 
 //renders immunity bar if player is immune
 PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
@@ -83,7 +84,7 @@ PUBLIC void movePlayerDown(Player aPlayer, int speed);
 PUBLIC void movePlayerLeft(Player aPlayer, int speed);
 PUBLIC void movePlayerRight(Player aPlayer, int speed);
 
-//frees player structs from heap, params: list of players and amount
+//frees player structs from heap, params: list of players and amount of players
 PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 //Adds one to a players score
@@ -92,8 +93,8 @@ PUBLIC void addScore(Player aPlayer);
 //Checks if there is contact between players in case of a push
 PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 
-//resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
-PUBLIC void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
+//handles all player power related functions
+PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer);
 
 /*checks if all players are dead and game is over,
 params: list of players and how many

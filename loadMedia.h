@@ -27,7 +27,7 @@ struct loadMedia {
 	SDL_Texture* PowerUpTex[3];
 	SDL_Texture* heartTex[2];
 	SDL_Texture* immunityTex;
-
+	SDL_Texture* coinTex;
 
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
@@ -45,7 +45,7 @@ struct loadMedia {
 	SDL_Surface* powerUpSurface[3];
 	SDL_Surface* heartSurface[2];
 	SDL_Surface* immunitySurface;
-
+	SDL_Surface* coinSurface;
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
 	SDL_Rect startFlyGreen[PLAYER_FRAMES];
@@ -58,6 +58,8 @@ struct loadMedia {
 	SDL_Rect heartRect[2];
 	SDL_Rect immunitySprites[IMMUNITY_FRAMES];
 	SDL_Rect immunityRect;
+	SDL_Rect glowRect;
+	SDL_Rect coinSprites[COIN_FRAMES];
 	SDL_Rect storeRect;
 
 	Mix_Chunk* flyingNoise;
