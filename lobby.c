@@ -61,12 +61,25 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			{
 				*aGameroute = quitRoute;
 				closeLobbyTTF(hostLobby);
+
+				communication->serverDisconnect = 1;
+				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+					sendToClient(communication, setup->playerIp[i], current);
+				}
+
+				current->lobbyRunningFlag = 0;
+				current->nrOfPlayers = 0;
 				return 0;
 			}
 			else if (hostLobby->event.type == SDL_KEYDOWN && hostLobby->event.key.keysym.sym == SDLK_ESCAPE) 
 			{
 				*aGameroute = menuRoute;
 				closeLobbyTTF(hostLobby);
+
+				communication->serverDisconnect = 1;
+				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+					sendToClient(communication, setup->playerIp[i], current);
+				}
 				current->lobbyRunningFlag = 0;
 				current->nrOfPlayers = 0;
 				return 0;
@@ -136,14 +149,25 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			}
 
 			hostLobby->playerCount = hostLobby->playerCount - 1;
+			communication->localPlayerNr = current->disconnectionCache;
+			communication->leftGame = 1;
 
-			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
+			for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
 				sendToClient(communication, setup->playerIp[i], current);
 			}
 			
 			communication->leftGame = 0;
 			current->disconnectionCache = 0;
 
+		}
+
+		if (current->serverConnection) {
+			*aGameroute = quitRoute;
+			closeLobbyTTF(hostLobby);
+			current->lobbyRunningFlag = 0;
+			current->nrOfPlayers = 0;
+			printf("Host disconnected\n");
+			return 0;
 		}
 
 		if (hostLobby->renderText) {
@@ -173,6 +197,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 		*aGameroute = menuRoute;
 		closeLobbyTTF(clientLobby);
 		current->nrOfPlayers = 0;
+		printf("Couldn't connect to server\n");
 		return 0;
 	}
 
@@ -242,7 +267,11 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			}
 
 			clientLobby->playerCount = clientLobby->playerCount - 1;
+			if (current->disconnectionCache < current->localPlayerNr) {
+				current->localPlayerNr = current->localPlayerNr - 1;
+			}
 			current->disconnectionCache = 0;
+			
 		}
 
 		if (clientLobby->renderText) {

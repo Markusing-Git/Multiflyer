@@ -39,6 +39,7 @@ struct Game_State_Type
     int pushAngle[MAX_PLAYERS];
     int connectionTimers[MAX_PLAYERS];
     int disconnectionCache;
+    int serverConnection;
 
     int playerScore[MAX_PLAYERS];
     int nrOfPlayers;
@@ -77,6 +78,7 @@ struct TCP_Communication_Type
     int leftGame;
     int connectionOpen;
     int localPlayerNr;
+    int serverDisconnect;
 };
 typedef	struct TCP_Communication_Type * TCP_Communication;
 
