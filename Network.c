@@ -460,8 +460,6 @@ int sendToClient(TCP_Communication communication, char playerIp[], Game_State cu
     char sent[10] = "NULL";
     port = 2002;
 
-    initTCPCom(communication);
-
     if (SDLNet_Init() < 0)
     {
         printf("SDLNet_Init: %s\n", SDLNet_GetError());
@@ -475,7 +473,6 @@ int sendToClient(TCP_Communication communication, char playerIp[], Game_State cu
 
     SDLNet_TCP_Send(server, communication, sizeof(struct TCP_Communication_Type));
 
-    free(communication);
     SDLNet_TCP_Close(server);
 
     return 0;
@@ -511,7 +508,7 @@ int clientLobbyWait(Game_State current)
         {
                 SDLNet_TCP_Recv(client, communication, sizeof(struct TCP_Communication_Type)); //Tar emot namnet som skickas över strömmen
 
-                if (!communication->startGame) {
+                if (communication->startGame) {
                     current->lobbyRunningFlag = 0;
                 }
                 else{
@@ -524,7 +521,6 @@ int clientLobbyWait(Game_State current)
     } while (current->lobbyRunningFlag);
 
     free(communication);
-    SDLNet_TCP_Close(server);
     SDLNet_Quit();
 
     return 0; 
