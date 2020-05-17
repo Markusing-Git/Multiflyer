@@ -38,6 +38,7 @@ struct Game_State_Type
     char ipAdressCache[IP_LENGTH];
     int pushAngle[MAX_PLAYERS];
     int connectionTimers[MAX_PLAYERS];
+    int disconnectionCache;
 
     int playerScore[MAX_PLAYERS];
     int nrOfPlayers;
@@ -75,6 +76,7 @@ struct TCP_Communication_Type
     int startGame;
     int leftGame;
     int connectionOpen;
+    int localPlayerNr;
 };
 typedef	struct TCP_Communication_Type * TCP_Communication;
 
@@ -106,7 +108,9 @@ int serverLobbyConnection(Game_State current);
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int clientLobbyWait(Game_State current);
 int sendToClient(TCP_Communication communication,char playerIp[], Game_State current);
-void renderConnections(Game_State current); 
+void renderConnections(Game_State current);
+void removePlayerLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr);
+int disconnectFromServer(char playerIp[], Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);
 PowerUp ReceivePowerUp(Game_State current);

@@ -125,6 +125,15 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			current->newPlayerFlag = 0;
 		}
 
+		if (current->disconnectionCache != 0){
+			removePlayerLobby(current, setup, current->disconnectionCache);
+			hostLobby->playerCount = 0;
+			
+			for (int i = 0; current->nrOfPlayers > i; i++) {
+				playerJoined(renderer, hostLobby, fonts, current->playerNames[i]);
+			}
+		}
+
 		if (hostLobby->renderText) {
 			renderLobby(renderer, true, hostLobby);
 		}
@@ -190,6 +199,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			{
 				*aGameroute = quitRoute;
 				closeLobbyTTF(clientLobby);
+				disconnectFromServer(playerIp, current);
 				current->nrOfPlayers = 0;
 				return 0;
 			}
