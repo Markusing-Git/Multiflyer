@@ -112,7 +112,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         //Multiplayer function
         sendAndReciveClient(current, setup, playerPos, players);
 
-        if (renderConnectionsClient) {
+        if (renderConnectionsClient(current)) {
             *aGameRoute = menuRoute;
             running = false;
         }

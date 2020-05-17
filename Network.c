@@ -704,7 +704,7 @@ void renderConnectionsServer(Game_State current) {
 
 }
 
-void renderConnectionsClient(Game_State current) {
+int renderConnectionsClient(Game_State current) {
 
     int max_disconnection_Time = 200;
 

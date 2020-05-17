@@ -110,8 +110,8 @@ int serverLobbyConnection(Game_State current);
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 int clientLobbyWait(Game_State current);
 int sendToClient(TCP_Communication communication,char playerIp[], Game_State current);
-void renderConnectionsServer(Game_State current);
-void renderConnectionsClient(Game_State current);
+int renderConnectionsServer(Game_State current);
+int renderConnectionsClient(Game_State current);
 void removePlayerLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr);
 int disconnectFromServer(char playerIp[], Game_State current);
 
