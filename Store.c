@@ -104,7 +104,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status, i
 	for (int i = 0; i < OPTIONS; i++)
     {
         status->price_Rect[i].x = (73 + a);
-        status->price_Rect[i].y = 400;
+        status->price_Rect[i].y = 355;
         SDL_QueryTexture(status->price_Tex[i], NULL, NULL, &status->price_Rect[i].w, &status->price_Rect[i].h);
         a  = (a + 225);
     }
