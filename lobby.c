@@ -65,6 +65,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				communication->serverDisconnect = 1;
 				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
 					sendToClient(communication, setup->playerIp[i], current);
+					printf("Server closing\n");
 				}
 
 				current->lobbyRunningFlag = 0;
@@ -79,6 +80,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				communication->serverDisconnect = 1;
 				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
 					sendToClient(communication, setup->playerIp[i], current);
+					printf("Server closing\n");
 				}
 				current->lobbyRunningFlag = 0;
 				current->nrOfPlayers = 0;
@@ -159,15 +161,6 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			communication->leftGame = 0;
 			current->disconnectionCache = 0;
 
-		}
-
-		if (current->serverConnection) {
-			*aGameroute = quitRoute;
-			closeLobbyTTF(hostLobby);
-			current->lobbyRunningFlag = 0;
-			current->nrOfPlayers = 0;
-			printf("Host disconnected\n");
-			return 0;
 		}
 
 		if (hostLobby->renderText) {
@@ -272,6 +265,15 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			}
 			current->disconnectionCache = 0;
 			
+		}
+
+		if (current->serverConnection) {
+			*aGameroute = quitRoute;
+			closeLobbyTTF(hostLobby);
+			current->lobbyRunningFlag = 0;
+			current->nrOfPlayers = 0;
+			printf("Host disconnected\n");
+			return 0;
 		}
 
 		if (clientLobby->renderText) {
