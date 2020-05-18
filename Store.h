@@ -25,6 +25,7 @@ struct store
     SkinChoices skinChoice;
 
     int playerCoins;
+    int selectedRect;
 
     char coins[NAME_LENGTH];
     char headLine[NAME_LENGTH];

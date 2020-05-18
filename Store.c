@@ -5,6 +5,7 @@ PRIVATE int handlePurchase(Store storeStatus, int iteration);
 void initStore(Store storeStatus)
 {
     storeStatus->playerCoins = 0;
+    storeStatus->selectedRect = 0;
     storeStatus->skinChoice = fly;
 
     //Coloring
@@ -163,10 +164,10 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             {
                 x=event.button.x;
                 y=event.button.y;
-                for (int i = 1; i < OPTIONS; i++)
+                for (int i = 0; i < OPTIONS; i++)
                 {
                     //Tryck pa nagot skin
-                    if(x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
+                    if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
                     {
                         //om köp är genomförbart returneras 1
                         if (handlePurchase(storeStatus, i)) {
@@ -180,6 +181,11 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                             SDL_FreeSurface(temp);
                             storeStatus->renderText = true;
                         }
+                    }
+                    else if (x >= storeStatus->skinBackgroundRect[i].x && x <= storeStatus->skinBackgroundRect[i].x + storeStatus->skinBackgroundRect[i].w && y > storeStatus->skinBackgroundRect[i].y && y <= storeStatus->skinBackgroundRect[i].y + storeStatus->skinBackgroundRect[i].h)
+                    {
+
+                        storeStatus->selectedRect = i;
                     }
                     //Tryck pa back to menu
                     else if(x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
@@ -200,7 +206,12 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             SDL_RenderCopy(renderer, storeStatus->coins_Tex, NULL, &storeStatus->coins_Rect);
             SDL_RenderCopy(renderer, storeStatus->backToMenu_Tex, NULL, &storeStatus->backToMenu_Rect);
             for (int i = 0; i < OPTIONS; i++) {
-                SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
+                if (i == storeStatus->selectedRect) {
+                    SDL_RenderCopy(renderer, media->selectedSkinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
+                }
+                else {
+                    SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
+                }
             }
             SDL_RenderCopy(renderer, media->flyTex, &media->startFlyGreen[1], &storeStatus->skins[0]);
             SDL_RenderCopy(renderer, media->hornedFlyTex, &media->hornedFlyGreen[0], &storeStatus->skins[1]);
