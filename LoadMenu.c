@@ -26,6 +26,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
     newMenu1 = createMenu(renderer, fonts);
     bool running = true;
     int x, y;
+    char disconnected[] = "Host disconnected";
     SDL_Color selected = { 77 , 255, 0, 0 };
     SDL_Event event;
 
@@ -126,6 +127,24 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
         //if user has quit game
         if (*aGameRoute == quitRoute) {
             running = false;
+        }
+
+        if (current->serverConnection) {
+            SDL_Rect disconnectedRect;
+            SDL_Surface* disconnectedSurface;
+            SDL_Texture* disconnectedTexture;
+
+            SDL_Color disconnectonColor = { 201, 43, 43, 0 };
+
+            disconnectedSurface = TTF_RenderText_Solid(fonts->magical_45, disconnected, disconnectonColor);
+            disconnectedTexture = SDL_CreateTextureFromSurface(renderer, disconnectedSurface);
+            SDL_FreeSurface(disconnectedSurface);
+
+            disconnectedRect.x = 135;
+            disconnectedRect.y = 170;
+
+            SDL_QueryTexture(disconnectedTexture, NULL, NULL, &disconnectedRect.w, &disconnectedRect.h);
+            SDL_RenderCopy(renderer, disconnectedTexture, NULL, &disconnectedRect);
         }
 
         // Clear screen
