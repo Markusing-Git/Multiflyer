@@ -7,6 +7,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame[MAX_PLAYERS] = { 0 };
+    int attackFrame[MAX_PLAYERS] = { 0 };
     int immunityFrame = 0;
     Uint32 obstacleDelay = SDL_GetTicks();
     Uint32 gameOverDelay = 0;
@@ -49,7 +50,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input, aGameRoute, &space);
+        pollInputEvents(&event, &running, players[0], input, aGameRoute);
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
@@ -70,6 +71,13 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             else if (getPlayerStatus(players[i]) == true) {
                 splashFrame[i] = 0;
             }
+        }
+
+        for (int i = 0; i < current->nrOfPlayers; i++) {
+            if(getPlayerAttack(players[i]))
+            attackFrame[i]++;
+            if (attackFrame[i] / 3 == ATTACK_FRAMES)
+                attackFrame[i] = 0;
         }
 
         //handles obstacles
@@ -99,9 +107,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
        // attack(current->nrOfPlayers, current->localPlayerNr, current->pushAngle, players, &current->change_flag, &spaceDelay, space, nrOfPushes);
 
-        playerAttack(current, players, &spaceDelay, &nrOfPushes, space);
+        playerAttack(current, players, &spaceDelay, &nrOfPushes);
 
-        space = false;
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
@@ -124,6 +131,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
         renderPowerUp(renderer, powerUpWrapper, media);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
+        renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[0], media, renderer, fonts);
         SDL_RenderPresent(renderer);

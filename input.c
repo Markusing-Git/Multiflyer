@@ -42,7 +42,7 @@ PUBLIC Inputs initInputs(void) {
 }
 
 
-PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space) {
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute) {
     while (SDL_PollEvent(aEvent))
     {
         switch (aEvent->type)
@@ -68,7 +68,7 @@ PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, I
                     aInput->push[3] = true;
                     break;
                 case SDLK_SPACE:
-                    (*space) = true;
+                    setPlayerAttack(aPlayer,true);
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
@@ -77,7 +77,7 @@ PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, I
                 }
             }
             break;
-        case SDL_KEYUP: //Släpper knappen
+        case SDL_KEYUP: //Slï¿½pper knappen
                 switch (aEvent->key.keysym.sym)
                 {
                 case SDLK_UP:
@@ -95,6 +95,9 @@ PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, I
                 case SDLK_RIGHT:
                     aInput->push[3] = false;
                     aInput->released[3] = true;
+                    break;
+                case SDLK_SPACE:
+                    setPlayerAttack(aPlayer,false);
                     break;
                 }
             break;
@@ -216,11 +219,11 @@ PRIVATE void hoverFly(Player aPlayer, Inputs aInput) {
     }
 }
 
-PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes, bool space) {
+PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes) {
 
     bool attackPower = false;
 
-    if (space) {
+    if (getPlayerAttack(players[current->localPlayerNr - 1])) {
         if (SDL_GetTicks() >= *spaceDelay + SPACE_DELAY) {
             for (int i = 0; i < current->nrOfPlayers; i++) {
                 if (current->localPlayerNr - 1 != i) {

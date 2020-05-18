@@ -22,14 +22,14 @@ typedef struct input_type* Inputs;
 PUBLIC Inputs initInputs(void);
 
 //polling input events from keyboard
-PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space);
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute);
 
 //Adding inputs to player position
 PUBLIC void uppdateInputs(Player aPlayer, Inputs aInput, Game_State current);
 
 //void attack(int nrOfPlayers, int localPlayerNr, int* pushAngle[], Player players[], int* change_flag, Uint32* spaceDelay, bool space, int* nrOfPushes);
 
-PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes, bool space);
+PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes);
 
 //frees input structure from heap
 PUBLIC void QuitInput(Inputs aInput);

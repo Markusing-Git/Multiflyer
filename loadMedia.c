@@ -34,6 +34,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartSurface[0] = IMG_Load("bilder/heart1.png");
     media->heartSurface[1] = IMG_Load("bilder/heart2.png");
     media->immunitySurface = IMG_Load("bilder/immunityBar.png");
+    media->attackSurface = IMG_Load("bilder/attacksheet.png");
 
 
 
@@ -97,6 +98,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
+    if (media->attackSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
 
@@ -117,6 +122,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartTex[0] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[0]);
     media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
     media->immunityTex = SDL_CreateTextureFromSurface(renderer, media->immunitySurface);
+    media->attackTex = SDL_CreateTextureFromSurface(renderer,media->attackSurface);
 
 
 
@@ -184,6 +190,11 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    if (media->attackTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -201,6 +212,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     for (int i = 0; i < 2; i++)
         SDL_FreeSurface(media->heartSurface[i]);
     SDL_FreeSurface(media->immunitySurface);
+    SDL_FreeSurface(media->attackSurface);
 
 
 
@@ -393,6 +405,21 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->immunitySprites[10].y = 665;
     media->immunitySprites[10].w = 552;
     media->immunitySprites[10].h = 55;
+
+    media->attackRect[0].x = 0;
+    media->attackRect[0].y = 0;
+    media->attackRect[0].w = 125;
+    media->attackRect[0].h = 122;
+
+    media->attackRect[1].x = 125;
+    media->attackRect[1].y = 0;
+    media->attackRect[1].w = 125;
+    media->attackRect[1].h = 122;
+
+    media->attackRect[2].x = 250;
+    media->attackRect[2].y = 0;
+    media->attackRect[2].w = 125;
+    media->attackRect[2].h = 122;
     
 
 

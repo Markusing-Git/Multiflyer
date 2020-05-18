@@ -77,6 +77,13 @@ PUBLIC int getPlayerScore(Player aPlayer);
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 
+// check if space button is pressed. 
+PUBLIC bool getPlayerAttack(Player aPlayer);
+
+// set attack to true if space is pressed.
+PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot);
+
+
 //moves a player
 PUBLIC void movePlayerUp(Player aPlayer, int speed);
 PUBLIC void movePlayerDown(Player aPlayer, int speed);
@@ -107,6 +114,8 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 //Checks if there is contact between players in case of a push
 PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 
+//render attack
+PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame[]);
 
 
 #endif /* player_h */

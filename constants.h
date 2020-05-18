@@ -5,6 +5,7 @@
 #define SPLASH_FRAMES 14
 #define IMMUNITY_FRAMES 11
 #define MAX_PLAYERS 4
+#define ATTACK_FRAMES 3
 #define TIME_DELAY 1600 //A time delay based on milliseconds
 #define POWERUP_TIME_DELAY 10000 //A Time delay for spawning powerups based on milliseconds
 #define SHIELD_DURATION 10000 //A Duration for shield power up
