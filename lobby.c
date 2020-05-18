@@ -159,8 +159,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 
 		//makes dots on waiting for host count down
 		if (SDL_GetTicks() >= loadingCounter + 1000) {
-			char* p = clientLobby->waitingForHost;
-			p++[strlen(p) - 1] = 0;
+			clientLobby->waitingForHost[strlen(clientLobby->waitingForHost) - 1] = '\0';
 			if (loadingDots <= 0) {
 				strcpy(clientLobby->waitingForHost, "Waiting for host...");
 				loadingDots = 3;

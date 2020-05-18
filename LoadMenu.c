@@ -356,8 +356,7 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
                 }
                 else if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(name) > 0)
                 {
-                    char* p = name;
-                    p++[strlen(p) - 1] = 0;
+                    name[strlen(name) - 1] = '\0';
                     renderText = true;
                 }
                 else if (event.key.keysym.sym >= 97 && event.key.keysym.sym <= 123 && strlen(name) < 20) {
@@ -441,8 +440,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
                 }
                 else if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(ip) > 0)
                 {
-                    char* p = ip;
-                    p++[strlen(p) - 1] = 0;
+                    ip[strlen(ip) - 1] = '\0';
                     renderText = true;
                 }
                 else if (event.key.keysym.sym >= 46 && event.key.keysym.sym <= 58 && strlen(ip) < 20) {
