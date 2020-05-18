@@ -17,9 +17,11 @@ int main(void) {
     char playerIp[IP_LENGTH] = "192.168.0.14";
 
     Game_Route gameRoute = menuRoute;
+    Audio settings = malloc(sizeof(struct audio));
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
+    initSettings(settings);
 
 
     // Initialize SDL
@@ -55,7 +57,7 @@ int main(void) {
 
             while (running) {
                 if (gameRoute == menuRoute || gameRoute == hostRoute || gameRoute == clientRoute) {
-                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute)) {
+                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, settings)) {
                         running = false; //if user pressed quit
                     }
                     Mix_HaltMusic();
@@ -79,6 +81,9 @@ int main(void) {
     //Mix_FreeMusic(backgroundMusic);
     Mix_CloseAudio();
     SDL_DestroyWindow(window);
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
+
+    return 0;
 }

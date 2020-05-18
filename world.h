@@ -16,11 +16,11 @@ void worldCollision(SDL_Rect* aPlayerPos, Player aPLayer, int screenWidth, int  
 //Makes the background scroll to the left, takes a media for backround image, and the address of an offset variable for movement
 void scrollBackground(LoadMedia aMedia, int* aOffset, int w, int h);
 
-//initiates a Null powerUp struct
+//initiates a empty powerUp struct
 PUBLIC PowerUp initPowerUp(void);
 
 //spawns a serverside powerUp with a random powerType and direction
-PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight);
+PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp oldPowerUp);
 
 //spawns a clientside poweUp used for networkPurpuses
 PUBLIC PowerUp clientSpawnPowerUp(SDL_Rect powerUpRect, int powerUpDir, int powerUpType);
@@ -38,9 +38,9 @@ PUBLIC int getPowerUpType(PowerUp aPowerUp);
 PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight);
 
 //renders powerUp if there are any active
-PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media);
+PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media, int *coinFrames);
 
 //checkes if player has collided with a powerUp and consumes it
-PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount);
+PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount, Uint32 *powerDurationTimer);
 
 #endif /* world_h */

@@ -7,29 +7,32 @@
 #include <SDL2/SDL.h>
 #include "player.h"
 #include "constants.h"
+#include "Network.h"
 
 //change player speeds here
 #define PLAYER_VELOCITY 5
 #define GLIDING_VELOCITY 2
 #define HOVER_VELOCITY 1
 #define HOVER_DISTANCE 15
-#define PUSH_VELOCITY 100
+#define PUSH_VELOCITY 5
 
 typedef struct input_type* Inputs;
 
 //initates input variables
-Inputs initInputs(void);
+PUBLIC Inputs initInputs(void);
 
 //polling input events from keyboard
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space);
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute);
 
 //Adding inputs to player position
-void uppdateInputs(Player aPlayer, Inputs aInput);
+PUBLIC void uppdateInputs(Player aPlayer, Inputs aInput, Game_State current);
 
-void pushPlayer(Player aPlayer, int pushAngle);
+//void attack(int nrOfPlayers, int localPlayerNr, int* pushAngle[], Player players[], int* change_flag, Uint32* spaceDelay, bool space, int* nrOfPushes);
+
+PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes);
 
 //frees input structure from heap
-void QuitInput(Inputs aInput);
+PUBLIC void QuitInput(Inputs aInput);
 
 #endif /*input_h*/
 

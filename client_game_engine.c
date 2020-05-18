@@ -7,9 +7,16 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
 
     int playerFrame = 0; //Den frame som ska visas
     int splashFrame[MAX_PLAYERS] = { 0 };
+    int attackFrame[MAX_PLAYERS] = { 0 };
     int nrOfSoundEffects = 0;
     int backgroundOffset = 0;
+    int nrOfPushes = 0;
+    int immunityFrame = 0;
+    int coinFrame = 0;
+    Uint32 resurectDelay = 0;
+    Uint32 resurectImmunDelay = 0;
     Uint32 gameOverDelay = 0;
+    Uint32 powerDuration = 0;
     bool gameOverDelayFlag = false;
 
     Obstacle obstacles = createObstacle(w, h); //dummy obstacle
@@ -39,11 +46,11 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute, &space);
+        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute);
         
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
-        uppdateInputs(players[current->localPlayerNr - 1], input);
+        uppdateInputs(players[current->localPlayerNr - 1], input, current);
 
 
         worldCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], w, h);
@@ -57,57 +64,41 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         for (int i = 0; i < current->nrOfPlayers; i++) {
             if (splashFrame[i] != SPLASH_FRAMES * 11 && getPlayerStatus(players[i]) == false) {
                 splashFrame[i]++;
-                if (splashFrame[i] / 13 == SPLASH_FRAMES) {
-                    splashFrame[i] = 0;
-                }
+            }
+            else if (getPlayerStatus(players[i]) == true) {
+                splashFrame[i] = 0;
             }
         }
 
-        //handles obstacles
-        if (current->obstacle_change_flag) {
-            newClientObstacle(ReciveObstacle(current), obstacles);
+        for (int i = 0; i < current->nrOfPlayers; i++) {
+            if(getPlayerAttack(players[i]))
+            attackFrame[i]++;
+            if (attackFrame[i] / 3 == ATTACK_FRAMES)
+                attackFrame[i] = 0;
         }
+
+        //handles obstacles
+        if (current->obstacle_change_flag) 
+            newClientObstacle(ReciveObstacle(current), obstacles);
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
         //handles powerUps
-        if (current->powerUp_change_flag) {
+        if (current->powerUp_change_flag) 
             powerUpWrapper = ReceivePowerUp(current);
-        }
         powerUpTick(powerUpWrapper, w, h);
-        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers);
+        powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration);
 
+        //handle player powers
+        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 
-        if (space == true) {
-            if (SDL_GetTicks() >= spaceDelay + SPACE_DELAY) {
-                for (int i = 0; i < current->nrOfPlayers; i++) {
-                    if (current->localPlayerNr - 1 != i) {
-                        current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), current->player_Pos_X, current->player_Pos_Y, current->nrOfPlayers, current->localPlayerNr);
-                        if (current->pushAngle[i] != 0) {
-                            current->change_flag = 1;
-                            printf("Changed clinet %d\n",i);
-                        }
-                    }
-                }
-                spaceDelay = SDL_GetTicks();
-            }
-        }
+        playerAttack(current, players, &spaceDelay, &nrOfPushes);
 
-        if (current->pushAngle[current->localPlayerNr - 1] != 0) {
-            pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1]);
-            printf("Knuffad client");
-            current->pushAngle[current->localPlayerNr - 1] = 0; 
-        }
-
-
-        space = false;
 
         //Make the background scroll to the left
         scrollBackground(media, &backgroundOffset, w, h);
-
-
 
         //Multiplayer function
         sendAndReciveClient(current, setup, playerPos, players);
@@ -122,8 +113,11 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
         SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
         renderObstacles(obstacles, renderer, media->flyTrapTex);
-        renderPowerUp(renderer, powerUpWrapper, media);
+        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
+        renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
+        renderPowerUp(renderer, powerUpWrapper, media, &coinFrame);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
+        renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
         renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
         SDL_RenderPresent(renderer);

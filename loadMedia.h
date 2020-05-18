@@ -24,7 +24,10 @@ struct loadMedia {
 	SDL_Texture* scoreBackgroundTex;
 	SDL_Texture* scoreTex;
 	SDL_Texture* PowerUpTex[3];
-
+	SDL_Texture* heartTex[2];
+	SDL_Texture* immunityTex;
+	SDL_Texture* attackTex;
+	SDL_Texture* coinTex;
 
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
@@ -39,16 +42,26 @@ struct loadMedia {
 	SDL_Surface* scoreBackgroundSurface;
 	SDL_Surface* score;
 	SDL_Surface* powerUpSurface[3];
+	SDL_Surface* heartSurface[2];
+	SDL_Surface* immunitySurface;
+	SDL_Surface* attackSurface;
 
+	SDL_Surface* coinSurface;
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
 	SDL_Rect startFlyGreen[PLAYER_FRAMES];
 	SDL_Rect startFlyRed[PLAYER_FRAMES];
 	SDL_Rect startFlyYellow[PLAYER_FRAMES];
 	SDL_Rect splashSprites[SPLASH_FRAMES];
+	SDL_Rect attackRect[ATTACK_FRAMES];
 	SDL_Rect scrollingBackground[2];
 	SDL_Rect scoreBackgroundRect;
 	SDL_Rect scoreRect;
+	SDL_Rect heartRect[2];
+	SDL_Rect immunitySprites[IMMUNITY_FRAMES];
+	SDL_Rect immunityRect;
+	SDL_Rect glowRect;
+	SDL_Rect coinSprites[COIN_FRAMES];
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
@@ -64,6 +77,7 @@ struct loadFonts {
 	TTF_Font* cuvert_24;
 	TTF_Font* cuvert_28;
 	TTF_Font* cuvert_48;
+	TTF_Font* cuvert_60;
 	TTF_Font* ka1_60;
 	TTF_Font* scoreFont_40;
 	TTF_Font* scoreFont_24;

@@ -1,7 +1,5 @@
 #include "input.h"
 
-static void hoverFly(Player aPlayer, Inputs aInput);
-
 struct input_type {
     //keyboard
     bool released[4];
@@ -13,7 +11,13 @@ struct input_type {
     int glideEffect;
 };
 
-Inputs initInputs(void) {
+//hovers fly
+PRIVATE void hoverFly(Player aPlayer, Inputs aInput);
+
+//Calls movePlayer-function based on the pushAngle in case of a push
+PRIVATE void pushPlayer(Player aPlayer, int pushAngle, bool attackPower);
+
+PUBLIC Inputs initInputs(void) {
     Inputs aInput = malloc(sizeof(struct input_type));
 
     //movement inputs
@@ -38,7 +42,7 @@ Inputs initInputs(void) {
 }
 
 
-void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, bool* space) {
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute) {
     while (SDL_PollEvent(aEvent))
     {
         switch (aEvent->type)
@@ -64,7 +68,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = true;
                     break;
                 case SDLK_SPACE:
-                    (*space) = true;
+                    setPlayerAttack(aPlayer,true);
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
@@ -73,8 +77,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                 }
             }
             break;
-        case SDL_KEYUP: //Släpper knappen
-            if (getPlayerStatus(aPlayer) == true) {
+        case SDL_KEYUP: //Slï¿½pper knappen
                 switch (aEvent->key.keysym.sym)
                 {
                 case SDLK_UP:
@@ -93,8 +96,10 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
                     aInput->push[3] = false;
                     aInput->released[3] = true;
                     break;
+                case SDLK_SPACE:
+                    setPlayerAttack(aPlayer,false);
+                    break;
                 }
-            }
             break;
         }
     }
@@ -102,7 +107,7 @@ void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs a
 
 
 //************************* MOVES PLAYER AND SETS PLAYER SPEED *****************************
-void uppdateInputs(Player aPLayer, Inputs aInput) {
+PUBLIC void uppdateInputs(Player aPLayer, Inputs aInput,Game_State current) {
 
     if (getPlayerStatus(aPLayer) == true) {
         if (aInput->push[0] || aInput->released[0])
@@ -162,12 +167,14 @@ void uppdateInputs(Player aPLayer, Inputs aInput) {
                 }
             }
         }
-        hoverFly(aPLayer, aInput);
+        if (current->pushAngle[current->localPlayerNr - 1] == 0) {
+            hoverFly(aPLayer, aInput);
+        }
     }
 }
 
 
-static void hoverFly(Player aPlayer, Inputs aInput) {
+PRIVATE void hoverFly(Player aPlayer, Inputs aInput) {
 
     int speed = HOVER_VELOCITY;
     int distance = HOVER_DISTANCE;
@@ -212,28 +219,69 @@ static void hoverFly(Player aPlayer, Inputs aInput) {
     }
 }
 
-void pushPlayer(Player aPlayer, int pushAngle) {
-    int speed = PUSH_VELOCITY;
-    switch (pushAngle) {
-    case 1:
-        movePlayerRight(aPlayer, speed);
-        printf("Hit");
-        break;
-    case 2:
-        movePlayerLeft(aPlayer, speed);
-        printf("Hit");
-        break;
-    case 3:
-        movePlayerDown(aPlayer, speed);
-        printf("Hit");
-        break;
-    case 4:
-        movePlayerUp(aPlayer, speed);
-        printf("Hit");
-        break;
+PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes) {
+
+    bool attackPower = false;
+
+    if (getPlayerAttack(players[current->localPlayerNr - 1])) {
+        if (SDL_GetTicks() >= *spaceDelay + SPACE_DELAY) {
+            for (int i = 0; i < current->nrOfPlayers; i++) {
+                if (current->localPlayerNr - 1 != i) {
+                    current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
+                    if (current->pushAngle[i] != 0) {
+                        current->change_flag = 1;
+                        *spaceDelay = SDL_GetTicks();
+                        if (getPlayerPower(players[current->localPlayerNr - 1]) == attack) {
+                            setPlayerPower(players[current->localPlayerNr - 1], none);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    attackPower = current->attackPower;
+
+    if (current->pushAngle[current->localPlayerNr - 1] != 0) {
+        if (*nrOfPushes <= 40) {
+            pushPlayer(players[current->localPlayerNr - 1], current->pushAngle[current->localPlayerNr - 1], attackPower);
+            (*nrOfPushes)++;
+        }
+        else {
+            current->pushAngle[current->localPlayerNr - 1] = 0;
+            (*nrOfPushes) = 0;
+        }
+    }
+
+}
+
+PRIVATE void pushPlayer(Player aPlayer, int pushAngle, bool attackPower) {
+
+    int speed;
+
+    if (attackPower)
+        speed = PUSH_VELOCITY * 2;
+    else
+        speed = PUSH_VELOCITY;
+
+    if (getPlayerPower(aPlayer) != shield) {
+        switch (pushAngle) {
+        case 1:
+            movePlayerRight(aPlayer, speed);
+            break;
+        case 2:
+            movePlayerLeft(aPlayer, speed);
+            break;
+        case 3:
+            movePlayerDown(aPlayer, speed);
+            break;
+        case 4:
+            movePlayerUp(aPlayer, speed);
+            break;
+        }
     }
 }
 
-void QuitInput(Inputs aInput) {
+PUBLIC void QuitInput(Inputs aInput) {
     free(aInput);
 }

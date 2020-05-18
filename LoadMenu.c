@@ -1,6 +1,5 @@
 #include "LoadMenu.h"
 
-
 typedef struct menu {
     char menuChoices[NUM_MENU][NAME_LENGTH];
     SDL_Color color;
@@ -11,7 +10,7 @@ typedef struct menu {
 
 PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings)
 {
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
@@ -68,10 +67,15 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
             {
                 x = event.button.x;
                 y = event.button.y;
-                // Quit
-                if (x >= newMenu1.pos[3].x && x <= newMenu1.pos[3].x + newMenu1.pos[3].w && y > newMenu1.pos[3].y && y <= newMenu1.pos[3].y + newMenu1.pos[3].h)
+               //Quit
+                if (x >= newMenu1.pos[4].x && x <= newMenu1.pos[4].x + newMenu1.pos[4].w && y > newMenu1.pos[4].y && y <= newMenu1.pos[4].y + newMenu1.pos[4].h)
                 {
                     running = false;
+                }
+                //Settings
+                else if (x >= newMenu1.pos[3].x && x <= newMenu1.pos[3].x + newMenu1.pos[3].w && y > newMenu1.pos[3].y && y <= newMenu1.pos[3].y + newMenu1.pos[3].h)
+                {
+                    volume(renderer, media, fonts, settings);
                 }
                 //Controls
                 else if (x >= newMenu1.pos[2].x && x <= newMenu1.pos[2].x + newMenu1.pos[2].w && y > newMenu1.pos[2].y && y <= newMenu1.pos[2].y + newMenu1.pos[2].h)
@@ -179,7 +183,8 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
     strcpy(newMenu.menuChoices[0], "Start");
     strcpy(newMenu.menuChoices[1], "Multiplayer");
     strcpy(newMenu.menuChoices[2], "Controls");
-    strcpy(newMenu.menuChoices[3], "Quit");
+    strcpy(newMenu.menuChoices[3], "Settings");
+    strcpy(newMenu.menuChoices[4], "Quit");
 
     // Set text color to white 
     newMenu.color.r = 0;
@@ -197,13 +202,15 @@ PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts)
 
     // Define position for texture 
     newMenu.pos[0].x = 450;
-    newMenu.pos[0].y = 220;
+    newMenu.pos[0].y = 200;
     newMenu.pos[1].x = 450;
-    newMenu.pos[1].y = 270;
+    newMenu.pos[1].y = 250;
     newMenu.pos[2].x = 450;
-    newMenu.pos[2].y = 320;
+    newMenu.pos[2].y = 300;
     newMenu.pos[3].x = 450;
-    newMenu.pos[3].y = 370;
+    newMenu.pos[3].y = 350;
+    newMenu.pos[4].x = 450;
+    newMenu.pos[4].y = 395;
 
     // Get the size of texture (weight & high)
     for (int i = 0; i < NUM_MENU; i++) {
@@ -502,32 +509,32 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     char interActives[][NAME_LENGTH] = { "Play Again", "Return to menu" };
     char gameOver[] = "GAME OVER";
     char playerNames[MAX_PLAYERS][NAME_LENGTH] = {" "};
-    char scores[MAX_PLAYERS][NAME_LENGTH] = {" "}; //måste fixa nätverks överföring för detta
+    char scores[MAX_PLAYERS][NAME_LENGTH] = {" "}; //mï¿½ste fixa nï¿½tverks ï¿½verfï¿½ring fï¿½r detta
 
     if (*aGameRoute != singlePlayerRoute) {
         for (int i = 0; i < current->nrOfPlayers; i++) {
             strcpy(playerNames[i], current->playerNames[i]);
-            sprintf(scores[i], "%d", current->playerScore[i]);
+            sprintf(scores[i], "Score:%d", current->playerScore[i]);
         }
     }
     else 
     {
         strcpy(playerNames[0], "Player");
-        sprintf(scores[0], "%d", current->playerScore[0]);
+        sprintf(scores[0], "Score:%d", current->playerScore[0]);
     }
 
     SDL_Rect gameOverRect;
-    SDL_Rect nameRects[MAX_PLAYERS]; // för scoreboard
+    SDL_Rect nameRects[MAX_PLAYERS]; // fï¿½r scoreboard
     SDL_Rect scoreRects[MAX_PLAYERS];
     SDL_Rect interActiveRect[2];
 
     SDL_Surface* gameOverSurface;
-    SDL_Surface* nameSurfaces[MAX_PLAYERS]; //för scoreboard
+    SDL_Surface* nameSurfaces[MAX_PLAYERS]; //fï¿½r scoreboard
     SDL_Surface* scoreSurfaces[MAX_PLAYERS];
     SDL_Surface* interActivesSurface[2];
 
     SDL_Texture* gameOverTexture;
-    SDL_Texture* nameTextures[MAX_PLAYERS]; //för scoreboard
+    SDL_Texture* nameTextures[MAX_PLAYERS]; //fï¿½r scoreboard
     SDL_Texture* scoreTextures[MAX_PLAYERS];
     SDL_Texture* interActivesTexture[2];
 
@@ -539,7 +546,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
 
 
     gameOverSurface = TTF_RenderText_Solid(fonts->magical_45, gameOver, black);
-    //Surfaces för scoreboard
+    //Surfaces fï¿½r scoreboard
     for (int i = 0; i < MAX_PLAYERS; i++) {
         nameSurfaces[i] = TTF_RenderText_Solid(fonts->scoreFont_24, playerNames[i], scoresColor);
         scoreSurfaces[i] = TTF_RenderText_Solid(fonts->scoreFont_24, scores[i], scoresColor);
@@ -549,7 +556,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
 
 
     gameOverTexture = SDL_CreateTextureFromSurface(renderer, gameOverSurface);
-    //textures för scoreboard
+    //textures fï¿½r scoreboard
     for (int i = 0; i < MAX_PLAYERS; i++) {
         nameTextures[i] = SDL_CreateTextureFromSurface(renderer, nameSurfaces[i]);
         scoreTextures[i] = SDL_CreateTextureFromSurface(renderer, scoreSurfaces[i]);
@@ -559,7 +566,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
 
 
     SDL_FreeSurface(gameOverSurface);
-    //free surfaces för scoreboard
+    //free surfaces fï¿½r scoreboard
     for (int i = 0; i < MAX_PLAYERS; i++) {
         SDL_FreeSurface(nameSurfaces[i]);
         SDL_FreeSurface(scoreSurfaces[i]);
@@ -586,13 +593,13 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     nameRects[3].x = 350;
     nameRects[3].y = 335;
 
-    scoreRects[0].x = 500;
+    scoreRects[0].x = 530;
     scoreRects[0].y = 215;
-    scoreRects[1].x = 500;
+    scoreRects[1].x = 530;
     scoreRects[1].y = 255;
-    scoreRects[2].x = 500;
+    scoreRects[2].x = 530;
     scoreRects[2].y = 295;
-    scoreRects[3].x = 500;
+    scoreRects[3].x = 530;
     scoreRects[3].y = 335;
 
 
@@ -674,6 +681,302 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             for (int i = 0; i < 2; i++)
                  SDL_RenderCopy(renderer, interActivesTexture[i], NULL, &interActiveRect[i]);
             SDL_RenderPresent(renderer);
+        }
+    }
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        SDL_DestroyTexture(nameTextures[i]);
+        SDL_DestroyTexture(scoreTextures[i]);
+    }
+    SDL_DestroyTexture(gameOverTexture);
+    SDL_DestroyTexture(interActivesTexture[0]);
+    SDL_DestroyTexture(interActivesTexture[1]);
+}
+
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//*********************************************************************************    Settings    ***************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+//******************************************************************************************************************************************************************************************************
+
+void initSettings(Audio settings)
+{
+    settings->bMusicVolume = 10;
+    settings->sEffectsVolume = 50;
+
+    //Coloring
+    settings->white.r = 255;
+    settings->white.g = 255;
+    settings->white.b = 255;
+    settings->white.a = 0;
+
+    settings->green.r = 77;
+    settings->green.g = 255;
+    settings->green.b = 0;
+    settings->green.a = 0;
+
+    //Text
+    strcpy(settings->headLine, "Settings");
+    strcpy(settings->changing_name[0], "Back to menu");
+    strcpy(settings->bMusic, "Background music volume");
+    strcpy(settings->sEffects, "Sound effects volume");
+    strcpy(settings->lines[0], "||");
+    strcpy(settings->lines[1], "||||||");
+    for (int i = 0; i < VOL_DUPLICATES; i++)
+    {
+        strcpy(settings->changing_name[i+1], "+");
+        strcpy(settings->changing_name[i+3], "-");
+    }
+}
+
+void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings)
+{
+    SDL_Event event;
+    int x, y, length;
+
+    //Set Bools
+    settings->done = false;
+    settings->renderText = true;
+
+    //Skapar surfaces
+    settings->surfaces[0] = TTF_RenderText_Solid(fonts->cuvert_60, settings->headLine, settings->white);
+    settings->surfaces[1] = TTF_RenderText_Solid(fonts->cuvert_48, settings->changing_name[0], settings->white); //Back to menu
+    settings->surfaces[2] = TTF_RenderText_Solid(fonts->cuvert_48, settings->bMusic, settings->white);
+    settings->surfaces[3] = TTF_RenderText_Solid(fonts->cuvert_48, settings->sEffects, settings->white);
+    for (int i = 0; i < VOL_DUPLICATES; i++)
+    {
+        settings->surfaces[i+4] = TTF_RenderText_Solid(fonts->cuvert_48, settings->lines[i], settings->white);
+        settings->surfaces[i+6] = TTF_RenderText_Solid(fonts->cuvert_48, settings->changing_name[i+1], settings->white); //Plus
+        settings->surfaces[i+8] = TTF_RenderText_Solid(fonts->cuvert_48, settings->changing_name[i+3], settings->white); //Minus
+    }
+
+    //Skapar textures frÃ¥n surfaces
+    settings->headLine_Tex = SDL_CreateTextureFromSurface(renderer, settings->surfaces[0]);
+    settings->changing_Tex[0] = SDL_CreateTextureFromSurface(renderer, settings->surfaces[1]); //Back to menu texture
+    settings->bMusic_Tex = SDL_CreateTextureFromSurface(renderer, settings->surfaces[2]);
+    settings->sEffects_Tex = SDL_CreateTextureFromSurface(renderer, settings->surfaces[3]);
+    for (int i = 0; i < VOL_DUPLICATES; i++)
+    {
+        settings->lines_Tex[i] = SDL_CreateTextureFromSurface(renderer, settings->surfaces[i+4]);
+        settings->changing_Tex[i+1] = SDL_CreateTextureFromSurface(renderer, settings->surfaces[i+6]); //Plus texture
+        settings->changing_Tex[i+3] = SDL_CreateTextureFromSurface(renderer, settings->surfaces[i+8]); //Minus texture
+    }
+
+    //Free surfaces 
+	for (int i = 0; i < VOL_SURFACES; i++)
+    {
+		SDL_FreeSurface(settings->surfaces[i]);
+    }
+
+    //Positioner for rects
+    settings->headLine_Rect.x = 320;
+    settings->headLine_Rect.y = 10;
+    SDL_QueryTexture(settings->headLine_Tex, NULL, NULL, &settings->headLine_Rect.w, &settings->headLine_Rect.h);
+
+    settings->changing_Rect[0].x = 300;
+    settings->changing_Rect[0].y = 500;
+    SDL_QueryTexture(settings->changing_Tex[0], NULL, NULL, &settings->changing_Rect[0].w, &settings->changing_Rect[0].h); //Back to menu
+
+    settings->bMusic_Rect.x = 50;
+    settings->bMusic_Rect.y = 120;
+    SDL_QueryTexture(settings->bMusic_Tex, NULL, NULL, &settings->bMusic_Rect.w, &settings->bMusic_Rect.h);
+
+    settings->sEffects_Rect.x = 50;
+    settings->sEffects_Rect.y = 300;
+    SDL_QueryTexture(settings->sEffects_Tex, NULL, NULL, &settings->sEffects_Rect.w, &settings->sEffects_Rect.h);
+
+	for (int i = 0; i < VOL_DUPLICATES; i++)
+    {
+        settings->changing_Rect[i+3].x = 50;
+        SDL_QueryTexture(settings->changing_Tex[i+3], NULL, NULL, &settings->changing_Rect[i+3].w, &settings->changing_Rect[i+3].h); //For minus
+
+        settings->changing_Rect[i+1].x = 100;
+        SDL_QueryTexture(settings->changing_Tex[i+1], NULL, NULL, &settings->changing_Rect[i+1].w, &settings->changing_Rect[i+1].h); //For plus
+
+        settings->lines_Rect[i].x = 150;
+        SDL_QueryTexture(settings->lines_Tex[i], NULL, NULL, &settings->lines_Rect[i].w, &settings->lines_Rect[i].h);
+
+        //For background music
+        if(i==0)
+        {
+            settings->changing_Rect[i+3].y = 200; //Minus
+            settings->lines_Rect[i].y = 200;
+            settings->changing_Rect[i+1].y = 200; //Plus
+        }
+        //For sound effects
+        else if(i==1)
+        {
+            settings->changing_Rect[i+3].y = 380; //Minus
+            settings->lines_Rect[i].y = 380;
+            settings->changing_Rect[i+1].y = 380; //Plus
+        }
+    }
+
+    //Val av settings
+    while(!settings->done)
+    {
+        while(SDL_PollEvent(&event))
+        {
+            if(event.type == SDL_QUIT)
+            {
+                settings->done = true;
+            }
+            else if (event.type == SDL_MOUSEMOTION) 
+            {
+                x = event.motion.x;
+                y = event.motion.y;
+                for (int i = 0; i < NUM_MENU; i++)
+                {
+                    //Om fokus, andra till gron text
+                    if (x >= settings->changing_Rect[i].x && x <= settings->changing_Rect[i].x + settings->changing_Rect[i].w && y > settings->changing_Rect[i].y && y <= settings->changing_Rect[i].y + settings->changing_Rect[i].h)
+                    {
+                        SDL_DestroyTexture(settings->changing_Tex[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->changing_name[i], settings->green);
+                        settings->changing_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                    }
+                    else
+                    {
+                        SDL_DestroyTexture(settings->changing_Tex[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->changing_name[i], settings->white);
+                        settings->changing_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_FreeSurface(temp);
+                    }
+                }
+                settings->renderText = true;
+			}
+            //Om knapptryck 
+            else if(event.type==SDL_MOUSEBUTTONDOWN)
+            {
+                x=event.button.x;
+                y=event.button.y;
+                //Tryck pa bakgrundsmusik minus
+                if(x >= settings->changing_Rect[3].x && x <= settings->changing_Rect[3].x + settings->changing_Rect[3].w && y > settings->changing_Rect[3].y && y <= settings->changing_Rect[3].y + settings->changing_Rect[3].h)
+                {
+                    //Justerar staplar & ljud
+                    length = strlen(settings->lines[0]);
+                    if (settings->bMusicVolume <= 0)
+                    {
+                        strcpy(settings->lines[0], "|");
+                        settings->bMusicVolume = 0;
+                    }
+                    else
+                    {
+                        settings->lines[0][length - 1] = '\0';
+                        settings->bMusicVolume = settings->bMusicVolume - 10;
+                    }
+                    Mix_VolumeMusic(settings->bMusicVolume); //Andrar volym fÃ¶r musik, mellan 0 - 128 (MAX fÃ¶r SDL)
+                    SDL_DestroyTexture(settings->lines_Tex[0]);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->lines[0], settings->white);
+                    settings->lines_Tex[0] = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_QueryTexture(settings->lines_Tex[0], NULL, NULL, &settings->lines_Rect[0].w, &settings->lines_Rect[0].h);
+                    SDL_FreeSurface(temp);
+                    settings->renderText = true;
+                }
+                //Tryck pa bakgrundsmusik plus
+                else if(x >= settings->changing_Rect[1].x && x <= settings->changing_Rect[1].x + settings->changing_Rect[1].w && y > settings->changing_Rect[1].y && y <= settings->changing_Rect[1].y + settings->changing_Rect[1].h)
+                {
+                    //Justerar staplar & ljud
+                    if (settings->bMusicVolume >= 128)
+                    {
+                        strcpy(settings->lines[0], "|||||||||||||||");
+                        settings->bMusicVolume = 128;
+                    }
+                    else
+                    {
+                        strcat(settings->lines[0], "|");
+                        settings->bMusicVolume = settings->bMusicVolume + 10;
+                    }
+                    Mix_VolumeMusic(settings->bMusicVolume); //Andrar volym fÃ¶r musik, mellan 0 - 128 (MAX fÃ¶r SDL)
+                    SDL_DestroyTexture(settings->lines_Tex[0]);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->lines[0], settings->white);
+                    settings->lines_Tex[0] = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_QueryTexture(settings->lines_Tex[0], NULL, NULL, &settings->lines_Rect[0].w, &settings->lines_Rect[0].h);
+                    SDL_FreeSurface(temp);
+                    settings->renderText = true;
+                }
+                //Tryck pa soundeffects minus
+                else if(x >= settings->changing_Rect[4].x && x <= settings->changing_Rect[4].x + settings->changing_Rect[4].w && y > settings->changing_Rect[4].y && y <= settings->changing_Rect[4].y + settings->changing_Rect[4].h)
+                {
+                    //Justerar staplar & ljud
+                    length = strlen(settings->lines[1]);
+                    if (settings->sEffectsVolume <= 0)
+                    {
+                        strcpy(settings->lines[1], "|");
+                        settings->sEffectsVolume = 0;
+                    }
+                    else
+                    {
+                        settings->lines[1][length - 1] = '\0';
+                        settings->sEffectsVolume = settings->sEffectsVolume - 10;
+                    }
+                    Mix_Volume(-1, settings->sEffectsVolume); //Andrar ljud fÃ¶r alla sound effects, mellan 0 - 128 (MAX fÃ¶r SDL)
+                    SDL_DestroyTexture(settings->lines_Tex[1]);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->lines[1], settings->white);
+                    settings->lines_Tex[1] = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_QueryTexture(settings->lines_Tex[1], NULL, NULL, &settings->lines_Rect[1].w, &settings->lines_Rect[1].h);
+                    SDL_FreeSurface(temp);
+                    settings->renderText = true;
+                }
+                //Tryck pa soundeffects plus
+                else if(x >= settings->changing_Rect[1].x && x <= settings->changing_Rect[2].x + settings->changing_Rect[2].w && y > settings->changing_Rect[2].y && y <= settings->changing_Rect[2].y + settings->changing_Rect[2].h)
+                {
+                    //Justerar staplar & ljud
+                    if (settings->sEffectsVolume >= 128)
+                    {
+                        strcpy(settings->lines[1], "|||||||||||||||");
+                        settings->sEffectsVolume = 128;
+                    }
+                    else
+                    {
+                        strcat(settings->lines[1], "|");
+                        settings->sEffectsVolume = settings->sEffectsVolume + 10;
+                    }
+                    Mix_Volume(-1, settings->sEffectsVolume); //Andrar ljud fÃ¶r alla sound effects, mellan 0 - 128 (MAX fÃ¶r SDL)
+                    SDL_DestroyTexture(settings->lines_Tex[1]);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, settings->lines[1], settings->white);
+                    settings->lines_Tex[1] = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_QueryTexture(settings->lines_Tex[1], NULL, NULL, &settings->lines_Rect[1].w, &settings->lines_Rect[1].h);
+                    SDL_FreeSurface(temp);
+                    settings->renderText = true;
+                }
+                //Tryck pa back to menu
+                else if(x >= settings->changing_Rect[0].x && x <= settings->changing_Rect[0].x + settings->changing_Rect[0].w && y > settings->changing_Rect[0].y && y <= settings->changing_Rect[0].y + settings->changing_Rect[0].h)
+                {
+                    settings->renderText = true;
+                    settings->done = true;
+                }
+            }
+        }
+
+        //Rendrar
+        if(settings->renderText)
+        {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, settings->headLine_Tex, NULL, &settings->headLine_Rect);
+            SDL_RenderCopy(renderer, settings->changing_Tex[0], NULL, &settings->changing_Rect[0]); //Back to menu
+            SDL_RenderCopy(renderer, settings->bMusic_Tex, NULL, &settings->bMusic_Rect);
+            SDL_RenderCopy(renderer, settings->sEffects_Tex, NULL, &settings->sEffects_Rect);
+            for (int i = 0; i < VOL_DUPLICATES; i++)
+            {
+                SDL_RenderCopy(renderer, settings->changing_Tex[i+3], NULL, &settings->changing_Rect[i+3]); //Minus
+                SDL_RenderCopy(renderer, settings->lines_Tex[i], NULL, &settings->lines_Rect[i]);
+                SDL_RenderCopy(renderer, settings->changing_Tex[i+1], NULL, &settings->changing_Rect[i+1]); //Plus
+            }
+            SDL_RenderPresent(renderer);
+            settings->renderText = false;
+        }
+    }
+
+    //Destroy textures
+    SDL_DestroyTexture(settings->headLine_Tex);
+    SDL_DestroyTexture(settings->bMusic_Tex);
+    SDL_DestroyTexture(settings->sEffects_Tex);
+    for (int i = 0; i < NUM_MENU; i++)
+    {
+        SDL_DestroyTexture(settings->changing_Tex[i]);
+        if(i < 2)
+        {
+            SDL_DestroyTexture(settings->lines_Tex[i]);
         }
     }
 }

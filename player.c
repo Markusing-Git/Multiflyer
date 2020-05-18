@@ -6,12 +6,31 @@ PRIVATE int playerHeight = 64;
 struct playerType {
 	SDL_Rect playerPos;
 	bool alive;
+	bool immunity;
+	bool resurected;
 	int score;
+	int coins;
 	PowerType powerType;
+	bool attack;
 };
 
+
+//PRIVATE FUNCTIONS*****************************************************************************************************************************
+
+//Renders each player
 PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Texture* splashTex, SDL_Rect* playerPos, Player aPLayer,
 	SDL_Rect* playerSprites, SDL_Rect* splashSprites, int playerFrame, int splashFrame, Mix_Chunk* electricShock, Mix_Chunk* flyingNoise, int* nrOfSoundEffects);
+
+//adds coin to player coins if coin power up is consumed
+PRIVATE void addCoinToPlayer(Player aPlayer);
+
+//clearsPowerUps if used (timer for shield usage for attack)
+PRIVATE void clearShield(Player aPlayer, Uint32* powerDurationTimer);
+
+//resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
+//END OF PRIVATE FUNCTIONS*****************************************************************************************************************************
+
 
 PUBLIC Player createPlayer(int x, int y) {
 	Player aPlayer = malloc(sizeof(struct playerType));
@@ -20,6 +39,8 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->playerPos.w = playerWidth;
 	aPlayer->playerPos.h = playerHeight;
 	aPlayer->alive = true;
+	aPlayer->immunity = false;
+	aPlayer->resurected = false;
 	aPlayer->score = 0;
 	aPlayer->powerType = none;
 	return aPlayer;
@@ -27,6 +48,7 @@ PUBLIC Player createPlayer(int x, int y) {
 
 
 PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media) {
+
 	switch (playerCount) {
 	case 1:
 		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
@@ -69,6 +91,65 @@ PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Te
 	}
 }
 
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts) {
+	char scr[50];
+	int score = aPlayer->score;
+
+	sprintf(scr, "Score:%d", score);
+
+	SDL_Color colorFront = { 255,255,255 };
+	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, scr, colorFront);
+	media->scoreTex = SDL_CreateTextureFromSurface(renderer, media->score);
+	SDL_QueryTexture(media->scoreTex, NULL, NULL, &media->scoreRect.w, &media->scoreRect.h);
+	SDL_RenderCopy(renderer, media->scoreTex, NULL, &media->scoreRect);
+	SDL_FreeSurface(media->score);
+	SDL_DestroyTexture(media->scoreTex);
+}
+
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount) {
+
+	//renders players health
+	if (playerList[localPlayer]->powerType == life && playerList[localPlayer]->resurected == false) {
+		SDL_RenderCopy(renderer, media->heartTex[1], NULL, media->heartRect);
+	}
+	else if(playerList[localPlayer]->alive == true || playerList[localPlayer]->resurected == true){
+		SDL_RenderCopy(renderer, media->heartTex[0], NULL, media->heartRect);
+	}
+
+	for (int i = 0; i < playerCount; i++) {
+		switch (playerList[i]->powerType) {
+		case shield:
+			if (playerList[i]->alive) {
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
+				SDL_RenderCopy(renderer, media->PowerUpTex[1], NULL, &media->glowRect);
+			}
+			break;
+		case attack:
+			if (playerList[i]->alive) {
+				media->glowRect.x = playerList[i]->playerPos.x - 29;
+				media->glowRect.y = playerList[i]->playerPos.y - 20;
+				media->glowRect.w = playerList[i]->playerPos.w + 52;
+				media->glowRect.h = playerList[i]->playerPos.h + 55;
+				SDL_RenderCopy(renderer, media->PowerUpTex[2], NULL, &media->glowRect);
+			}
+			break;
+		}
+	}
+}
+
+PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int *immunityFrames) {
+	if (aPlayer->immunity) {
+		(*immunityFrames)++;
+		SDL_RenderCopyEx(renderer, media->immunityTex, &media->immunitySprites[(*immunityFrames) / IMMUNITY_FRAMES], &media->immunityRect, 0, NULL, SDL_FLIP_NONE);
+	}
+	else {
+		*immunityFrames = 0;
+	}
+}
+
 void getSoundEffect(int alive, Mix_Chunk* soundEffect)
 {
 	if(alive==1)
@@ -90,16 +171,41 @@ PUBLIC bool getPlayerStatus(Player aPlayer) {
 	return aPlayer->alive;
 }
 
-PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType) {
-	aPlayer->powerType = aPowerType;
-}
 
 PUBLIC void setPlayerStatus(Player aPlayer, bool deadOrAlive) {
 	aPlayer->alive = deadOrAlive;
 }
 
+PUBLIC bool getPlayerResurect(Player aPlayer) {
+	return aPlayer->resurected;
+}
+
+PUBLIC void setPlayerResurect(Player aPlayer, bool resurected) {
+	aPlayer->resurected = resurected;
+}
+
+PUBLIC int getPlayerPower(Player aPlayer) {
+	return aPlayer->powerType;
+}
+
+PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType) {
+	aPlayer->powerType = aPowerType;
+}
+
+PUBLIC bool getPlayerImmunity(Player aPlayer) {
+	return aPlayer->immunity;
+}
+
 PUBLIC int getPlayerScore(Player aPlayer) {
 	return aPlayer->score;
+}
+
+PUBLIC bool getPlayerAttack(Player aPlayer){
+	return aPlayer->attack;
+}
+PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot)
+{
+	aPlayer->attack = attackOrNot;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {
@@ -169,55 +275,86 @@ PUBLIC void addScore(Player aPlayer) {
 	aPlayer->score++;
 }
 
-PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts) {
-	char scr[50];
-	int score = aPlayer->score;
 
-	sprintf(scr, "Score:%d", score);
-
-	SDL_Color colorFront = { 255,255,255 };
-	media->score = TTF_RenderText_Solid(fonts->scoreFont_40, &scr, colorFront);
-	media->scoreTex = SDL_CreateTextureFromSurface(renderer, media->score);
-	SDL_QueryTexture(media->scoreTex, NULL, NULL, &media->scoreRect.w, &media->scoreRect.h);
-	SDL_RenderCopy(renderer, media->scoreTex, NULL, &media->scoreRect);
-	SDL_FreeSurface(media->score);
-	SDL_DestroyTexture(media->scoreTex);
-}
-
-PUBLIC int playerContact(SDL_Rect* aPlayerPos, int opponentPosX[], int opponentPosY[], int nrOfPlayers, int localPlayerNr) {
+PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	SDL_Rect opponentPlayer;
-	SDL_Rect pixelRect;
+	SDL_Rect player;
 
-	pixelRect.x = aPlayerPos->x;
-	pixelRect.y = aPlayerPos->y;
-	pixelRect.w = aPlayerPos->w;
-	pixelRect.h = aPlayerPos->h;
+	opponentPlayer.x = opponentPos->x;
+	opponentPlayer.y = opponentPos->y;
+	opponentPlayer.w = opponentPos->w;
+	opponentPlayer.h = opponentPos->h;
 
-	for (int i = 0; i < nrOfPlayers; i++) {
-		if (localPlayerNr - 1 != i) {
-			opponentPlayer.x = opponentPosX[i];
-			opponentPlayer.y = opponentPosY[i];
-			opponentPlayer.w = aPlayerPos->w;
-			opponentPlayer.h = aPlayerPos->h;
+	player.x = playerPos->x;
+	player.y = playerPos->y;
+	player.w = playerPos->w;
+	player.h = playerPos->h;
 
-			if (SDL_HasIntersection(&pixelRect, &opponentPlayer)) {
+	if (SDL_HasIntersection(&player, &opponentPlayer)) {
 
-				if (pixelRect.x < opponentPlayer.x) {
-					return 1;
-				}
-				else if (pixelRect.x > opponentPlayer.x + opponentPlayer.w - pixelRect.w) {
-					return 2;
-				}
-				else if (pixelRect.y < opponentPlayer.y) {
-					return 3;
-				}
-				else if (pixelRect.y > opponentPlayer.y + opponentPlayer.h - pixelRect.h) {
-					return 4;
-				}
-			}
+		if (player.x < opponentPlayer.x - opponentPlayer.w / 10 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+			return 1;
+		}
+		else if (player.x > opponentPlayer.x + opponentPlayer.w / 10 && opponentPlayer.y - opponentPlayer.h - 15 < player.y < opponentPlayer.y + 15) {
+			return 2;
+		}
+		else if (player.y < opponentPlayer.y - opponentPlayer.h / 10) {
+			return 3;
+		}
+		else if (player.y > opponentPlayer.y + opponentPlayer.h / 10) {
+			return 4;
+		}
+		else if (opponentPlayer.x - 10 < player.x < opponentPlayer.x + 10 && opponentPlayer.y + 10 < player.y < opponentPlayer.y - 10) {
+			return (rand() % 4 - 0) + 1;
 		}
 	}
 	return 0;
+}
+
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
+
+	//algorithm to make timing of resurection and obstacle immunity work
+	if ((aPlayer->powerType == life && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
+		if (aPlayer->resurected == false) {
+			(*resurectTimer) = SDL_GetTicks();
+			aPlayer->resurected = true;
+		}
+		else if(SDL_GetTicks() >= ((*resurectTimer) + 3000)) { //resurects player after a timer has been set
+			if (!aPlayer->alive) {
+				aPlayer->playerPos.x = 50;
+				aPlayer->playerPos.y = 100;
+				aPlayer->alive = true;
+			}
+			else if (aPlayer->immunity == false) {
+				(*immunityTimer) = SDL_GetTicks();
+				aPlayer->immunity = true;
+			}
+			else if (SDL_GetTicks() >= ((*immunityTimer) + 2000)) { // makes player immune from obstacles until timer is set
+				aPlayer->powerType = none;
+				aPlayer->resurected = false;
+				aPlayer->immunity = false;
+			}
+		}
+	}
+}
+
+PRIVATE void clearShield(Player aPlayer, Uint32* powerDurationTimer) {
+	if ((SDL_GetTicks() >= ((*powerDurationTimer) + SHIELD_DURATION)) && aPlayer->powerType == shield) {
+		aPlayer->powerType = none;
+	}
+}
+
+PRIVATE void addCoinToPlayer(Player aPlayer) {
+	if (aPlayer->powerType == coin) {
+		aPlayer->coins++;
+		aPlayer->powerType = none;
+	}
+}
+
+PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer) {
+	resurectPlayer(aPlayer, resurectTimer, immunityTimer);
+	clearShield(aPlayer, powerDurationTimer);
+	addCoinToPlayer(aPlayer);
 }
 
 PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* delayFlag) {
@@ -225,7 +362,7 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 	bool allDead = false;
 
 	for (int i = 0; i < playerCount; i++) {
-		if (playerList[i]->alive == true) {
+		if (playerList[i]->alive == true || playerList[i]->resurected == true) {
 			allDead = false;
 			return allDead;
 		}
@@ -242,4 +379,11 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 	}
 
 	return allDead;
+}
+
+PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame[])
+{
+	for (int i = 0; i < playerCount; i++)
+		if (playerList[i]->attack)
+			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[ attackFrame[i]/ATTACK_FRAMES ], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
 }

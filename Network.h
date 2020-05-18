@@ -56,6 +56,9 @@ struct Game_State_Type
     SDL_Rect powerUpRect;
     int powerUpDir;
     int powerUpType;
+    int resurected[MAX_PLAYERS];
+    int playerPower[MAX_PLAYERS];
+    bool attackPower;
 }; 
 typedef	struct Game_State_Type* Game_State;
 
@@ -66,6 +69,8 @@ struct Game_State_Send_Type
     int playerScore;
     bool player_Alive;
     int pushAngle[MAX_PLAYERS];
+    int resurected;
+    int playerPower;
     int localPlayerNr;
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;

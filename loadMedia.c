@@ -1,16 +1,19 @@
 #include "loadMedia.h"
 
 // MenuBackground by 
-// https://www.freeiconspng.com/img/26394
-// https://wallpapertag.com/game-background
-// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artis : Bevouliin.com
-// https://opengameart.org/content/blue-bat-sprites artis: bevouliin.com
-// https://opengameart.org/content/green-fly-flying-enemy-game-character artis: bevouliin.com
-// https://opengameart.org/content/happy-fly-enemy-game-character artis: bevouliin.com
-// https://opengameart.org/content/grumpy-bee-enemy-game-character  artis: bevouliin.com
+// https://www.freeiconspng.com/img/26394 artist: Ahkâm
+// https://wallpapertag.com/game-background artist: Unknown
+// https://opengameart.org/content/bevouliin-free-flappy-monster-sprite-sheets artist : Bevouliin.com
+// https://opengameart.org/content/blue-bat-sprites artist: bevouliin.com
+// https://opengameart.org/content/green-fly-flying-enemy-game-character artist: bevouliin.com
+// https://opengameart.org/content/happy-fly-enemy-game-character artist: bevouliin.com
+// https://opengameart.org/content/grumpy-bee-enemy-game-character  artist: bevouliin.com
 
 //PowerUps by
 //https://opengameart.org/content/pickup-items-icons artist: Cethiel
+
+//Hearts by
+//https://opengameart.org/content/health artist: knik1985
 
 LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     LoadMedia media = malloc(sizeof(struct loadMedia));
@@ -28,6 +31,13 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->powerUpSurface[0] = IMG_Load("bilder/PUhealth.png");
     media->powerUpSurface[1] = IMG_Load("bilder/PUshield.png");
     media->powerUpSurface[2] = IMG_Load("bilder/PUattack.png");
+    media->heartSurface[0] = IMG_Load("bilder/heart1.png");
+    media->heartSurface[1] = IMG_Load("bilder/heart2.png");
+    media->immunitySurface = IMG_Load("bilder/immunityBar.png");
+    media->attackSurface = IMG_Load("bilder/attacksheet.png");
+    media->coinSurface = IMG_Load("bilder/coinsprites.png");
+
+
 
 
     if (media->flySurface == NULL) {
@@ -80,7 +90,25 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    for (int i = 0; i < 2; i++) {
+        if (media->heartSurface[i] == NULL) {
+            printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+            *running = false;
+        }
+    }
+    if (media->immunitySurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
+    if (media->attackSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
+    if (media->coinSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
     media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
@@ -97,6 +125,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->PowerUpTex[0] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[0]);
     media->PowerUpTex[1] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[1]);
     media->PowerUpTex[2] = SDL_CreateTextureFromSurface(renderer, media->powerUpSurface[2]);
+    media->heartTex[0] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[0]);
+    media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
+    media->immunityTex = SDL_CreateTextureFromSurface(renderer, media->immunitySurface);
+    media->attackTex = SDL_CreateTextureFromSurface(renderer,media->attackSurface);
+    media->coinTex = SDL_CreateTextureFromSurface(renderer, media->coinSurface);
+
 
 
 
@@ -153,6 +187,25 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
             *running = false;
         }
     }
+    for (int i = 0; i < 2; i++) {
+        if (media->heartTex[i] == NULL) {
+            printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+            *running = false;
+        }
+    }
+    if (media->immunityTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    if (media->attackTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
+    
+    if (media->coinTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -167,6 +220,12 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->scoreBackgroundSurface);
     for (int i = 0; i < 3; i++)
         SDL_FreeSurface(media->powerUpSurface[i]);
+    for (int i = 0; i < 2; i++)
+        SDL_FreeSurface(media->heartSurface[i]);
+    SDL_FreeSurface(media->immunitySurface);
+    SDL_FreeSurface(media->attackSurface);
+    SDL_FreeSurface(media->coinSurface);
+
 
 
 
@@ -289,6 +348,124 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->scoreRect.x = 740;
     media->scoreRect.y = 25;
 
+    media->heartRect[1].x = media->heartRect[0].x = 5;
+    media->heartRect[1].y = media->heartRect[0].y = 25;
+    media->heartRect[0].w = 130;
+    media->heartRect[0].h = 54;
+    media->heartRect[1].w = 280;
+    media->heartRect[1].h = 54;
+
+    //Immunity sprites https://opengameart.org/content/health-bar Artist: ab_dias
+
+    media->immunityRect.x = 120;
+    media->immunityRect.y = 25;
+    media->immunityRect.w = 250;
+    media->immunityRect.h = 50;
+
+
+    media->immunitySprites[0].x = 0;
+    media->immunitySprites[0].y = 30;
+    media->immunitySprites[0].w = 552;
+    media->immunitySprites[0].h = 55;
+
+    media->immunitySprites[1].x = 0;
+    media->immunitySprites[1].y = 92;
+    media->immunitySprites[1].w = 552;
+    media->immunitySprites[1].h = 55;
+
+    media->immunitySprites[2].x = 0;
+    media->immunitySprites[2].y = 155;
+    media->immunitySprites[2].w = 552;
+    media->immunitySprites[2].h = 55;
+
+    media->immunitySprites[3].x = 0;
+    media->immunitySprites[3].y = 218;
+    media->immunitySprites[3].w = 552;
+    media->immunitySprites[3].h = 55;
+
+    media->immunitySprites[4].x = 0;
+    media->immunitySprites[4].y = 282;
+    media->immunitySprites[4].w = 552;
+    media->immunitySprites[4].h = 55;
+
+    media->immunitySprites[5].x = 0;
+    media->immunitySprites[5].y = 346;
+    media->immunitySprites[5].w = 552;
+    media->immunitySprites[5].h = 55;
+
+    media->immunitySprites[6].x = 0;
+    media->immunitySprites[6].y = 409;
+    media->immunitySprites[6].w = 552;
+    media->immunitySprites[6].h = 55;
+
+    media->immunitySprites[7].x = 0;
+    media->immunitySprites[7].y = 472;
+    media->immunitySprites[7].w = 552;
+    media->immunitySprites[7].h = 55;
+
+    media->immunitySprites[8].x = 0;
+    media->immunitySprites[8].y = 536;
+    media->immunitySprites[8].w = 552;
+    media->immunitySprites[8].h = 55;
+
+    media->immunitySprites[9].x = 0;
+    media->immunitySprites[9].y = 601;
+    media->immunitySprites[9].w = 552;
+    media->immunitySprites[9].h = 55;
+
+    media->immunitySprites[10].x = 0;
+    media->immunitySprites[10].y = 665;
+    media->immunitySprites[10].w = 552;
+    media->immunitySprites[10].h = 55;
+
+    media->attackRect[0].x = 0;
+    media->attackRect[0].y = 0;
+    media->attackRect[0].w = 125;
+    media->attackRect[0].h = 122;
+
+    media->attackRect[1].x = 125;
+    media->attackRect[1].y = 0;
+    media->attackRect[1].w = 125;
+    media->attackRect[1].h = 122;
+
+    media->attackRect[2].x = 250;
+    media->attackRect[2].y = 0;
+    media->attackRect[2].w = 125;
+    media->attackRect[2].h = 122;
+    //coin sprites Credit dontmind8.blogspot.com Artist:cDontMind8
+    media->coinSprites[0].x = 0;
+    media->coinSprites[0].y = 0;
+    media->coinSprites[0].w = 100;
+    media->coinSprites[0].h = 100;
+
+    media->coinSprites[1].x = 100;
+    media->coinSprites[1].y = 0;
+    media->coinSprites[1].w = 100;
+    media->coinSprites[1].h = 100;
+
+    media->coinSprites[2].x = 200;
+    media->coinSprites[2].y = 0;
+    media->coinSprites[2].w = 100;
+    media->coinSprites[2].h = 100;
+
+    media->coinSprites[3].x = 300;
+    media->coinSprites[3].y = 0;
+    media->coinSprites[3].w = 100;
+    media->coinSprites[3].h = 100;
+
+    media->coinSprites[4].x = 400;
+    media->coinSprites[4].y = 0;
+    media->coinSprites[4].w = 100;
+    media->coinSprites[4].h = 100;
+
+    media->coinSprites[5].x = 500;
+    media->coinSprites[5].y = 0;
+    media->coinSprites[5].w = 100;
+    media->coinSprites[5].h = 100;
+
+    
+
+
     //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("Could not initialize SDL_mixer. Error: %s", Mix_GetError());
@@ -335,6 +512,7 @@ Fonts loadFonts(void) {
     fonts->cuvert_24 = TTF_OpenFont("fonts/Curvert.otf", 24);
     fonts->cuvert_28 = TTF_OpenFont("fonts/Curvert.otf", 28);
     fonts->cuvert_48 = TTF_OpenFont("fonts/Curvert.otf", 48);
+    fonts->cuvert_60 = TTF_OpenFont("fonts/Curvert.otf", 60);
     fonts->ka1_60 = TTF_OpenFont("fonts/ka1.ttf", 60);
     fonts->scoreFont_40 = TTF_OpenFont("fonts/ScoreFont.ttf", 40);
     fonts->scoreFont_24 = TTF_OpenFont("fonts/ScoreFont.ttf", 24);
@@ -353,6 +531,10 @@ Fonts loadFonts(void) {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
     if (fonts->cuvert_48 == NULL)
+    {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+    }
+    if (fonts->cuvert_60 == NULL)
     {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
     }
@@ -382,10 +564,11 @@ void closeFonts(Fonts mediaFonts) {
     TTF_CloseFont(mediaFonts->cuvert_24);
     TTF_CloseFont(mediaFonts->cuvert_28);
     TTF_CloseFont(mediaFonts->cuvert_48);
+    TTF_CloseFont(mediaFonts->cuvert_60);
     TTF_CloseFont(mediaFonts->ka1_60);
     TTF_CloseFont(mediaFonts->scoreFont_40);
     TTF_CloseFont(mediaFonts->scoreFont_24);
     free(mediaFonts);
-    TTF_Quit;
+    TTF_Quit();
 }
 
