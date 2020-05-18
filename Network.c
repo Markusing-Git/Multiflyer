@@ -746,7 +746,7 @@ void renderConnectionsServer(Game_State current) {
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
         
-        if (current->connectionTimers[i] > max_disconnection_Time && current->player_Alive[i + 1] != 0) {
+        if (current->connectionTimers[i] == max_disconnection_Time && current->player_Alive[i + 1] != 0) {
             current->player_Alive[i+1] = 0;
             printf("Player: %s disconnected\n", current->playerNames[i]);
         }
