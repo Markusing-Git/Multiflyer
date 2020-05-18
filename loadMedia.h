@@ -32,6 +32,7 @@ struct loadMedia {
 	SDL_Texture* immunityTex;
 	SDL_Texture* coinTex;
 	SDL_Texture* skinBackgroundTex;
+	SDL_Texture* selectedSkinBackgroundTex;
 
 	SDL_Surface* flyTrapSurface;
 	SDL_Surface* flySurface;
@@ -54,6 +55,7 @@ struct loadMedia {
 	SDL_Surface* immunitySurface;
 	SDL_Surface* coinSurface;
 	SDL_Surface* skinBackgroundSurface;
+	SDL_Surface* selectedSkinBackgroundSurface;
 
 	SDL_Rect startFlyBlue[PLAYER_FRAMES];
 	SDL_Rect startFlyGreen[PLAYER_FRAMES];
@@ -86,6 +88,7 @@ struct loadMedia {
 	SDL_Rect coinSprites[COIN_FRAMES];
 	SDL_Rect storeRect;
 	SDL_Rect skinBackgroundRect;
+	SDL_Rect selectedSkinBackgrounRect;
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;

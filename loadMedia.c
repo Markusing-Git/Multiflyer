@@ -42,6 +42,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->immunitySurface = IMG_Load("bilder/immunityBar.png");
     media->coinSurface = IMG_Load("bilder/coinsprites.png");
     media->skinBackgroundSurface = IMG_Load("bilder/skinBackground.png");
+    media->selectedSkinBackgroundSurface = IMG_Load("bilder/selectedSkinBackground.png");
 
 
 
@@ -129,6 +130,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
         *running = false;
     }
+    if (media->selectedSkinBackgroundSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
     media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
     media->hornedFlyTex = SDL_CreateTextureFromSurface(renderer, media->hornedFlySurface);
@@ -154,6 +159,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
 
     media->storeTex = SDL_CreateTextureFromSurface(renderer, media->storeSurface);
     media->skinBackgroundTex = SDL_CreateTextureFromSurface(renderer, media->skinBackgroundSurface);
+    media->selectedSkinBackgroundTex = SDL_CreateTextureFromSurface(renderer, media->selectedSkinBackgroundSurface);
 
 
 
@@ -246,6 +252,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
         *running = false;
     }
+    if (media->selectedSkinBackgroundTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->hornedFlySurface);
@@ -269,6 +279,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     SDL_FreeSurface(media->immunitySurface);
     SDL_FreeSurface(media->coinSurface);
     SDL_FreeSurface(media->skinBackgroundSurface);
+    SDL_FreeSurface(media->selectedSkinBackgroundSurface);
 
 
 
@@ -623,6 +634,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->skinBackgroundRect.w = 200;
     media->skinBackgroundRect.h = 150;
 
+    media->selectedSkinBackgrounRect.x = 0;
+    media->selectedSkinBackgrounRect.y = 0;
+    media->selectedSkinBackgrounRect.w = 200;
+    media->selectedSkinBackgrounRect.h = 150;
 
     //*****************************************AUDIO********************************************************
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
