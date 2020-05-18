@@ -22,6 +22,7 @@ struct store
 {
     bool done;
     bool renderText;
+    bool purchasedSkin[OPTIONS];
     SkinChoices skinChoice;
 
     int playerCoins;

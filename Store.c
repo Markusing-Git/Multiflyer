@@ -19,6 +19,11 @@ void initStore(Store storeStatus)
     storeStatus->green.b = 0;
     storeStatus->green.a = 0;
 
+    storeStatus->purchasedSkin[0] = true;
+    for (int i = 1; i < OPTIONS; i++) {
+        storeStatus->purchasedSkin[i] = false;
+    }
+
     int offset = 0;
     for (int i = 0; i < OPTIONS; i++) {
         storeStatus->skins[i].x = 85 + offset;
@@ -184,8 +189,20 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                     }
                     else if (x >= storeStatus->skinBackgroundRect[i].x && x <= storeStatus->skinBackgroundRect[i].x + storeStatus->skinBackgroundRect[i].w && y > storeStatus->skinBackgroundRect[i].y && y <= storeStatus->skinBackgroundRect[i].y + storeStatus->skinBackgroundRect[i].h)
                     {
-
-                        storeStatus->selectedRect = i;
+                        if (storeStatus->purchasedSkin[i]) {
+                            storeStatus->selectedRect = i;
+                            switch (i) {
+                            case 1:
+                                storeStatus->skinChoice = horned;
+                                break;
+                            case 2:
+                                storeStatus->skinChoice = goggle;
+                                break;
+                            case 3:
+                                storeStatus->skinChoice = angry;
+                                break;
+                            }
+                        }
                     }
                     //Tryck pa back to menu
                     else if(x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
@@ -241,24 +258,36 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
 PRIVATE int handlePurchase(Store storeStatus, int iteration) {
     switch (iteration) {
     case 1:
-        if (storeStatus->playerCoins >= 10) {
-            storeStatus->playerCoins -= 10;
-            storeStatus->skinChoice = horned;
-            return 1;
+        if (!storeStatus->purchasedSkin[1]) {
+            if (storeStatus->playerCoins >= 10) {
+                storeStatus->playerCoins -= 10;
+                storeStatus->skinChoice = horned;
+                storeStatus->purchasedSkin[1] = true;
+                storeStatus->selectedRect = 1;
+                return 1;
+            }
         }
         break;
     case 2:
-        if (storeStatus->playerCoins >= 15) {
-            storeStatus->playerCoins -= 15;
-            storeStatus->skinChoice = goggle;
-            return 1;
+        if (!storeStatus->purchasedSkin[2]) {
+            if (storeStatus->playerCoins >= 15) {
+                storeStatus->playerCoins -= 15;
+                storeStatus->skinChoice = goggle;
+                storeStatus->purchasedSkin[2] = true;
+                storeStatus->selectedRect = 2;
+                return 1;
+            }
         }
         break;
     case 3:
-        if (storeStatus->playerCoins >= 20) {
-            storeStatus->playerCoins -= 20;
-            storeStatus->skinChoice = angry;
-            return 1;
+        if (!storeStatus->purchasedSkin[3]) {
+            if (storeStatus->playerCoins >= 20) {
+                storeStatus->playerCoins -= 20;
+                storeStatus->skinChoice = angry;
+                storeStatus->purchasedSkin[3] = true;
+                storeStatus->selectedRect = 3;
+                return 1;
+            }
         }
         break;
     }
