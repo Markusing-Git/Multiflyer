@@ -43,6 +43,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->resurected = false;
 	aPlayer->score = 0;
 	aPlayer->powerType = none;
+	aPlayer->attack = false;
 	return aPlayer;
 }
 
