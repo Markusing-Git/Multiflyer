@@ -41,7 +41,7 @@ void initStore(Store storeStatus)
     strcpy(storeStatus->backToMenu, "Back to menu");
     strcpy(storeStatus->bank, "Coins:");
     strcpy(storeStatus->purchased, "Purchased");
-    strcpy(storeStatus->price[0], "Cost: 5");
+    strcpy(storeStatus->price[0], "Purchased");
     strcpy(storeStatus->price[1], "Cost: 10");
     strcpy(storeStatus->price[2], "Cost: 15");
     strcpy(storeStatus->price[3], "Cost: 20");
@@ -51,7 +51,6 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
 {
     SDL_Event event;
     int x, y, a = 0;
-    //strcpy(storeStatus->coins, "hej"); //Tillfällig
     sprintf(storeStatus->coins, "%d", storeStatus->playerCoins);
 
     //Set Bools
@@ -128,7 +127,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             {
                 x = event.motion.x;
                 y = event.motion.y;
-                for (int i = 0; i < OPTIONS; i++)
+                for (int i = 1; i < OPTIONS; i++)
                 {
                     //Om fokus, andra till gron text
                     if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
@@ -164,7 +163,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             {
                 x=event.button.x;
                 y=event.button.y;
-                for (int i = 0; i < OPTIONS; i++)
+                for (int i = 1; i < OPTIONS; i++)
                 {
                     //Tryck pa nagot skin
                     if(x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
