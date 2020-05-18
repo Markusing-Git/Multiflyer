@@ -53,22 +53,155 @@ PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playe
 
 	switch (playerCount) {
 	case 1:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		switch (playerList[0]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->hornedFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->goggleEyesFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->angryFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
 		break;
 	case 2:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		switch (playerList[0]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->hornedFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->goggleEyesFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->angryFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[1]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->hornedFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->goggleEyesFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->angryFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
 		break;
 	case 3:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		switch (playerList[0]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->hornedFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->goggleEyesFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->angryFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[1]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->hornedFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->goggleEyesFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->angryFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[2]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->hornedFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->goggleEyesFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->angryFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
 		break;
 	case 4:
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
-		renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->startFlyBlue, media->splashSprites, playerFrame, splashFrame[3], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+		switch (playerList[0]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->startFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->hornedFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->goggleEyesFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[0]->playerPos, playerList[0], media->angryFlyGreen, media->splashSprites, playerFrame, splashFrame[0], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[1]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->startFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->hornedFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->goggleEyesFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[1]->playerPos, playerList[1], media->angryFlyRed, media->splashSprites, playerFrame, splashFrame[1], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[2]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->startFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->hornedFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->goggleEyesFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[2]->playerPos, playerList[2], media->angryFlyYellow, media->splashSprites, playerFrame, splashFrame[2], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
+		switch (playerList[3]->skinChoice) {
+		case fly:
+			renderPlayer(renderer, media->flyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->startFlyBlue, media->splashSprites, playerFrame, splashFrame[3], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+
+			break;
+		case horned:
+			renderPlayer(renderer, media->hornedFlyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->hornedFlyBlue, media->splashSprites, playerFrame, splashFrame[3], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+
+			break;
+		case goggle:
+			renderPlayer(renderer, media->goggleEyeFlyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->goggleEyesFlyBlue, media->splashSprites, playerFrame, splashFrame[3], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+
+			break;
+		case angry:
+			renderPlayer(renderer, media->angryFlyTex, media->flySplashTex, &playerList[3]->playerPos, playerList[3], media->angryFlyBlue, media->splashSprites, playerFrame, splashFrame[3], media->electricShock, media->flyingNoise, nrOfSoundEffects);
+			break;
+		}
 		break;
 	default: printf("players is NULL");
 	}
@@ -212,6 +345,10 @@ PUBLIC void setPlayerCoins(Player aPlayer, int coins) {
 
 PUBLIC void setPlayerSkin(Player aPlayer, SkinChoices aChoice) {
 	aPlayer->skinChoice = aChoice;
+}
+
+PUBLIC int getPlayerSkin(Player aPlayer) {
+	return aPlayer->skinChoice;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {
