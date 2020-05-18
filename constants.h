@@ -4,6 +4,7 @@
 #define PLAYER_FRAMES 2 //Antal frames i spritesheet
 #define SPLASH_FRAMES 14
 #define IMMUNITY_FRAMES 11
+#define COIN_FRAMES 6
 #define MAX_PLAYERS 4
 #define ATTACK_FRAMES 3
 #define TIME_DELAY 1600 //A time delay based on milliseconds

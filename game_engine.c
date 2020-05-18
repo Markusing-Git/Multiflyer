@@ -9,10 +9,11 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     int splashFrame[MAX_PLAYERS] = { 0 };
     int attackFrame[MAX_PLAYERS] = { 0 };
     int immunityFrame = 0;
+    int coinFrame = 0;
     Uint32 obstacleDelay = SDL_GetTicks();
     Uint32 gameOverDelay = 0;
     Uint32 PUSpawnTime = SDL_GetTicks() + POWERUP_TIME_DELAY;
-    Uint32 PowerDuration = 0;
+    Uint32 powerDuration = 0;
     Uint32 resurectDelay = 0;
     Uint32 resurectImmunDelay = 0;
     bool gameOverDelayFlag = false;
@@ -95,13 +96,12 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetPowerUp(current, powerUpWrapper);
             PUSpawnTime = SDL_GetTicks() + 1000000;
         }
-        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &PowerDuration))
+        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration))
             PUSpawnTime = (SDL_GetTicks() + POWERUP_TIME_DELAY);
         powerUpTick(powerUpWrapper, w, h);
 
-        //resurects player if player has extra life
-        resurectPlayer(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay);
-        clearPowerUps(players[current->localPlayerNr - 1], &PowerDuration);
+        //handle player powers
+        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
@@ -129,7 +129,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         renderObstacles(obstacles, renderer, media->flyTrapTex);
         renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
         renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
-        renderPowerUp(renderer, powerUpWrapper, media);
+        renderPowerUp(renderer, powerUpWrapper, media, &coinFrame);
         renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
         renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
         SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);

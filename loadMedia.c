@@ -35,6 +35,8 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartSurface[1] = IMG_Load("bilder/heart2.png");
     media->immunitySurface = IMG_Load("bilder/immunityBar.png");
     media->attackSurface = IMG_Load("bilder/attacksheet.png");
+    media->coinSurface = IMG_Load("bilder/coinsprites.png");
+
 
 
 
@@ -103,6 +105,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         *running = false;
     }
 
+    if (media->coinSurface == NULL) {
+        printf("Unable to load image. Error: %s", SDL_GetError());  //Kollar efter error vid IMG_Load
+        *running = false;
+    }
 
 
     media->flyTex = SDL_CreateTextureFromSurface(renderer, media->flySurface); //skapar en texture fr�n spritesheet
@@ -123,6 +129,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->heartTex[1] = SDL_CreateTextureFromSurface(renderer, media->heartSurface[1]);
     media->immunityTex = SDL_CreateTextureFromSurface(renderer, media->immunitySurface);
     media->attackTex = SDL_CreateTextureFromSurface(renderer,media->attackSurface);
+    media->coinTex = SDL_CreateTextureFromSurface(renderer, media->coinSurface);
 
 
 
@@ -195,6 +202,10 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         *running = false;
     }
     
+    if (media->coinTex == NULL) {
+        printf("Unable to create texture from surface. Error: %s", SDL_GetError()); //Kollar efter error vid SDL_CreateTextureFromSurface
+        *running = false;
+    }
 
     SDL_FreeSurface(media->flySurface);
     SDL_FreeSurface(media->flyTrapSurface);
@@ -213,6 +224,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         SDL_FreeSurface(media->heartSurface[i]);
     SDL_FreeSurface(media->immunitySurface);
     SDL_FreeSurface(media->attackSurface);
+    SDL_FreeSurface(media->coinSurface);
 
 
 
@@ -420,6 +432,37 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     media->attackRect[2].y = 0;
     media->attackRect[2].w = 125;
     media->attackRect[2].h = 122;
+    //coin sprites Credit dontmind8.blogspot.com Artist:cDontMind8
+    media->coinSprites[0].x = 0;
+    media->coinSprites[0].y = 0;
+    media->coinSprites[0].w = 100;
+    media->coinSprites[0].h = 100;
+
+    media->coinSprites[1].x = 100;
+    media->coinSprites[1].y = 0;
+    media->coinSprites[1].w = 100;
+    media->coinSprites[1].h = 100;
+
+    media->coinSprites[2].x = 200;
+    media->coinSprites[2].y = 0;
+    media->coinSprites[2].w = 100;
+    media->coinSprites[2].h = 100;
+
+    media->coinSprites[3].x = 300;
+    media->coinSprites[3].y = 0;
+    media->coinSprites[3].w = 100;
+    media->coinSprites[3].h = 100;
+
+    media->coinSprites[4].x = 400;
+    media->coinSprites[4].y = 0;
+    media->coinSprites[4].w = 100;
+    media->coinSprites[4].h = 100;
+
+    media->coinSprites[5].x = 500;
+    media->coinSprites[5].y = 0;
+    media->coinSprites[5].w = 100;
+    media->coinSprites[5].h = 100;
+
     
 
 
