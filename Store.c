@@ -192,6 +192,9 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                         if (storeStatus->purchasedSkin[i]) {
                             storeStatus->selectedRect = i;
                             switch (i) {
+                            case 0:
+                                storeStatus->skinChoice = fly;
+                                break;
                             case 1:
                                 storeStatus->skinChoice = horned;
                                 break;
