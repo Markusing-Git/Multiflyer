@@ -20,12 +20,14 @@ void initStore(Store storeStatus)
     storeStatus->green.a = 0;
 
     storeStatus->purchasedSkin[0] = true;
-    for (int i = 1; i < OPTIONS; i++) {
+    for (int i = 1; i < OPTIONS; i++)
+    {
         storeStatus->purchasedSkin[i] = false;
     }
 
     int offset = 0;
-    for (int i = 0; i < OPTIONS; i++) {
+    for (int i = 0; i < OPTIONS; i++)
+    {
         storeStatus->skins[i].x = 85 + offset;
         storeStatus->skins[i].y = 200;
         storeStatus->skins[i].w = 150;
@@ -34,7 +36,8 @@ void initStore(Store storeStatus)
     }
 
     offset = 0;
-    for (int i = 0; i < OPTIONS; i++) {
+    for (int i = 0; i < OPTIONS; i++)
+    {
         storeStatus->skinBackgroundRect[i].x = 65 + offset;
         storeStatus->skinBackgroundRect[i].y = 200;
         storeStatus->skinBackgroundRect[i].w = 200;
@@ -175,34 +178,37 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                     if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
                     {
                         //om köp är genomförbart returneras 1
-                        if (handlePurchase(storeStatus, i)) {
+                        if (handlePurchase(storeStatus, i))
+                        {
                             strcpy(storeStatus->price[i], storeStatus->purchased);
-                            storeStatus->renderText = true;
-
+                            sprintf(storeStatus->coins, "%d", storeStatus->playerCoins);
                             SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                            SDL_DestroyTexture(storeStatus->coins_Tex);
                             SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                            SDL_Surface* tmp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->coins, storeStatus->white);
                             storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                            storeStatus->coins_Tex = SDL_CreateTextureFromSurface(renderer, tmp);
                             SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
+                            SDL_QueryTexture(storeStatus->coins_Tex, NULL, NULL, &storeStatus->coins_Rect.w, &storeStatus->coins_Rect.h);
                             SDL_FreeSurface(temp);
+                            SDL_FreeSurface(tmp);
                             storeStatus->renderText = true;
                         }
                     }
                     else if (x >= storeStatus->skinBackgroundRect[i].x && x <= storeStatus->skinBackgroundRect[i].x + storeStatus->skinBackgroundRect[i].w && y > storeStatus->skinBackgroundRect[i].y && y <= storeStatus->skinBackgroundRect[i].y + storeStatus->skinBackgroundRect[i].h)
                     {
-                        if (storeStatus->purchasedSkin[i]) {
+                        if (storeStatus->purchasedSkin[i])
+                        {
                             storeStatus->selectedRect = i;
-                            switch (i) {
-                            case 0:
-                                storeStatus->skinChoice = fly;
+                            switch (i)
+                            {
+                                case 0: storeStatus->skinChoice = fly;
                                 break;
-                            case 1:
-                                storeStatus->skinChoice = horned;
+                                case 1: storeStatus->skinChoice = horned;
                                 break;
-                            case 2:
-                                storeStatus->skinChoice = goggle;
+                                case 2: storeStatus->skinChoice = goggle;
                                 break;
-                            case 3:
-                                storeStatus->skinChoice = angry;
+                                case 3: storeStatus->skinChoice = angry;
                                 break;
                             }
                         }
@@ -225,11 +231,14 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             SDL_RenderCopy(renderer, storeStatus->bank_Tex, NULL, &storeStatus->bank_Rect);
             SDL_RenderCopy(renderer, storeStatus->coins_Tex, NULL, &storeStatus->coins_Rect);
             SDL_RenderCopy(renderer, storeStatus->backToMenu_Tex, NULL, &storeStatus->backToMenu_Rect);
-            for (int i = 0; i < OPTIONS; i++) {
-                if (i == storeStatus->selectedRect) {
+            for (int i = 0; i < OPTIONS; i++)
+            {
+                if (i == storeStatus->selectedRect)
+                {
                     SDL_RenderCopy(renderer, media->selectedSkinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
                 }
-                else {
+                else
+                {
                     SDL_RenderCopy(renderer, media->skinBackgroundTex, NULL, &storeStatus->skinBackgroundRect[i]);
                 }
             }
@@ -258,40 +267,48 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     }
 }
 
-PRIVATE int handlePurchase(Store storeStatus, int iteration) {
-    switch (iteration) {
-    case 1:
-        if (!storeStatus->purchasedSkin[1]) {
-            if (storeStatus->playerCoins >= 10) {
-                storeStatus->playerCoins -= 10;
-                storeStatus->skinChoice = horned;
-                storeStatus->purchasedSkin[1] = true;
-                storeStatus->selectedRect = 1;
-                return 1;
+PRIVATE int handlePurchase(Store storeStatus, int iteration)
+{
+    switch (iteration)
+    {
+        case 1:
+            if (!storeStatus->purchasedSkin[1])
+            {
+                if (storeStatus->playerCoins >= 10)
+                {
+                    storeStatus->playerCoins -= 10;
+                    storeStatus->skinChoice = horned;
+                    storeStatus->purchasedSkin[1] = true;
+                    storeStatus->selectedRect = 1;
+                    return 1;
+                }
             }
-        }
         break;
-    case 2:
-        if (!storeStatus->purchasedSkin[2]) {
-            if (storeStatus->playerCoins >= 15) {
-                storeStatus->playerCoins -= 15;
-                storeStatus->skinChoice = goggle;
-                storeStatus->purchasedSkin[2] = true;
-                storeStatus->selectedRect = 2;
-                return 1;
+        case 2:
+            if (!storeStatus->purchasedSkin[2])
+            {
+                if (storeStatus->playerCoins >= 15)
+                {
+                    storeStatus->playerCoins -= 15;
+                    storeStatus->skinChoice = goggle;
+                    storeStatus->purchasedSkin[2] = true;
+                    storeStatus->selectedRect = 2;
+                    return 1;
+                }
             }
-        }
         break;
-    case 3:
-        if (!storeStatus->purchasedSkin[3]) {
-            if (storeStatus->playerCoins >= 20) {
-                storeStatus->playerCoins -= 20;
-                storeStatus->skinChoice = angry;
-                storeStatus->purchasedSkin[3] = true;
-                storeStatus->selectedRect = 3;
-                return 1;
+        case 3:
+            if (!storeStatus->purchasedSkin[3])
+            {
+                if (storeStatus->playerCoins >= 20)
+                {
+                    storeStatus->playerCoins -= 20;
+                    storeStatus->skinChoice = angry;
+                    storeStatus->purchasedSkin[3] = true;
+                    storeStatus->selectedRect = 3;
+                    return 1;
+                }
             }
-        }
         break;
     }
     return 0;
