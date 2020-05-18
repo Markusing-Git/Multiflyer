@@ -33,8 +33,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     Inputs input = initInputs();
     PowerUp powerUpWrapper = initPowerUp();
 
-    bool space = false;
-    Uint32 spaceDelay = SDL_GetTicks();
+    Uint32 spaceDelay = SDL_GetTicks() - SPACE_DELAY;
 
     //Starting network   
     start_Game_state(players, current);
@@ -46,7 +45,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute);
+        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute, spaceDelay);
         
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 

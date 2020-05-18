@@ -42,7 +42,7 @@ PUBLIC Inputs initInputs(void) {
 }
 
 
-PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute) {
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, Uint32 spaceDelay) {
     while (SDL_PollEvent(aEvent))
     {
         switch (aEvent->type)
@@ -68,7 +68,8 @@ PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, I
                     aInput->push[3] = true;
                     break;
                 case SDLK_SPACE:
-                    setPlayerAttack(aPlayer,true);
+                    if(SDL_GetTicks() >= spaceDelay + SPACE_DELAY)
+                        setPlayerAttack(aPlayer,true);
                     break;
                 case SDLK_ESCAPE:
                     *aGameRoute = quitRoute;
