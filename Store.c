@@ -168,15 +168,18 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                     //Tryck pa nagot skin
                     if(x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
                     {
-                        strcpy(storeStatus->price[i], storeStatus->purchased);
-                        storeStatus->renderText = true;
+                        //om köp är genomförbart returneras 1
+                        if (handlePurchase(storeStatus, i)) {
+                            strcpy(storeStatus->price[i], storeStatus->purchased);
+                            storeStatus->renderText = true;
 
-                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
-                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                        SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
-                        SDL_FreeSurface(temp);
-                        storeStatus->renderText = true;
+                            SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                            SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                            storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                            SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
+                            SDL_FreeSurface(temp);
+                            storeStatus->renderText = true;
+                        }
                     }
                     //Tryck pa back to menu
                     else if(x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
@@ -226,10 +229,6 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
 
 PRIVATE int handlePurchase(Store storeStatus, int iteration) {
     switch (iteration) {
-    case 0:
-        storeStatus->skinChoice = fly;
-        return 1;
-        break;
     case 1:
         if (storeStatus->playerCoins >= 10) {
             storeStatus->playerCoins -= 10;
