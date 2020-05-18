@@ -92,6 +92,9 @@ PUBLIC void setPlayerCoins(Player aPlayer, int coins);
 //sets player choice of skin
 PUBLIC void setPlayerSkin(Player aPlayer, SkinChoices aChoice);
 
+//returns players skin
+PUBLIC int getPlayerSkin(Player aPlayer);
+
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);
 

@@ -53,6 +53,7 @@ struct Game_State_Type
     int powerUpType;
     int resurected[MAX_PLAYERS];
     int playerPower[MAX_PLAYERS];
+    int playerSkin[MAX_PLAYERS];
     bool attackPower;
 }; 
 typedef	struct Game_State_Type* Game_State;
@@ -66,6 +67,7 @@ struct Game_State_Send_Type
     int pushAngle[MAX_PLAYERS];
     int resurected;
     int playerPower;
+    int playerSkin;
 };
 typedef	struct Game_State_Send_Type* Game_State_Send;
 
