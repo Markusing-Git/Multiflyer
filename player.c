@@ -11,6 +11,7 @@ struct playerType {
 	int score;
 	int coins;
 	PowerType powerType;
+	SkinChoices skinChoice;
 };
 
 
@@ -43,6 +44,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->score = 0;
 	aPlayer->coins = 0;
 	aPlayer->powerType = none;
+	aPlayer->skinChoice = fly;
 	return aPlayer;
 }
 
@@ -206,6 +208,10 @@ PUBLIC int getPlayerCoins(Player aPlayer) {
 
 PUBLIC void setPlayerCoins(Player aPlayer, int coins) {
 	aPlayer->coins = coins;
+}
+
+PUBLIC void setPlayerSkin(Player aPlayer, SkinChoices aChoice) {
+	aPlayer->skinChoice = aChoice;
 }
 
 PUBLIC int getPlayerPoint(Player aPlayer, char cord) {

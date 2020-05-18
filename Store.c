@@ -1,10 +1,11 @@
 #include "Store.h"
 
+PRIVATE int handlePurchase(Store storeStatus, int iteration);
+
 void initStore(Store storeStatus)
 {
     storeStatus->playerCoins = 0;
-    for (int i = 0; i < OPTIONS; i++)
-        storeStatus->skinChoices[i] = false;
+    storeStatus->skinChoice = fly;
 
     //Coloring
     storeStatus->white.r = 255;
@@ -171,12 +172,12 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                         strcpy(storeStatus->price[i], storeStatus->purchased);
                         storeStatus->renderText = true;
 
-                    SDL_DestroyTexture(storeStatus->price_Tex[i]);
-                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
-                    storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                    SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
-                    SDL_FreeSurface(temp);
-                    storeStatus->renderText = true;
+                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                        SDL_QueryTexture(storeStatus->price_Tex[i], NULL, NULL, &storeStatus->price_Rect[i].w, &storeStatus->price_Rect[i].h);
+                        SDL_FreeSurface(temp);
+                        storeStatus->renderText = true;
                     }
                     //Tryck pa back to menu
                     else if(x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
@@ -222,4 +223,35 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     {
         SDL_DestroyTexture(storeStatus->price_Tex[i]);
     }
+}
+
+PRIVATE int handlePurchase(Store storeStatus, int iteration) {
+    switch (iteration) {
+    case 0:
+        storeStatus->skinChoice = fly;
+        return 1;
+        break;
+    case 1:
+        if (storeStatus->playerCoins >= 10) {
+            storeStatus->playerCoins -= 10;
+            storeStatus->skinChoice = horned;
+            return 1;
+        }
+        break;
+    case 2:
+        if (storeStatus->playerCoins >= 15) {
+            storeStatus->playerCoins -= 15;
+            storeStatus->skinChoice = goggle;
+            return 1;
+        }
+        break;
+    case 3:
+        if (storeStatus->playerCoins >= 20) {
+            storeStatus->playerCoins -= 20;
+            storeStatus->skinChoice = angry;
+            return 1;
+        }
+        break;
+    }
+    return 0;
 }

@@ -48,6 +48,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //add coins from previous games
     setPlayerCoins(players[current->localPlayerNr - 1], storeStatus->playerCoins);
 
+    //add skin from store
+    setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
+
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
@@ -142,8 +145,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     //add coins from current games
     storeStatus->playerCoins = getPlayerCoins(players[current->localPlayerNr - 1]);
-    printf("%d\n", getPlayerCoins(players[current->localPlayerNr - 1]));
-    printf("%d\n", storeStatus->playerCoins);
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);
