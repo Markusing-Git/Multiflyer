@@ -156,6 +156,7 @@
     <ClCompile Include="Network.c" />
     <ClCompile Include="obstacle.c" />
     <ClCompile Include="player.c" />
+    <ClCompile Include="Store.c" />
     <ClCompile Include="world.c" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +169,7 @@
     <ClInclude Include="Network.h" />
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="Store.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
