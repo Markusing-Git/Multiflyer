@@ -20,6 +20,14 @@ typedef enum powerType {
 	none
 } PowerType;
 
+//state machine for player skin
+typedef enum skin_choices {
+	fly,
+	horned,
+	goggle,
+	angry
+} SkinChoices;
+
 //en ADT f�r att skapa en spelare
 
 typedef struct playerType* Player;
@@ -74,6 +82,18 @@ PUBLIC int getPlayerPoint(Player aPlayer, char cord);
 
 //Returns the score of a player
 PUBLIC int getPlayerScore(Player aPlayer);
+
+//returns number of coins player has accumulated
+PUBLIC int getPlayerCoins(Player aPlayer);
+
+//sets player coins
+PUBLIC void setPlayerCoins(Player aPlayer, int coins);
+
+//sets player choice of skin
+PUBLIC void setPlayerSkin(Player aPlayer, SkinChoices aChoice);
+
+//returns players skin
+PUBLIC int getPlayerSkin(Player aPlayer);
 
 //Plays the sound effect
 void getSoundEffect(int alive, Mix_Chunk* soundEffect);

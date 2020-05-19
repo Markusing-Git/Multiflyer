@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -33,20 +33,25 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     Inputs input = initInputs();
     PowerUp powerUpWrapper = initPowerUp();
 
-    bool space = false;
-    Uint32 spaceDelay = SDL_GetTicks();
+    Uint32 spaceDelay = SDL_GetTicks() - SPACE_DELAY;
 
     //Starting network   
     start_Game_state(players, current);
     init_client_network(playerIp, setup, current);
     printf("%d\n", current->localPlayerNr);
 
+    //add coins from previous games
+    setPlayerCoins(players[current->localPlayerNr - 1], storeStatus->playerCoins);
+
+    //add skin from store
+    setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
+
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute);
+        pollInputEvents(&event, &running, players[current->localPlayerNr - 1], input,aGameRoute, spaceDelay);
         
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
@@ -84,10 +89,13 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
         //handles powerUps
-        if (current->powerUp_change_flag) 
+        if (current->powerUp_change_flag) {
             powerUpWrapper = ReceivePowerUp(current);
+            setPowerUpTimer(powerUpWrapper, SDL_GetTicks());
+        }
         powerUpTick(powerUpWrapper, w, h);
         powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration);
+        powerUpExpired(powerUpWrapper);
 
         //handle player powers
         handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
@@ -130,6 +138,9 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
             }
         }
     }
+
+    //add coins from current games
+    storeStatus->playerCoins = getPlayerCoins(players[current->localPlayerNr - 1]);
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);

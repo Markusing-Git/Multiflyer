@@ -29,6 +29,7 @@ int initGamestate(Game_State current)
         current->playerPower[i] = none;
         current->attackPower = false;
         current->connectionTimers[i] = 0;
+        current->playerSkin[i] = fly;
     }
     current->nrOfPlayers = 0;
     current->change_flag = 0;
@@ -184,6 +185,8 @@ int updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players
             setPlayerStatus(players[i], current->player_Alive[i]);
             setPlayerResurect(players[i], current->resurected[i]);
             setPlayerPower(players[i], current->playerPower[i]);
+            setPlayerSkin(players[i], current->playerSkin[i]);
+            setPlayerAttack(players[i], current->attack[i]);
         }
     }
     return 0;
@@ -204,7 +207,10 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         Gupd_Sending->playerScore = current->playerScore[current->localPlayerNr - 1];
         Gupd_Sending->resurected = current->resurected[current->localPlayerNr - 1];
         Gupd_Sending->playerPower = current->playerPower[current->localPlayerNr - 1];
+        Gupd_Sending->playerSkin = current->playerSkin[current->localPlayerNr - 1];
+        Gupd_Sending->attack = current->attack[current->localPlayerNr - 1];
         Gupd_Sending->localPlayerNr = current->localPlayerNr;
+
 
         for (int i = 0; current->nrOfPlayers > i; i++) {
             
@@ -259,6 +265,9 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
                 current->playerScore[i] = Gupd_Recive->playerScore[i];
                 current->resurected[i] = Gupd_Recive->resurected[i];
                 current->playerPower[i] = Gupd_Recive->playerPower[i];
+                current->playerSkin[i] = Gupd_Recive->playerSkin[i];
+                current->attack[i] = Gupd_Recive->attack[i];
+
             }
 
             if (Gupd_Recive->pushAngle[current->localPlayerNr - 1] != 0) {
@@ -323,6 +332,8 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
             current->playerScore[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->playerScore;
             current->resurected[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->resurected;
             current->playerPower[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->playerPower;
+            current->playerSkin[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->playerSkin;
+            current->attack[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->attack;
 
             for (int i = 0; current->nrOfPlayers > i; i++) {
                 if (Gupd_Recive->pushAngle[i] != 0)
@@ -701,6 +712,19 @@ int SetGameStatePlayerStatus(Game_State current, Player players[])
 
         current->change_flag = 1;
         current->playerPower[current->localPlayerNr - 1] = getPlayerPower(players[current->localPlayerNr - 1]);
+    }
+
+
+    if (current->playerSkin[current->localPlayerNr - 1] != getPlayerSkin(players[current->localPlayerNr - 1])) {
+
+        current->change_flag = 1;
+        current->playerSkin[current->localPlayerNr - 1] = getPlayerSkin(players[current->localPlayerNr - 1]);
+    }
+
+    if (current->attack[current->localPlayerNr - 1] != getPlayerAttack(players[current->localPlayerNr - 1])) {
+
+        current->change_flag = 1;
+        current->attack[current->localPlayerNr - 1] = getPlayerAttack(players[current->localPlayerNr - 1]);
     }
 
     return 0;

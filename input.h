@@ -22,7 +22,7 @@ typedef struct input_type* Inputs;
 PUBLIC Inputs initInputs(void);
 
 //polling input events from keyboard
-PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute);
+PUBLIC void pollInputEvents(SDL_Event* aEvent, bool* aRunning, Player aPlayer, Inputs aInput, Game_Route *aGameRoute, Uint32 spaceDelay);
 
 //Adding inputs to player position
 PUBLIC void uppdateInputs(Player aPlayer, Inputs aInput, Game_State current);

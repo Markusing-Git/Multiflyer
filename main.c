@@ -8,7 +8,6 @@
 #include "constants.h"
 
 int main(void) {
-
     SDL_Window* window = NULL;
     Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;;
     bool running = true;
@@ -18,10 +17,12 @@ int main(void) {
 
     Game_Route gameRoute = menuRoute;
     Audio settings = malloc(sizeof(struct audio));
+    Store storeStatus = malloc(sizeof(struct store));
     UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
     initSettings(settings);
+    initStore(storeStatus);
 
 
     // Initialize SDL
@@ -57,17 +58,17 @@ int main(void) {
 
             while (running) {
                 if (gameRoute == menuRoute || gameRoute == hostRoute || gameRoute == clientRoute) {
-                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, settings)) {
+                    if (!LoadMenu(renderer, window, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, settings, storeStatus)) {
                         running = false; //if user pressed quit
                     }
                     Mix_HaltMusic();
                 }
                 //Starts game engine
                 if (gameRoute == singlePlayerRoute || gameRoute == hostRoute) {
-                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
+                    startGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, storeStatus);
                 }
                 if(gameRoute == clientRoute){
-                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute);
+                        startClientGame(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, playerName, playerIp, media, fonts, current, setup, &gameRoute, storeStatus);
                 }
                 if (gameRoute == quitRoute) {
                     running = false;
@@ -79,6 +80,8 @@ int main(void) {
         }
     }
     //Mix_FreeMusic(backgroundMusic);
+    free(storeStatus);
+    free(settings);
     Mix_CloseAudio();
     SDL_DestroyWindow(window);
     Mix_Quit();

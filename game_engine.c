@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -39,19 +39,25 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     PowerUp powerUpWrapper = initPowerUp();
 
     bool space = false;
-    Uint32 spaceDelay = SDL_GetTicks();
+    Uint32 spaceDelay = SDL_GetTicks() - SPACE_DELAY;
 
     //Starting network   
     start_Game_state(players, current);
     if (current->nrOfPlayers > 1)
     init_Server_network(setup, current);
 
+    //add coins from previous games
+    setPlayerCoins(players[current->localPlayerNr - 1], storeStatus->playerCoins);
+
+    //add skin from store
+    setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
+
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
         //POLLING EVENTS
 
-        pollInputEvents(&event, &running, players[0], input, aGameRoute);
+        pollInputEvents(&event, &running, players[0], input, aGameRoute, spaceDelay);
 
         //*****************  UPPDATING POSITIONS,INPUTS,MULTIPLATER SENDS AND RECEIVES  ***************************************************
 
@@ -96,7 +102,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetPowerUp(current, powerUpWrapper);
             PUSpawnTime = SDL_GetTicks() + 1000000;
         }
-        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration))
+        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration) || powerUpExpired(powerUpWrapper))
             PUSpawnTime = (SDL_GetTicks() + POWERUP_TIME_DELAY);
         powerUpTick(powerUpWrapper, w, h);
 
@@ -145,6 +151,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             }
         }
     }
+
+    //add coins from current games
+    storeStatus->playerCoins = getPlayerCoins(players[current->localPlayerNr - 1]);
 
     QuitInput(input);
     freePlayers(players, current->nrOfPlayers);
