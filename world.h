@@ -7,6 +7,7 @@
 #include "loadMedia.h"
 
 #define POWERUP_SPEED 2
+#define POWERUP_EXPIRED 20000
 
 typedef struct powerUp_type* PowerUp;
 
@@ -34,6 +35,12 @@ PUBLIC int getPowerUpDir(PowerUp aPowerUp);
 //returns powerUp type
 PUBLIC int getPowerUpType(PowerUp aPowerUp);
 
+//sets powerUp start timer
+PUBLIC void setPowerUpTimer(PowerUp aPowerUp, Uint32 startTimer);
+
+//returns powerUp start timer
+PUBLIC Uint32 getPowerUpTimer(PowerUp aPowerUp);
+
 //moves powerUp around and bounces of screen.
 PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight);
 
@@ -42,5 +49,8 @@ PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia me
 
 //checkes if player has collided with a powerUp and consumes it
 PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCount, Uint32 *powerDurationTimer);
+
+//checks if powerUp has expired
+PUBLIC bool powerUpExpired(PowerUp aPowerUp);
 
 #endif /* world_h */

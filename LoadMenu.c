@@ -425,7 +425,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
     SDL_Event event;
     bool done = false;
     bool renderText = true;
-    char ipInit[] = "ip-adress: ";
+    char ipInit[] = "host ip: ";
 
 
     //Textbox
@@ -445,7 +445,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
     SDL_FreeSurface(ipInitSurface);
 
     SDL_Rect ipRect;
-    ipRect.x = 360;
+    ipRect.x = 310;
     ipRect.y = 167;
     SDL_QueryTexture(ipTexture, NULL, NULL, &ipRect.w, &ipRect.h);
 

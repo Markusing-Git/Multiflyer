@@ -102,7 +102,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetPowerUp(current, powerUpWrapper);
             PUSpawnTime = SDL_GetTicks() + 1000000;
         }
-        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration))
+        if (powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration) || powerUpExpired(powerUpWrapper))
             PUSpawnTime = (SDL_GetTicks() + POWERUP_TIME_DELAY);
         powerUpTick(powerUpWrapper, w, h);
 

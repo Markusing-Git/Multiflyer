@@ -89,10 +89,13 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
         //handles powerUps
-        if (current->powerUp_change_flag) 
+        if (current->powerUp_change_flag) {
             powerUpWrapper = ReceivePowerUp(current);
+            setPowerUpTimer(powerUpWrapper, SDL_GetTicks());
+        }
         powerUpTick(powerUpWrapper, w, h);
         powerUpConsumed(players, powerUpWrapper, current->nrOfPlayers, &powerDuration);
+        powerUpExpired(powerUpWrapper);
 
         //handle player powers
         handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);

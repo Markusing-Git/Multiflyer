@@ -11,10 +11,14 @@ struct powerUp_type {
 	SDL_Rect powerPos;
 	Direction direction;
 	PowerType powerType; //powerTypes in player.h 
+	Uint32 startTimer;
 };
 
 //PRIVATE FUNCTION DECLARATIONS
+
+//checks if powerUp collided with window limits
 PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenWidth, int screenHeight);
+
 
 
 //******************************************************************************************************************************************************************************************************
@@ -75,6 +79,7 @@ PUBLIC PowerUp initPowerUp(void) {
 
 	powerUp->powerType = none;
 	powerUp->direction = 0;
+	powerUp->startTimer = 0;
 
 	return powerUp;
 }
@@ -95,6 +100,8 @@ PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp old
 	powerUp->powerType = rndType;
 	powerUp->direction = rndDir;
 	
+	powerUp->startTimer = SDL_GetTicks();
+
 	return powerUp;
 }
 
@@ -118,6 +125,15 @@ PUBLIC int getPowerUpDir(PowerUp aPowerUp) {
 PUBLIC int getPowerUpType(PowerUp aPowerUp) {
 	return aPowerUp->powerType;
 }
+
+PUBLIC void setPowerUpTimer(PowerUp aPowerUp, Uint32 startTimer) {
+	aPowerUp->startTimer = startTimer;
+}
+
+PUBLIC Uint32 getPowerUpTimer(PowerUp aPowerUp) {
+	return aPowerUp->startTimer;
+}
+
 
 PRIVATE void powerUpWorldCollision(PowerUp aPowerUp, int screenWidth, int screenHeight) {
 	int pixelX = 1;
@@ -198,8 +214,6 @@ PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight) {
 
 PUBLIC void renderPowerUp(SDL_Renderer* renderer, PowerUp aPowerUp, LoadMedia media, int *coinFrames) {
 
-	
-
 	switch (aPowerUp->powerType) {
 	case life:
 		SDL_RenderCopy(renderer, media->PowerUpTex[0], NULL, &aPowerUp->powerPos);
@@ -233,4 +247,15 @@ PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCoun
 		}
 	}
 	return 0;
+}
+
+PUBLIC bool powerUpExpired(PowerUp aPowerUp) {
+	if (SDL_GetTicks() >= aPowerUp->startTimer + POWERUP_EXPIRED && aPowerUp->powerType != none) {
+		aPowerUp->powerType = none;
+		aPowerUp->startTimer = SDL_GetTicks() + POWERUP_EXPIRED; // felhantering så en ny powerUp hinner skapas
+		return true;
+	}
+	else {
+		return false;
+	}
 }
