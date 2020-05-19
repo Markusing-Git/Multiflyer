@@ -219,6 +219,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                                 case 3: storeStatus->skinChoice = angry;
                                 break;
                             }
+                            storeStatus->renderText = true;
                         }
                     }
                     //Tryck pa back to menu
