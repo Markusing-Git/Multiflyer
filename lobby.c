@@ -250,13 +250,11 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 		}
 
 		if (current->disconnectionCache != 0) {
-			printf("Disconnection recived\n");
 			removePlayerLobby(current, NULL, current->disconnectionCache);
 			clientLobby->playerCount = 0;
 
 			for (int i = 0; current->nrOfPlayers + 1 > i; i++) {
 				playerJoined(renderer, clientLobby, fonts, current->playerNames[i]);
-				printf("updated list\n");
 			}
 
 			clientLobby->playerCount = clientLobby->playerCount - 1;

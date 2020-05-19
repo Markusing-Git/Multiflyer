@@ -10,6 +10,9 @@ int start_Game_state(Player playerList[], Game_State current) {
         current->player_Pos_X[i] = getPlayerPoint((playerList[i]),'x');
         current->player_Pos_Y[i] = getPlayerPoint((playerList[i]), 'y');
     }
+
+    current->serverConnection = 0;
+
     return 0;
     //Skapar en Game state struct med startvärden och returnerar den
 }
