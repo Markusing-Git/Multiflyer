@@ -517,7 +517,7 @@ int sendToClient(TCP_Communication communication, char playerIp[], Game_State cu
         exit(EXIT_FAILURE);
     }
 
-    SDLNet_ResolveHost(&ip1, current->ipAdressCache, port);
+    SDLNet_ResolveHost(&ip1, playerIp, port);
     do {
         server = SDLNet_TCP_Open(&ip1);
     } while (server == NULL);
@@ -744,10 +744,10 @@ void renderConnectionsServer(Game_State current) {
 
     int max_disconnection_Time = 1000;
 
-    for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+    for (int i = 1; current->nrOfPlayers - 1 > i; i++) {
         
-        if (current->connectionTimers[i] == max_disconnection_Time && current->player_Alive[i + 1] != 0) {
-            current->player_Alive[i+1] = 0;
+        if (current->connectionTimers[i] == max_disconnection_Time && current->player_Alive[i] != 0) {
+            current->player_Alive[i] = 0;
             printf("Player: %s disconnected\n", current->playerNames[i]);
         }
     }
