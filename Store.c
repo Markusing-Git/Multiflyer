@@ -4,7 +4,7 @@ PRIVATE int handlePurchase(Store storeStatus, int iteration);
 
 void initStore(Store storeStatus)
 {
-    storeStatus->playerCoins = 0;
+    storeStatus->playerCoins = 50;
     storeStatus->selectedRect = 0;
     storeStatus->skinChoice = fly;
 
@@ -138,13 +138,18 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                 y = event.motion.y;
                 for (int i = 1; i < OPTIONS; i++)
                 {
-                    //Om fokus, andra till gron text
-                    if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
+                    int compare;
+                    compare = strcmp(storeStatus->price[i], storeStatus->purchased);
+                    if (compare != 0)
                     {
-                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->green);
-                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
-                        SDL_FreeSurface(temp);
+                        //Om fokus, andra till gron text
+                        if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
+                        {
+                            SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                            SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->green);
+                            storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                            SDL_FreeSurface(temp);
+                        }
                     }
                     else if (x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
                     {
