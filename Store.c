@@ -150,6 +150,13 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                             storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
                             SDL_FreeSurface(temp);
                         }
+                        else
+                        {
+                            SDL_DestroyTexture(storeStatus->price_Tex[i]);
+                            SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
+                            storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
+                            SDL_FreeSurface(temp);
+                        }
                     }
                     else if (x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
                     {
@@ -160,13 +167,9 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                     }
                     else
                     {
-                        SDL_DestroyTexture(storeStatus->price_Tex[i]);
                         SDL_DestroyTexture(storeStatus->backToMenu_Tex);
-                        SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
                         SDL_Surface* tmp = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->white);
-                        storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, temp);
                         storeStatus->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, tmp);
-                        SDL_FreeSurface(temp);
                         SDL_FreeSurface(tmp);
                     }
                 }
