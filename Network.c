@@ -375,7 +375,7 @@ int serverLobbyConnection(Game_State current)
 {
 
     IPaddress ip1;
-    IPaddress ip_Recive;
+    IPaddress *ip_Recive;
     char playerName[100] = "NULL";
     char close[] = "Close";
     int port = 2002;
@@ -410,11 +410,11 @@ int serverLobbyConnection(Game_State current)
             }
             else {
 
-                ip_Recive = *SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
+                ip_Recive = SDLNet_TCP_GetPeerAddress(client); //Väntar tills en klient kopplar upp sig och tar IP:n från TCP strömmen
 
                          //current->ipAdressCache = SDLNet_ResolveIP(&ip_Recive); //Test snabbare koppling
 
-                strncpy(current->ipAdressCache, SDLNet_ResolveIP(&ip_Recive), IP_LENGTH);
+                strncpy(current->ipAdressCache, SDLNet_ResolveIP(ip_Recive), IP_LENGTH);
                 strncpy(current->playerNames[current->nrOfPlayers], communication->playerName, NAME_LENGTH);
                 current->nrOfPlayers++;
                 current->newPlayerFlag = 1;
@@ -517,7 +517,7 @@ int sendToClient(TCP_Communication communication, char playerIp[], Game_State cu
         exit(EXIT_FAILURE);
     }
 
-    SDLNet_ResolveHost(&ip1, playerIp, port);
+    SDLNet_ResolveHost(&ip1, current->ipAdressCache, port);
     do {
         server = SDLNet_TCP_Open(&ip1);
     } while (server == NULL);
@@ -742,7 +742,7 @@ PowerUp ReceivePowerUp(Game_State current) {
 
 void renderConnectionsServer(Game_State current) {
 
-    int max_disconnection_Time = 200;
+    int max_disconnection_Time = 1000;
 
     for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
         
@@ -756,7 +756,7 @@ void renderConnectionsServer(Game_State current) {
 
 int renderConnectionsClient(Game_State current) {
 
-    int max_disconnection_Time = 200;
+    int max_disconnection_Time = 1000;
 
         if (current->connectionTimers[0] == max_disconnection_Time) {
             printf("Player(Host): %s disconnected\n", current->playerNames[0]);
