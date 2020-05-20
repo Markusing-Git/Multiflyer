@@ -128,7 +128,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     {
         while(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+            if(event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
             {
                 storeStatus->done = true;
             }
@@ -158,7 +158,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
                             SDL_FreeSurface(temp);
                         }
                     }
-                    else if (x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
+                    if (x >= storeStatus->backToMenu_Rect.x && x <= storeStatus->backToMenu_Rect.x + storeStatus->backToMenu_Rect.w && y > storeStatus->backToMenu_Rect.y && y <= storeStatus->backToMenu_Rect.y + storeStatus->backToMenu_Rect.h)
                     {
                         SDL_DestroyTexture(storeStatus->backToMenu_Tex);
                         SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->green);
