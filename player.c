@@ -224,9 +224,6 @@ PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Te
 			getSoundEffect(2, electricShock);
 			(*nrOfSoundEffects) = 1;
 		}
-		//Inte säker på vart dessa ska ligga:
-		//Mix_FreeChunk(electricShock);
-		//Mix_FreeChunk(flyingNoise);
 	}
 }
 

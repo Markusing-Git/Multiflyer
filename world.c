@@ -259,3 +259,11 @@ PUBLIC bool powerUpExpired(PowerUp aPowerUp) {
 		return false;
 	}
 }
+
+PUBLIC bool singelPlayerPowers(Game_Route* aGameRoute, PowerUp aPowerUp) {
+	if ((*aGameRoute == singlePlayerRoute && aPowerUp->powerType == attack) || (*aGameRoute == singlePlayerRoute && aPowerUp->powerType == shield)) {
+		aPowerUp->powerType = none;
+		return true;
+	}
+	return false;
+}
