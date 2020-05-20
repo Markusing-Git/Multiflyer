@@ -413,13 +413,13 @@ PUBLIC void movePlayerRight(Player aPlayer, int speed) {
 }
 
 PUBLIC void initPlayers(Player playerList[], int playerCount) {
-	for (int i = 0; i <= playerCount; i++) {
+	for (int i = 0; i < playerCount; i++) {
 		playerList[i] = createPlayer(50, 50);
 	}
 }
 
 PUBLIC void freePlayers(Player playerList[], int playerCount) {
-	for (int i = 0; i < playerCount-1; i++) {
+	for (int i = 0; i < playerCount; i++) {
 		free(playerList[i]);
 	}
 }
