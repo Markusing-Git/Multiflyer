@@ -128,7 +128,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         //scoreboard
         if (gameOver(players, current->nrOfPlayers, &gameOverDelay, &gameOverDelayFlag)) {
             if (SDL_GetTicks() >= gameOverDelay + 2700) {
-                openScoreBoard(renderer, media, fonts, current, aGameRoute);
+                openScoreBoard(renderer, media, fonts, current, aGameRoute, obstacles);
                 running = false;
             }
         }

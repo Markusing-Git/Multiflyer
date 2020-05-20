@@ -61,7 +61,8 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
 void control(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
 void initSettings(Audio settings);
 void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings);
+
 //opens a scoreboard and with alternatives to return to menu or start again
-void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute);
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute, Obstacle obstacles);
 
 #endif 

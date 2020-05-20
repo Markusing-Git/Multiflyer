@@ -509,7 +509,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute) {
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute, Obstacle obstacles) {
 
     SDL_Event event;
     bool done = false;
@@ -681,6 +681,10 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             }
         }
         if (renderText) {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
+            SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
+            renderObstacles(obstacles, renderer, media->flyTrapTex);
             SDL_RenderCopy(renderer, media->scoreBoardTexture, NULL, &scoreboardPos);
             SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
             for(int i = 0 ; i< MAX_PLAYERS; i++)
