@@ -419,7 +419,7 @@ PUBLIC void initPlayers(Player playerList[], int playerCount) {
 }
 
 PUBLIC void freePlayers(Player playerList[], int playerCount) {
-	for (int i = 0; i < playerCount; i++) {
+	for (int i = 0; i < playerCount-1; i++) {
 		free(playerList[i]);
 	}
 }

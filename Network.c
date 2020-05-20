@@ -765,7 +765,7 @@ void removePlayerFromLobby(Game_State current, UDP_Client_Config setup, int loca
     if (current->nrOfPlayers > 2 && localPlayerNr != current->nrOfPlayers) {
             for (int i = localPlayerNr - 1; current->nrOfPlayers > i; i++) {
                 strncpy(current->playerNames[i], current->playerNames[i + 1], NAME_LENGTH);
-                if (setup->playerIp[0] != NULL&& current->nrOfPlayers-1 > i) {
+                if (setup != NULL&& current->nrOfPlayers-1 > i) {
                     strncpy(setup->playerIp[i-1], setup->playerIp[i], IP_LENGTH);
                 }
                 
