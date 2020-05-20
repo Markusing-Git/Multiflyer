@@ -20,6 +20,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 
     //plays background music
     Mix_PlayMusic(media->menuMusic, -1);
+    Mix_Pause(-1);
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer, fonts, media);
@@ -519,6 +520,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     char gameOver[] = "GAME OVER";
     char playerNames[MAX_PLAYERS][NAME_LENGTH] = {" "};
     char scores[MAX_PLAYERS][NAME_LENGTH] = {" "}; //m�ste fixa n�tverks �verf�ring f�r detta
+    Mix_Pause(-1);
 
     if (*aGameRoute != singlePlayerRoute) {
         for (int i = 0; i < current->nrOfPlayers; i++) {
