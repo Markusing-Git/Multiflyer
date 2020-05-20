@@ -37,7 +37,6 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 	hostLobby = createLobby(renderer, fonts);
 	int x, y;
 	SDL_Color selected = { 77 , 255, 0, 0 };
-	char startGame[] = "Start";
 	TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
 	initGamestate(current);
 	initTCPCom(communication);
@@ -61,15 +60,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			{
 				*aGameroute = quitRoute;
 				closeLobbyTTF(hostLobby);
-
-				communication->serverDisconnect = 1;
-				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
-					sendToClient(communication, setup->playerIp[i], current);
-					printf("Server closing\n");
-				}
-
-				current->lobbyRunningFlag = 0;
-				current->nrOfPlayers = 0;
+				closeServer(current, communication, setup);
 				return 0;
 			}
 			else if (hostLobby->event.type == SDL_KEYDOWN && hostLobby->event.key.keysym.sym == SDLK_ESCAPE) 
@@ -77,13 +68,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				*aGameroute = menuRoute;
 				closeLobbyTTF(hostLobby);
 
-				communication->serverDisconnect = 1;
-				for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
-					sendToClient(communication, setup->playerIp[i], current);
-					printf("Server closing\n");
-				}
-				current->lobbyRunningFlag = 0;
-				current->nrOfPlayers = 0;
+				closeServer(current, communication, setup);
 				return 0;
 			}
 			else if (hostLobby->event.type == SDL_MOUSEMOTION) {
@@ -142,7 +127,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 
 		if (current->disconnectionCache != 0){
 			printf("Disconnection recived\n");
-			removePlayerLobby(current, setup, current->disconnectionCache);
+			removePlayerFromLobby(current, setup, current->disconnectionCache);
 			hostLobby->playerCount = 0;
 			
 			for (int i = 0; current->nrOfPlayers+1 > i; i++) {
@@ -229,8 +214,6 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 				*aGameroute = quitRoute;
 				closeLobbyTTF(clientLobby);
 				disconnectFromServer(playerIp, current);
-				current->nrOfPlayers = 0;
-				current->lobbyRunningFlag = 0;
 				return 0;
 			}
 			else if(clientLobby->event.type == SDL_KEYDOWN && clientLobby->event.key.keysym.sym == SDLK_ESCAPE)
@@ -238,8 +221,6 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 				*aGameroute = menuRoute;
 				closeLobbyTTF(clientLobby);
 				disconnectFromServer(playerIp, current);
-				current->nrOfPlayers = 0;
-				current->lobbyRunningFlag = 0;
 				return 0;
 			}
 		}
@@ -249,7 +230,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 		}
 
 		if (current->disconnectionCache != 0) {
-			removePlayerLobby(current, NULL, current->disconnectionCache);
+			removePlayerFromLobby(current, NULL, current->disconnectionCache);
 			clientLobby->playerCount = 0;
 
 			for (int i = 0; current->nrOfPlayers + 1 > i; i++) {

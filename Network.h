@@ -21,18 +21,16 @@ struct UDP_Client_Config_Type{
     UDPsocket recv_Sock[MAX_PLAYERS];
     IPaddress sendingIP[MAX_PLAYERS];
     char playerIp[MAX_PLAYERS][IP_LENGTH];
-    //const char *playerIp; //Test Snabbare koppling
     UDPpacket *send_Pack;
     UDPpacket *recv_Pack;
-    int port[MAX_PLAYERS];
 };
 typedef struct UDP_Client_Config_Type* UDP_Client_Config;
 
 struct Game_State_Type
 {
-    int player_Pos_X[MAX_PLAYERS];
-    int player_Pos_Y[MAX_PLAYERS];
-    bool player_Alive[MAX_PLAYERS];
+    int playerPosX[MAX_PLAYERS];
+    int playerPosY[MAX_PLAYERS];
+    bool playerAlive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
     //char *ipAdressCache; //Test Snabbare koppling
     char ipAdressCache[IP_LENGTH];
@@ -43,9 +41,9 @@ struct Game_State_Type
 
     int playerScore[MAX_PLAYERS];
     int nrOfPlayers;
-    int change_flag;
-    int obstacle_change_flag;
-    int powerUp_change_flag;
+    int changeFlag;
+    int obstacleChangeFlag;
+    int powerUpChangeFlag;
     int lobbyRunningFlag;
     int newPlayerFlag;
     int localPlayerNr;
@@ -67,10 +65,10 @@ typedef	struct Game_State_Type* Game_State;
 
 struct Game_State_Send_Type
 {
-    int player_Pos_X;
-    int player_Pos_Y;
+    int playerPosX;
+    int playerPosY;
     int playerScore;
-    bool player_Alive;
+    bool playerAlive;
     int pushAngle[MAX_PLAYERS];
     int resurected;
     int playerPower;
@@ -122,7 +120,8 @@ int clientLobbyWait(Game_State current);
 int sendToClient(TCP_Communication communication,char playerIp[], Game_State current);
 void renderConnectionsServer(Game_State current);
 int renderConnectionsClient(Game_State current);
-void removePlayerLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr);
+void removePlayerFromLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr);
+int closeServer(Game_State current, TCP_Communication communication, UDP_Client_Config setup);
 int disconnectFromServer(char playerIp[], Game_State current);
 
 Obstacle ReciveObstacle(Game_State Gupd);

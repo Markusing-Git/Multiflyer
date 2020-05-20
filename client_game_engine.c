@@ -83,13 +83,13 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         }
 
         //handles obstacles
-        if (current->obstacle_change_flag) 
+        if (current->obstacleChangeFlag) 
             newClientObstacle(ReciveObstacle(current), obstacles);
         obsteclesTick(obstacles);
         obstacleCollision(getPlayerPosAdr(players[current->localPlayerNr - 1]), players[current->localPlayerNr - 1], obstacles);
 
         //handles powerUps
-        if (current->powerUp_change_flag) {
+        if (current->powerUpChangeFlag) {
             powerUpWrapper = ReceivePowerUp(current);
             setPowerUpTimer(powerUpWrapper, SDL_GetTicks());
         }

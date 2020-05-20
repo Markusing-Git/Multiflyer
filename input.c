@@ -230,7 +230,7 @@ PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDela
                 if (current->localPlayerNr - 1 != i) {
                     current->pushAngle[i] = playerContact(getPlayerPosAdr(players[current->localPlayerNr - 1]), getPlayerPosAdr(players[i]));
                     if (current->pushAngle[i] != 0) {
-                        current->change_flag = 1;
+                        current->changeFlag = 1;
                         *spaceDelay = SDL_GetTicks();
                         if (getPlayerPower(players[current->localPlayerNr - 1]) == attack) {
                             setPlayerPower(players[current->localPlayerNr - 1], none);
