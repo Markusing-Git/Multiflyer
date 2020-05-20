@@ -432,7 +432,7 @@ int serverLobbyConnection(Game_State current)
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current)
 {
     int timer = 0;
-    int connectionTime = 1;
+    int connectionTime = 3;
     TCPsocket server;
     IPaddress ip1;
     TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
