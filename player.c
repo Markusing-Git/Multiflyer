@@ -541,6 +541,9 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame[])
 {
 	for (int i = 0; i < playerCount; i++)
-		if (playerList[i]->attack)
-			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[ attackFrame[i]/ATTACK_FRAMES ], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
+		if (playerList[i]->attack) {
+			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[attackFrame[i] / ATTACK_FRAMES], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
+			if(attackFrame[i] < 2 )
+				Mix_PlayChannel(3, media->slapSound, 0);
+		}
 }
