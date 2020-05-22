@@ -12,7 +12,7 @@
 #define SHIELD_DURATION 10000 //A Duration for shield power up
 #define IP_LENGTH 50
 #define PORT 2002
-#define DISCONNECT_TIMER 1000
+#define DISCONNECT_TIMER 200
 #define NAME_LENGTH 100
 #define SPACE_DELAY 5000
 #define WINDOW_WIDTH 1000

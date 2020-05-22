@@ -284,7 +284,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
 
 int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 {
-    for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
+    for (int i = 1; current->nrOfPlayers> i; i++) {
         current->connectionTimers[i]++;
     }
 
@@ -432,7 +432,7 @@ int serverLobbyConnection(Game_State current)
 int clientLobbyConnection(char playerIp[], char playerName[], Game_State current)
 {
     int timer = 0;
-    int connectionTime = 3;
+    int connectionTime = 1;
     TCPsocket server;
     IPaddress ip1;
     TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
@@ -448,12 +448,9 @@ int clientLobbyConnection(char playerIp[], char playerName[], Game_State current
 
     SDLNet_ResolveHost(&ip1, playerIp, PORT);
 
-    do {
-        server = SDLNet_TCP_Open(&ip1);
-        timer++;
-    } while (server == NULL&& timer!=connectionTime);
+    server = SDLNet_TCP_Open(&ip1);
    
-    if (timer == connectionTime) {
+    if (server==NULL) {
         return 1;
     }
 
@@ -752,7 +749,7 @@ void renderConnectionsServer(Game_State current) {
 
 int renderConnectionsClient(Game_State current) {
 
-        if (current->connectionTimers[0] == DISCONNECT_TIMER) {
+        if (current->connectionTimers[0] > DISCONNECT_TIMER) {
             printf("Player(Host): %s disconnected\n", current->playerNames[0]);
             return 1;
         }
