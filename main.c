@@ -74,7 +74,7 @@ int main(void) {
                     running = false;
                 }
             }
-
+            free(media);
             SDL_DestroyRenderer(renderer);
             closeFonts(fonts);
         }

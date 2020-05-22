@@ -53,4 +53,7 @@ PUBLIC int powerUpConsumed(Player playerList[], PowerUp aPowerUp, int playerCoun
 //checks if powerUp has expired
 PUBLIC bool powerUpExpired(PowerUp aPowerUp);
 
+//for singelplayermode
+PUBLIC bool singelPlayerPowers(Game_Route* aGameRoute, PowerUp aPowerUp);
+
 #endif /* world_h */

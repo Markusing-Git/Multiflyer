@@ -8,6 +8,7 @@ struct playerType {
 	bool alive;
 	bool immunity;
 	bool resurected;
+	int lifePoints;
 	int score;
 	int coins;
 	PowerType powerType;
@@ -42,6 +43,7 @@ PUBLIC Player createPlayer(int x, int y) {
 	aPlayer->alive = true;
 	aPlayer->immunity = false;
 	aPlayer->resurected = false;
+	aPlayer->lifePoints = 0;
 	aPlayer->score = 0;
 	aPlayer->coins = 0;
 	aPlayer->powerType = none;
@@ -222,9 +224,6 @@ PRIVATE void renderPlayer(SDL_Renderer* renderer, SDL_Texture* playerTex, SDL_Te
 			getSoundEffect(2, electricShock);
 			(*nrOfSoundEffects) = 1;
 		}
-		//Inte säker på vart dessa ska ligga:
-		//Mix_FreeChunk(electricShock);
-		//Mix_FreeChunk(flyingNoise);
 	}
 }
 
@@ -246,7 +245,7 @@ PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer,
 PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount) {
 
 	//renders players health
-	if (playerList[localPlayer]->powerType == life && playerList[localPlayer]->resurected == false) {
+	if (playerList[localPlayer]->lifePoints == 1 && playerList[localPlayer]->resurected == false) {
 		SDL_RenderCopy(renderer, media->heartTex[1], NULL, media->heartRect);
 	}
 	else if(playerList[localPlayer]->alive == true || playerList[localPlayer]->resurected == true){
@@ -327,6 +326,11 @@ PUBLIC int getPlayerPower(Player aPlayer) {
 
 PUBLIC void setPlayerPower(Player aPlayer, PowerType aPowerType) {
 	aPlayer->powerType = aPowerType;
+
+	if (aPlayer->powerType == life) {
+		aPlayer->lifePoints = 1;
+		aPlayer->powerType = none;
+	}
 }
 
 PUBLIC bool getPlayerImmunity(Player aPlayer) {
@@ -353,11 +357,11 @@ PUBLIC int getPlayerSkin(Player aPlayer) {
 	return aPlayer->skinChoice;
 }
 
-PUBLIC bool getPlayerAttack(Player aPlayer){
+PUBLIC bool getPlayerAttack(Player aPlayer) {
 	return aPlayer->attack;
 }
-PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot)
-{
+
+PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot) {
 	aPlayer->attack = attackOrNot;
 }
 
@@ -467,7 +471,7 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
 
 	//algorithm to make timing of resurection and obstacle immunity work
-	if ((aPlayer->powerType == life && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
+	if ((aPlayer->lifePoints == 1 && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
 		if (aPlayer->resurected == false) {
 			(*resurectTimer) = SDL_GetTicks();
 			aPlayer->resurected = true;
@@ -483,7 +487,7 @@ PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immun
 				aPlayer->immunity = true;
 			}
 			else if (SDL_GetTicks() >= ((*immunityTimer) + 2000)) { // makes player immune from obstacles until timer is set
-				aPlayer->powerType = none;
+				aPlayer->lifePoints = 0;
 				aPlayer->resurected = false;
 				aPlayer->immunity = false;
 			}
@@ -537,6 +541,9 @@ PUBLIC bool gameOver(Player playerList[], int playerCount, Uint32* delay, bool* 
 PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame[])
 {
 	for (int i = 0; i < playerCount; i++)
-		if (playerList[i]->attack)
-			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[ attackFrame[i]/ATTACK_FRAMES ], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
+		if (playerList[i]->attack) {
+			SDL_RenderCopyEx(renderer, media->attackTex, &media->attackRect[attackFrame[i] / ATTACK_FRAMES], &playerList[i]->playerPos, 0, NULL, SDL_FLIP_NONE);
+			if(attackFrame[i] < 2 )
+				Mix_PlayChannel(3, media->slapSound, 0);
+		}
 }

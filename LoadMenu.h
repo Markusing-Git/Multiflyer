@@ -55,13 +55,14 @@ typedef struct audio* Audio;
 
 int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[],
 	LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings, Store status);
-void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
-void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]);
-void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]);
+void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute, Fonts fonts);
+void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[], Game_Route* aGameRoute);
+void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[], Game_Route* aGameRoute);
 void control(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute);
 void initSettings(Audio settings);
 void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings);
+
 //opens a scoreboard and with alternatives to return to menu or start again
-void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute);
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute, Obstacle obstacles);
 
 #endif 

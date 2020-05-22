@@ -96,6 +96,7 @@ struct loadMedia {
 
 	Mix_Chunk* flyingNoise;
 	Mix_Chunk* electricShock;
+	Mix_Chunk* slapSound;
 	Mix_Music* menuMusic;
 };
 typedef struct loadMedia* LoadMedia;

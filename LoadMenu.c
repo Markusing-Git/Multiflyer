@@ -20,6 +20,7 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
 
     //plays background music
     Mix_PlayMusic(media->menuMusic, -1);
+    Mix_Pause(-1);
 
     Menu newMenu1;
     newMenu1 = createMenu(renderer, fonts, media);
@@ -103,20 +104,26 @@ int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name
                 //Multiplayer
                 else if (x >= newMenu1.pos[1].x && x <= newMenu1.pos[1].x + newMenu1.pos[1].w && y > newMenu1.pos[1].y && y <= newMenu1.pos[1].y + newMenu1.pos[1].h)
                 {
-                    getHostOrClient(renderer, media, aGameRoute);
+                    getHostOrClient(renderer, media, aGameRoute, fonts);
                     if (*aGameRoute == hostRoute) {
-                        enterName(renderer, media, fonts, name);
-                        if (hostLobby(renderer, name, current, setup, fonts, aGameRoute)) {
-                            running = false;
-                            return 1;
+                        enterName(renderer, media, fonts, name, aGameRoute);
+                        if (*aGameRoute != menuRoute && *aGameRoute != quitRoute) {
+                            if (hostLobby(renderer, name, current, setup, fonts, aGameRoute)) {
+                                running = false;
+                                return 1;
+                            }
                         }
                     }
                     else if(*aGameRoute == clientRoute) {
-                        enterName(renderer, media, fonts, name);
-                        enterIp(renderer, media, fonts, ip);
-                        if (clientLobby(renderer, name, ip, current, fonts, aGameRoute)) {
-                            running = false;
-                            return 1;
+                        enterName(renderer, media, fonts, name, aGameRoute);
+                        if (*aGameRoute != menuRoute && *aGameRoute != quitRoute) {
+                            enterIp(renderer, media, fonts, ip, aGameRoute);
+                            if (*aGameRoute != menuRoute && *aGameRoute != quitRoute) {
+                                if (clientLobby(renderer, name, ip, current, fonts, aGameRoute)) {
+                                    running = false;
+                                    return 1;
+                                }
+                            }
                         }
                     }
                 }
@@ -296,11 +303,15 @@ void control(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute)
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute) {
+void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameRoute, Fonts fonts) {
     SDL_Event e;
+    bool renderText = true;
     int done = true;
     int x, y;
+    char toMenu[] = "Back to menu";
 
+    SDL_Color initColor = { 255,255,255, 0 };
+    SDL_Color green = { 77,255,0,0 };
 
     //Define position for Multiplayer
     SDL_Rect imageH_pos;
@@ -317,10 +328,19 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameR
     imageC_pos.w = 354;
     imageC_pos.h = 185;
 
+    SDL_Surface* toMenuSurface = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, initColor);
+    SDL_Texture* toMenuTex = SDL_CreateTextureFromSurface(renderer, toMenuSurface);
+    SDL_FreeSurface(toMenuSurface);
+
+    SDL_Rect toMenuRect;
+    toMenuRect.x = 300;
+    toMenuRect.y = 500;
+    SDL_QueryTexture(toMenuTex, NULL, NULL, &toMenuRect.w, &toMenuRect.h); //Back to menu
+
 
     while (done) {
 
-        while (SDL_PollEvent(&e))
+        while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
             {
                 *aGameRoute = quitRoute;
@@ -330,6 +350,25 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameR
             {
                 *aGameRoute = menuRoute;
                 done = false;
+            }
+            else if (e.type == SDL_MOUSEMOTION) {
+                x = e.motion.x;
+                y = e.motion.y;
+                if (x >= toMenuRect.x && x <= toMenuRect.x + toMenuRect.w && y > toMenuRect.y && y <= toMenuRect.y + toMenuRect.h)
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, green);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                else
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, initColor);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                renderText = true;
             }
             else if (e.type == SDL_MOUSEBUTTONDOWN)
             {
@@ -345,25 +384,38 @@ void getHostOrClient(SDL_Renderer* renderer, LoadMedia media, Game_Route *aGameR
                     *aGameRoute = clientRoute;
                     done = false;
                 }
+                else if (x >= toMenuRect.x && x <= toMenuRect.x + toMenuRect.w && y > toMenuRect.y && y <= toMenuRect.y + toMenuRect.h)
+                {
+                    *aGameRoute = menuRoute;
+                    done = false;
+                }
+
             }
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, media->hostButtonTexture, NULL, &imageH_pos);
-        SDL_RenderCopy(renderer, media->clientButtonTexture, NULL, &imageC_pos);
-        SDL_RenderPresent(renderer);
+        }
+        if (renderText == true) {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, media->hostButtonTexture, NULL, &imageH_pos);
+            SDL_RenderCopy(renderer, media->clientButtonTexture, NULL, &imageC_pos);
+            SDL_RenderCopy(renderer, toMenuTex, NULL, &toMenuRect);
+            SDL_RenderPresent(renderer);
+            renderText = false;
+        }
     }
 }
 
 
-void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]) {
+void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[], Game_Route* aGameRoute) {
 
     SDL_Event event;
     bool done = false;
     bool renderText = true;
     char nameInit[] = "NAME: ";
+    char toMenu[] = "Back to menu";
+    int x, y;
 
     //Textbox
     SDL_Rect txRect_pos;
-    txRect_pos.x = 170;
+    txRect_pos.x = 230;
     txRect_pos.y = 150;
     txRect_pos.w = 530;
     txRect_pos.h = 65;
@@ -371,6 +423,7 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
     //Name:
     SDL_Color textColor = { 144, 77, 255, 255 };
     SDL_Color initColor = { 255,255,255, 0 };
+    SDL_Color green = {77,255,0,0};
     SDL_Surface* textSurface = TTF_RenderText_Solid(fonts->cuvert_24, name, textColor);
     SDL_Texture* nameTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
@@ -378,15 +431,26 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
     SDL_Texture* nameInitTexture = SDL_CreateTextureFromSurface(renderer, nameInitSurface);
     SDL_FreeSurface(nameInitSurface);
 
+    SDL_Surface* toMenuSurface = TTF_RenderText_Solid(fonts->cuvert_48, toMenu , initColor);
+    SDL_Texture* toMenuTex = SDL_CreateTextureFromSurface(renderer, toMenuSurface);
+    SDL_FreeSurface(toMenuSurface);
+
+
     SDL_Rect textRect;
-    textRect.x = 275;
+    textRect.x = 335;
     textRect.y = 167;
     SDL_QueryTexture(nameTexture, NULL, NULL, &textRect.w, &textRect.h);
 
     SDL_Rect tInitRect;
-    tInitRect.x = 185;
+    tInitRect.x = 245;
     tInitRect.y = 167;
     SDL_QueryTexture(nameInitTexture, NULL, NULL, &tInitRect.w, &tInitRect.h);
+
+    SDL_Rect toMenuRect;
+    toMenuRect.x = 300;
+    toMenuRect.y = 500;
+    SDL_QueryTexture(toMenuTex, NULL, NULL, &toMenuRect.w, &toMenuRect.h); //Back to menu
+
 
     while (!done) {
 
@@ -394,13 +458,13 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
         {
             if (event.type == SDL_QUIT)
             {
+                *aGameRoute = quitRoute;
                 done = true;
             }
             else if (event.type == SDL_KEYDOWN)
             {
                 if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_ESCAPE) 
                 {
-                    
                     done = true;
                 }
                 else if (event.key.keysym.sym == SDLK_BACKSPACE && strlen(name) > 0)
@@ -412,6 +476,29 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
                     strcat(name, SDL_GetScancodeName(event.key.keysym.scancode));
                     renderText = true;
                 }
+            }
+            else if (event.type == SDL_MOUSEMOTION) {
+                x = event.motion.x;
+                y = event.motion.y;
+                if (x >= toMenuRect.x && x <= toMenuRect.x + toMenuRect.w && y > toMenuRect.y && y <= toMenuRect.y + toMenuRect.h)
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, green);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                else
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, initColor);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                renderText = true;
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                done = true;
+                *aGameRoute = menuRoute;
             }
         }
         //update texture
@@ -426,8 +513,8 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
             SDL_RenderCopy(renderer, media->textboxTexture, NULL, &txRect_pos);
             SDL_RenderCopy(renderer, nameInitTexture, NULL, &tInitRect);
             SDL_RenderCopy(renderer, nameTexture, NULL, &textRect);
+            SDL_RenderCopy(renderer, toMenuTex, NULL, &toMenuRect);
             SDL_RenderPresent(renderer);
-
             renderText = false;
         }
     }
@@ -439,23 +526,27 @@ void enterName(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char name[]
 
 
 
-void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
+void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[], Game_Route *aGameRoute) {
 
     SDL_Event event;
     bool done = false;
     bool renderText = true;
     char ipInit[] = "host ip: ";
+    char toMenu[] = "Back to menu";
+    int x, y;
 
 
     //Textbox
     SDL_Rect txRect_pos;
-    txRect_pos.x = 170;
+    txRect_pos.x = 230;
     txRect_pos.y = 150;
     txRect_pos.w = 530;
     txRect_pos.h = 65;
 
     SDL_Color textColor = { 144, 77, 255, 255 };
     SDL_Color initColor = { 255,255,255, 0 };
+    SDL_Color green = { 77,255,0,0 };
+
     SDL_Surface* textSurface = TTF_RenderText_Solid(fonts->cuvert_24, ip, textColor);
     SDL_Texture* ipTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
@@ -463,15 +554,24 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
     SDL_Texture* ipInitTexture = SDL_CreateTextureFromSurface(renderer, ipInitSurface);
     SDL_FreeSurface(ipInitSurface);
 
+    SDL_Surface* toMenuSurface = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, initColor);
+    SDL_Texture* toMenuTex = SDL_CreateTextureFromSurface(renderer, toMenuSurface);
+    SDL_FreeSurface(toMenuSurface);
+
     SDL_Rect ipRect;
-    ipRect.x = 310;
+    ipRect.x = 370;
     ipRect.y = 167;
     SDL_QueryTexture(ipTexture, NULL, NULL, &ipRect.w, &ipRect.h);
 
     SDL_Rect ipInitRect;
-    ipInitRect.x = 185;
+    ipInitRect.x = 245;
     ipInitRect.y = 167;
     SDL_QueryTexture(ipInitTexture, NULL, NULL, &ipInitRect.w, &ipInitRect.h);
+
+    SDL_Rect toMenuRect;
+    toMenuRect.x = 300;
+    toMenuRect.y = 500;
+    SDL_QueryTexture(toMenuTex, NULL, NULL, &toMenuRect.w, &toMenuRect.h); //Back to menu
 
     while (!done) {
 
@@ -479,6 +579,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
         {
             if (event.type == SDL_QUIT)
             {
+                *aGameRoute = quitRoute;
                 done = true;
             }
             else if (event.type == SDL_KEYDOWN)
@@ -497,6 +598,29 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
                     renderText = true;
                 }
             }
+            else if (event.type == SDL_MOUSEMOTION) {
+                x = event.motion.x;
+                y = event.motion.y;
+                if (x >= toMenuRect.x && x <= toMenuRect.x + toMenuRect.w && y > toMenuRect.y && y <= toMenuRect.y + toMenuRect.h)
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, green);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                else
+                {
+                    SDL_DestroyTexture(toMenuTex);
+                    SDL_Surface* temp = TTF_RenderText_Solid(fonts->cuvert_48, toMenu, initColor);
+                    toMenuTex = SDL_CreateTextureFromSurface(renderer, temp);
+                    SDL_FreeSurface(temp);
+                }
+                renderText = true;
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                done = true;
+                *aGameRoute = menuRoute;
+            }
         }
         //update texture
 
@@ -510,6 +634,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
             SDL_RenderCopy(renderer, media->textboxTexture, NULL, &txRect_pos);
             SDL_RenderCopy(renderer, ipInitTexture, NULL, &ipInitRect);
             SDL_RenderCopy(renderer, ipTexture, NULL, &ipRect);
+            SDL_RenderCopy(renderer, toMenuTex, NULL, &toMenuRect);
             SDL_RenderPresent(renderer);
 
             renderText = false;
@@ -528,7 +653,7 @@ void enterIp(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, char ip[]) {
 //******************************************************************************************************************************************************************************************************
 //******************************************************************************************************************************************************************************************************
 
-void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute) {
+void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_State current, Game_Route *aGameRoute, Obstacle obstacles) {
 
     SDL_Event event;
     bool done = false;
@@ -538,6 +663,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
     char gameOver[] = "GAME OVER";
     char playerNames[MAX_PLAYERS][NAME_LENGTH] = {" "};
     char scores[MAX_PLAYERS][NAME_LENGTH] = {" "}; //m�ste fixa n�tverks �verf�ring f�r detta
+    Mix_Pause(-1);
 
     if (*aGameRoute != singlePlayerRoute) {
         for (int i = 0; i < current->nrOfPlayers; i++) {
@@ -700,6 +826,10 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
             }
         }
         if (renderText) {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
+            SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
+            renderObstacles(obstacles, renderer, media->flyTrapTex);
             SDL_RenderCopy(renderer, media->scoreBoardTexture, NULL, &scoreboardPos);
             SDL_RenderCopy(renderer, gameOverTexture, NULL, &gameOverRect);
             for(int i = 0 ; i< MAX_PLAYERS; i++)
@@ -844,7 +974,7 @@ void volume(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Audio settings
     {
         while(SDL_PollEvent(&event))
         {
-            if(event.type == SDL_QUIT)
+            if(event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
             {
                 settings->done = true;
             }
