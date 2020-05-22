@@ -299,7 +299,7 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
             Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
             memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
 
-            current->connectionTimers[Gupd_Recive->localPlayerNr] = 0;
+            current->connectionTimers[Gupd_Recive->localPlayerNr-1] = 0;
 
             
             current->playerPosX[Gupd_Recive->localPlayerNr - 1] = Gupd_Recive->playerPosX;
@@ -740,9 +740,9 @@ PowerUp ReceivePowerUp(Game_State current) {
 
 void renderConnectionsServer(Game_State current) {
 
-    for (int i = 1; current->nrOfPlayers - 1 > i; i++) {
+    for (int i = 1; current->nrOfPlayers> i; i++) {
         
-        if (current->connectionTimers[i] == DISCONNECT_TIMER && current->playerAlive[i] != 0) {
+        if (current->connectionTimers[i] > DISCONNECT_TIMER && current->playerAlive[i] != false) {
             current->playerAlive[i] = 0;
             printf("Player: %s disconnected\n", current->playerNames[i]);
         }

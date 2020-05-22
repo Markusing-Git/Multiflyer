@@ -125,7 +125,7 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			current->newPlayerFlag = 0;
 		}
 
-		if (current->disconnectionCache != 0){
+		if (current->disconnectionCache != 0 && current->nrOfPlayers>1){
 			printf("Disconnection recived\n");
 			removePlayerFromLobby(current, setup, current->disconnectionCache);
 			hostLobby->playerCount = 0;
@@ -229,7 +229,7 @@ PUBLIC int clientLobby(SDL_Renderer* renderer, char playerName[], char playerIp[
 			current->newPlayerFlag = 0;
 		}
 
-		if (current->disconnectionCache != 0) {
+		if (current->disconnectionCache != 0 && current->nrOfPlayers > 1) {
 			removePlayerFromLobby(current, NULL, current->disconnectionCache);
 			clientLobby->playerCount = 0;
 
