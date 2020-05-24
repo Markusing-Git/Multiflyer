@@ -697,7 +697,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
         printf("Could not load music. Error: %s", Mix_GetError());
     }
 
-    Mix_Volume(-1, 50); //Andrar ljud för alla sound effekts, mellan 0 - 128 (MAX för SDL)
+    Mix_Volume(-1, 10); //Andrar ljud för alla sound effekts, mellan 0 - 128 (MAX för SDL)
     Mix_VolumeMusic(10); //Andrar volym för musik, mellan 0 - 128 (MAX för SDL)
     
     return media;
