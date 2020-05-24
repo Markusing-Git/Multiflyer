@@ -680,7 +680,7 @@ LoadMedia loadMedia(SDL_Renderer* renderer, bool* running) {
     }
 
     //Flying noise: http://soundbible.com/396-Fly-Buzzing.html Artist: Mike Koenig
-    media->flyingNoise = Mix_LoadWAV("Audio/FlyNoise.wav");
+    media->flyingNoise = Mix_LoadWAV("Audio/Insect_Bee_2.wav");
     if (media->flyingNoise == NULL)
     {
         printf("Could not load sound effect. Error: %s \n", Mix_GetError());
