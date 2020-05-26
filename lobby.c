@@ -31,7 +31,7 @@ PRIVATE void playerJoined(SDL_Renderer* renderer, Lobby aLobby, Fonts fonts, cha
 
 
 // ************************************************** HOST CODE ******************************************************************************************************
-PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, UDP_Client_Config setup, Fonts fonts, Game_Route* aGameroute) {
+PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State current, Network_Config setup, Fonts fonts, Game_Route* aGameroute) {
 
 	Lobby hostLobby;
 	hostLobby = createLobby(renderer, fonts);

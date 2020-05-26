@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus) {
+bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, Network_Config setup, Game_Route *aGameRoute, Store storeStatus) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -42,7 +42,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     Uint32 spaceDelay = SDL_GetTicks() - SPACE_DELAY;
 
     //Starting network   
-    start_Game_state(players, current);
+    set_Game_state(players, current);
     if (current->nrOfPlayers > 1)
     init_Server_network(setup, current);
 
@@ -51,6 +51,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
     //add skin from store
     setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
+
+    printf("size of gamestate: %d", sizeof(struct Game_State_Type));
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)

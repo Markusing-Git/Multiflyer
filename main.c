@@ -18,7 +18,7 @@ int main(void) {
     Game_Route gameRoute = menuRoute;
     Audio settings = malloc(sizeof(struct audio));
     Store storeStatus = malloc(sizeof(struct store));
-    UDP_Client_Config setup = malloc(sizeof(struct UDP_Client_Config_Type));
+    Network_Config setup = malloc(sizeof(struct Network_Config_Type));
     Game_State current = malloc(sizeof(struct Game_State_Type));
     initGamestate(current);
     initSettings(settings);

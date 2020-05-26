@@ -1,25 +1,19 @@
 #include "Network.h"
 
-
-
-//Creates Gamestate for sending over network
-int start_Game_state(Player playerList[], Game_State current) {
+void set_Game_state(Player playerList[], Game_State current) {
 
     for (int i=0; current->nrOfPlayers > i; i++){
 
         current->playerPosX[i] = getPlayerPoint((playerList[i]),'x');
         current->playerPosY[i] = getPlayerPoint((playerList[i]), 'y');
     }
-
     current->serverConnection = 0;
-
-    return 0;
-    //Skapar en Game state struct med startvärden och returnerar den
 }
 
-int initGamestate(Game_State current)
+void initGamestate(Game_State current)
 {
     for (int i = 0; MAX_PLAYERS > i; i++) {
+
         current->playerPosX[i] = 0;
         current->playerPosY[i] = 0;
         current->playerAlive[i] = true;
@@ -31,6 +25,7 @@ int initGamestate(Game_State current)
         current->connectionTimers[i] = 0;
         current->playerSkin[i] = fly;
     }
+
     current->nrOfPlayers = 0;
     current->changeFlag = 0;
     current->obstacleChangeFlag = 0;
@@ -40,13 +35,21 @@ int initGamestate(Game_State current)
     current->localPlayerNr = 0;
     current->disconnectionCache = 0;
     current->serverConnection = 0;
+}
 
-    return 0;
+
+void initTCPCom(TCP_Communication communication) {
+    communication->leftGame = 0;
+    communication->connectionOpen = 1;
+    communication->startGame = 0;
+    communication->recived = 0;
+    communication->localPlayerNr = 0;
+    communication->serverDisconnect = 0;
 }
 
 
 // int netowrk and check what port free
-int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State current)
+void init_client_network(char playerIp[], Network_Config setup, Game_State current)
 {
     //Öppnar en socket för att ta skicka data
     if (!(setup->send_Sock = (SDLNet_UDP_Open(0))))
@@ -74,16 +77,14 @@ int init_client_network(char playerIp[], UDP_Client_Config setup, Game_State cur
     }
 
     //Allokerar plats för två paket
-    if (!((setup->send_Pack = SDLNet_AllocPacket(2048)) && (setup->recv_Pack = SDLNet_AllocPacket(2048))))
+    if (!((setup->send_Pack = SDLNet_AllocPacket(1024)) && (setup->recv_Pack = SDLNet_AllocPacket(1024))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-
-    return 0;
 }
 
-int init_Server_network(UDP_Client_Config setup, Game_State current)
+void init_Server_network(Network_Config setup, Game_State current)
 {
 
     //Öppnar en socket för att ta skicka data
@@ -100,7 +101,6 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
  
     for (int i = 0; current->nrOfPlayers-1> i; i++)
     {    
-            //printf("%s\n", setup->playerIp[i]);
 
             if (SDLNet_ResolveHost(&setup->sendingIP[i], setup->playerIp[i], PORT) == -1) {
 
@@ -109,19 +109,15 @@ int init_Server_network(UDP_Client_Config setup, Game_State current)
             }
 
     }
-
-    //Allokerar plats för två paket
     if (!((setup->send_Pack = SDLNet_AllocPacket(2048)) && (setup->recv_Pack = SDLNet_AllocPacket(2048))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-
-    return 0;
 }
 
 //sends and recives game data over the network
-int sendAndReciveClient(Game_State Gupd, UDP_Client_Config setup, SDL_Rect *playerPos[], Player players[])
+int sendAndReciveClient(Game_State Gupd, Network_Config setup, SDL_Rect *playerPos[], Player players[])
 {
     updateGameSending(Gupd, playerPos,players);
     networkCommunicationClient(Gupd, setup);
@@ -130,7 +126,7 @@ int sendAndReciveClient(Game_State Gupd, UDP_Client_Config setup, SDL_Rect *play
     return 0;
 }
 
-int sendAndReciveServer(Game_State Gupd, UDP_Client_Config setup, SDL_Rect* playerPos[], Player players[])
+int sendAndReciveServer(Game_State Gupd, Network_Config setup, SDL_Rect* playerPos[], Player players[])
 {
     updateGameSending(Gupd, playerPos, players);
     networkCommunicationServer(Gupd, setup);
@@ -169,10 +165,10 @@ int updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players
 }
 
 //
-int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
+int networkCommunicationClient(Game_State current, Network_Config setup)
 {
 
-    //Om flaggan är satt så finns det ny data att skicka
+    //checks if there is new information to send
     if (current->changeFlag == 1) {
 
         Game_State_Send Gupd_Sending = malloc(sizeof(struct Game_State_Send_Type));
@@ -205,8 +201,6 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
             }
         }
 
-        //printf("Client Sending: %d\n", Gupd_Sending->player_Pos_Y);
-
         memcpy(setup->send_Pack->data, Gupd_Sending, sizeof(struct Game_State_Send_Type)); //kopierar Game_state till paketet
         setup->send_Pack->len = sizeof(struct Game_State_Send_Type);
         setup->send_Pack->address.host = setup->sendingIP[0].host;	
@@ -220,9 +214,9 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
         free(Gupd_Sending);
     }
 
-    current->connectionTimers[0]++;
+    current->connectionTimers[0]++; //
 
-    //kollar om det finns ett packet att hämta
+    //Checks if there is a packet to recive
     if (SDLNet_UDP_Recv(setup->recv_Sock[0], setup->recv_Pack)) {
 
         current->connectionTimers[0] = 0;
@@ -282,7 +276,7 @@ int networkCommunicationClient(Game_State current, UDP_Client_Config setup)
 }
 
 
-int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
+int networkCommunicationServer(Game_State current, Network_Config setup)
 {
     for (int i = 1; current->nrOfPlayers> i; i++) {
         current->connectionTimers[i]++;
@@ -332,6 +326,12 @@ int networkCommunicationServer(Game_State current, UDP_Client_Config setup)
 
 
     //Om flaggan är satt så finns det ny data att skicka
+
+    if (current->changeFlag == 0) {
+        printf("not sent\n");
+    }
+
+
     if (current->changeFlag == 1) {
 
         memcpy(setup->send_Pack->data, current, sizeof(struct Game_State_Type)); //kopierar Game_state till paketet
@@ -583,7 +583,7 @@ int disconnectFromServer(char playerIp[], Game_State current)
     return 0;
 }
 
-int closeServer(Game_State current, TCP_Communication communication, UDP_Client_Config setup)
+int closeServer(Game_State current, TCP_Communication communication, Network_Config setup)
 {
     communication->serverDisconnect = 1;
     for (int i = 0; current->nrOfPlayers - 1 > i; i++) {
@@ -597,7 +597,7 @@ int closeServer(Game_State current, TCP_Communication communication, UDP_Client_
 }
 
 //Stänger ner och rensar
-int Close_SDLNet(UDP_Client_Config setup, Game_State current)
+int Close_SDLNet(Network_Config setup, Game_State current)
 {
     SDLNet_FreePacket(setup->send_Pack);
     SDLNet_FreePacket(setup->recv_Pack);
@@ -608,7 +608,7 @@ int Close_SDLNet(UDP_Client_Config setup, Game_State current)
     return 0;
 }
 
-int resetClientSDLNet(UDP_Client_Config setup)
+int resetClientSDLNet(Network_Config setup)
 {
     SDLNet_FreePacket(setup->send_Pack);
     SDLNet_FreePacket(setup->recv_Pack);
@@ -616,7 +616,7 @@ int resetClientSDLNet(UDP_Client_Config setup)
     return 0;
 }
 
-int resetServerSDLNet(UDP_Client_Config setup, Game_State current)
+int resetServerSDLNet(Network_Config setup, Game_State current)
 {
     SDLNet_FreePacket(setup->send_Pack);
     SDLNet_FreePacket(setup->recv_Pack);
@@ -624,17 +624,6 @@ int resetServerSDLNet(UDP_Client_Config setup, Game_State current)
     for(int i = 0; current->nrOfPlayers-1>i;i++)
         SDLNet_UDP_Close(setup->recv_Sock[0]);
     return 0;
-}
-
-int getGameStatePlayerPosX(Game_State current, int playerNr)
-{
-    return current->playerPosX[playerNr];
-}
-
-int getGameStatePlayerPosY(Game_State current, int playerNr)
-{
-    return current->playerPosY[playerNr];
-
 }
 
 int SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[])
@@ -757,7 +746,7 @@ int renderConnectionsClient(Game_State current) {
         return 0;
 }
 
-void removePlayerFromLobby(Game_State current, UDP_Client_Config setup, int localPlayerNr){
+void removePlayerFromLobby(Game_State current, Network_Config setup, int localPlayerNr){
 
     if (current->nrOfPlayers > 2 && localPlayerNr != current->nrOfPlayers) {
             for (int i = localPlayerNr - 1; current->nrOfPlayers > i; i++) {
@@ -772,15 +761,3 @@ void removePlayerFromLobby(Game_State current, UDP_Client_Config setup, int loca
     strcpy(current->playerNames[current->nrOfPlayers - 1], "*empty*");
     current->nrOfPlayers = current->nrOfPlayers - 1;
 }
-
-int initTCPCom(TCP_Communication communication) {
-    communication->leftGame = 0;
-    communication->connectionOpen = 1;
-    communication->startGame = 0;
-    communication->recived = 0;
-    communication->localPlayerNr = 0;
-    communication->serverDisconnect = 0;
-
-    return 0;
-}
-

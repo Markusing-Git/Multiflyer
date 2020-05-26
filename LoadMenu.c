@@ -10,7 +10,7 @@ typedef struct menu {
 
 PRIVATE Menu createMenu(SDL_Renderer* renderer, Fonts fonts, LoadMedia media);
 
-int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Audio settings, Store storeStatus)
+int LoadMenu(SDL_Renderer* renderer, SDL_Window* window, int w, int h, char name[], char ip[], LoadMedia media, Fonts fonts, Game_State current, Network_Config setup, Game_Route *aGameRoute, Audio settings, Store storeStatus)
 {
     //Initalize for loading image
     IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);

@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 
-bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus) {
+bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, Network_Config setup, Game_Route *aGameRoute, Store storeStatus) {
 
     //************************************CREATE ENVOIRMENT**************************************************************************
 
@@ -36,7 +36,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
     Uint32 spaceDelay = SDL_GetTicks() - SPACE_DELAY;
 
     //Starting network   
-    start_Game_state(players, current);
+    set_Game_state(players, current);
     init_client_network(playerIp, setup, current);
     printf("%d\n", current->localPlayerNr);
 
