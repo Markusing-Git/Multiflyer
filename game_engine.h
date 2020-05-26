@@ -19,6 +19,9 @@
 //params a renderer, screen width, screen height
 bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus);
 bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], char playerIp[], LoadMedia media, Fonts fonts, Game_State current, UDP_Client_Config setup, Game_Route *aGameRoute, Store storeStatus);
+void renderEverything(SDL_Renderer* renderer, LoadMedia media, Obstacle obstacles, Player players[], int* immunityFrame,
+    PowerUp powerUpWrapper, int* coinFrame, int playerFrame, int splashFrame, int attackFrame, int* nrOfSoundEffects,
+    Fonts fonts, Game_State current);
 
 
 #endif /*game_engine_h*/

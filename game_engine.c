@@ -113,8 +113,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
-       // attack(current->nrOfPlayers, current->localPlayerNr, current->pushAngle, players, &current->change_flag, &spaceDelay, space, nrOfPushes);
-
         playerAttack(current, players, &spaceDelay, &nrOfPushes);
 
 
@@ -131,18 +129,8 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
 
         //*********************************  RENDERING  ***********************************************************************************
-        SDL_RenderClear(renderer);
-        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
-        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
-        renderObstacles(obstacles, renderer, media->flyTrapTex);
-        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
-        renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
-        renderPowerUp(renderer, powerUpWrapper, media, &coinFrame);
-        renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
-        renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
-        SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
-        renderScore(players[0], media, renderer, fonts);
-        SDL_RenderPresent(renderer);
+        renderEverything(renderer, media, obstacles, players, &immunityFrame, powerUpWrapper, &coinFrame, playerFrame, splashFrame,
+            attackFrame, &nrOfSoundEffects, fonts, current);
 
         //if game over
         if (gameOver(players, current->nrOfPlayers, &gameOverDelay, &gameOverDelayFlag)) {
@@ -162,4 +150,21 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         resetServerSDLNet(setup, current);
     }
     return true;
+}
+
+void renderEverything(SDL_Renderer* renderer, LoadMedia media, Obstacle obstacles, Player players[], int *immunityFrame,
+                        PowerUp powerUpWrapper, int *coinFrame, int playerFrame, int splashFrame, int attackFrame, int *nrOfSoundEffects,
+                        Fonts fonts, Game_State current) {
+    SDL_RenderClear(renderer);
+    SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
+    renderObstacles(obstacles, renderer, media->flyTrapTex);
+    renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], immunityFrame);
+    renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
+    renderPowerUp(renderer, powerUpWrapper, media, coinFrame);
+    renderPlayers(renderer, players, playerFrame, splashFrame, nrOfSoundEffects, current->nrOfPlayers, media);
+    renderAttack(renderer, media, players, current->nrOfPlayers, attackFrame);
+    SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
+    renderScore(players[0], media, renderer, fonts);
+    SDL_RenderPresent(renderer);
 }
