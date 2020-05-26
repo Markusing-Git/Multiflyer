@@ -77,7 +77,7 @@ void init_client_network(char playerIp[], Network_Config setup, Game_State curre
     }
 
     //Allokerar plats för två paket
-    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type)))))
+    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type)))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
@@ -109,7 +109,7 @@ void init_Server_network(Network_Config setup, Game_State current)
             }
 
     }
-    if (!((setup->send_Pack = SDLNet_AllocPacket(2048)) && (setup->recv_Pack = SDLNet_AllocPacket(2048))))
+    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Type)))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
