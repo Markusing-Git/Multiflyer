@@ -13,7 +13,7 @@ int main(void) {
     bool running = true;
 
     char playerName[NAME_LENGTH] = "No-alias";
-    char playerIp[IP_LENGTH] = "192.168.0.14";
+    char playerIp[IP_LENGTH] = "192.168.";
 
     Game_Route gameRoute = menuRoute;
     Audio settings = malloc(sizeof(struct audio));
