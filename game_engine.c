@@ -113,8 +113,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 
-       // attack(current->nrOfPlayers, current->localPlayerNr, current->pushAngle, players, &current->change_flag, &spaceDelay, space, nrOfPushes);
-
+        //if player was attacked
         playerAttack(current, players, &spaceDelay, &nrOfPushes);
 
 
