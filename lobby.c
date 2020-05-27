@@ -1,5 +1,7 @@
 #include "lobby.h"
 
+#pragma warning( disable : 6385 )
+
 struct lobby_type {
 	char lobbyText[NAME_LENGTH];
 	char startGame[NAME_LENGTH];
@@ -97,12 +99,10 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 				y = hostLobby->event.button.y;
 				if (x >= hostLobby->startGameRect.x && x <= hostLobby->startGameRect.x + hostLobby->startGameRect.w && y > hostLobby->startGameRect.y && y <= hostLobby->startGameRect.y + hostLobby->startGameRect.h)
 				{
-					//serverStartGame(setup, current);
+
 					for (int i = 0; current->nrOfPlayers - 1 > i; i++){
-						printf("sending start game\n");
 						communication->startGame = 1;
 						sendToClient(communication, setup->playerIp[i], current);
-						printf("sent start game\n");
 					}
 					closeLobbyTTF(hostLobby);
 					current->lobbyRunningFlag = 0;
@@ -114,7 +114,6 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 			playerJoined(renderer, hostLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
 			printf("%d", current->nrOfPlayers); 
 			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
-			//setup->playerIp= current->ipAdressCache; //Test för snabbare koppling
 		
 
 			for (int i = 0; current->nrOfPlayers - 2 > i; i++) {
@@ -126,13 +125,11 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 
 		if (current->disconnectionCache != 0 && current->nrOfPlayers>1){
-			printf("Disconnection recived\n");
 			removePlayerFromLobby(current, setup, current->disconnectionCache);
 			hostLobby->playerCount = 0;
 			
 			for (int i = 0; current->nrOfPlayers+1 > i; i++) {
 				playerJoined(renderer, hostLobby, fonts, current->playerNames[i]);
-				printf("updated list\n");
 			}
 
 			hostLobby->playerCount = hostLobby->playerCount - 1;
