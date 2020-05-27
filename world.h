@@ -11,11 +11,8 @@
 
 typedef struct powerUp_type* PowerUp;
 
-//Scans if player has collided with world limitations
-void worldCollision(SDL_Rect* aPlayerPos, Player aPLayer, int screenWidth, int  screenHeight);
 
-//Makes the background scroll to the left, takes a media for backround image, and the address of an offset variable for movement
-void scrollBackground(LoadMedia aMedia, int* aOffset, int w, int h);
+/*************** Constructors ***********************************/
 
 //initiates a empty powerUp struct
 PUBLIC PowerUp initPowerUp(void);
@@ -25,6 +22,10 @@ PUBLIC PowerUp serverSpawnPowerUp(int screenWidth, int screenHeight, PowerUp old
 
 //spawns a clientside poweUp used for networkPurpuses
 PUBLIC PowerUp clientSpawnPowerUp(SDL_Rect powerUpRect, int powerUpDir, int powerUpType);
+
+
+
+/*************** Get and setters ***********************************/
 
 //returns position and size of powerUp
 PUBLIC SDL_Rect getPowerUpRect(PowerUp aPowerUp);
@@ -40,6 +41,16 @@ PUBLIC void setPowerUpTimer(PowerUp aPowerUp, Uint32 startTimer);
 
 //returns powerUp start timer
 PUBLIC Uint32 getPowerUpTimer(PowerUp aPowerUp);
+
+
+
+/*************** Operational ***************************************/
+
+//Scans if player has collided with world limitations
+void worldCollision(SDL_Rect* aPlayerPos, Player aPLayer, int screenWidth, int  screenHeight);
+
+//Makes the background scroll to the left, takes a media for backround image, and the address of an offset variable for movement
+void scrollBackground(LoadMedia aMedia, int* aOffset, int w, int h);
 
 //moves powerUp around and bounces of screen.
 PUBLIC void powerUpTick(PowerUp aPowerUp, int screenWidth, int screenHeight);

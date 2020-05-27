@@ -14,14 +14,24 @@
 
 typedef struct obstacle_type* Obstacle;
 
+
+/*************** Constructors ***********************************/
+
 //param screen width, screen height, creates obstacle and two SDL_Rects with random opening.
 PUBLIC Obstacle createObstacle(int screenWidth, int screenHeight);
+
+//creates a client obstacle
+PUBLIC Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom);
 
 //initates random gen for opening
 PUBLIC void initRandomGeneratior();
 
 //creates a random opening for Obstacle
 PUBLIC void rndOpening(Obstacle aObs, int screenHeight);
+
+
+
+/*************** Get and setters ***********************************/
 
 //param a obstacle, true for top false for bot, x:y:w:h for cordinates
 PUBLIC int getObstacleValue(Obstacle aObs, bool topOrBot, char value);
@@ -35,6 +45,11 @@ PUBLIC void setRectfromObstacle(Obstacle aObs, SDL_Rect aRect, bool topOrBot);
 //param a obstacle, returns next obstacle in the list
 PUBLIC Obstacle getNextObsFromList(Obstacle aObs);
 
+
+
+
+/*************** Operational ***************************************/
+
 //param obstacle list head, screenwidth, screenHeigt. Adds new obstacle to the list,
 PUBLIC void newObstacle(Obstacle head, int screenWidth, int screenHeight);
 
@@ -46,9 +61,6 @@ PUBLIC void renderObstacles(Obstacle head, SDL_Renderer* renderer, SDL_Texture* 
 
 //Checks if player has colided with obstacle
 PUBLIC void obstacleCollision(SDL_Rect* aPlayerPos, Player aPlayer, Obstacle head);
-
-//creates a client obstacle
-PUBLIC Obstacle createClientObstacle(SDL_Rect top, SDL_Rect bottom);
 
 //Creates a client obstacle list
 PUBLIC void newClientObstacle(Obstacle receivedObstacle, Obstacle head);

@@ -20,7 +20,7 @@ typedef enum powerType {
 	none
 } PowerType;
 
-//state machine for player skin
+//statemachine for player skin
 typedef enum skin_choices {
 	fly,
 	horned,
@@ -28,27 +28,21 @@ typedef enum skin_choices {
 	angry
 } SkinChoices;
 
-//en ADT f�r att skapa en spelare
 
 typedef struct playerType* Player;
+
+
+/*************** Constructors ***********************************/
 
 //creates a player struct
 PUBLIC Player createPlayer(int x, int y);
 
-//renders players dead or alive
-PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media);
-
-//Renders player score
-PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
-
-//Renders playerpower effects
-PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount);
-
-//renders immunity bar if player is immune
-PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
-
 //creates a new player and adds to the list of players
 PUBLIC void initPlayers(Player playerList[], int playerCount);
+
+
+
+/*************** Get and setters ***********************************/
 
 //returns adress of player position 
 PUBLIC SDL_Rect* getPlayerPosAdr(Player aPlayer);
@@ -105,14 +99,26 @@ PUBLIC bool getPlayerAttack(Player aPlayer);
 PUBLIC void setPlayerAttack(Player aPlayer, bool attackOrNot);
 
 
+
+/*************** Operational ***************************************/
+
+//renders players dead or alive
+PUBLIC void renderPlayers(SDL_Renderer* renderer, Player playerList[], int playerFrame, int splashFrame[], int* nrOfSoundEffects, int playerCount, LoadMedia media);
+
+//Renders player score
+PUBLIC void renderScore(Player aPlayer, LoadMedia media, SDL_Renderer* renderer, Fonts fonts);
+
+//Renders playerpower effects
+PUBLIC void renderPlayerPower(SDL_Renderer* renderer, LoadMedia media, Player playerList[], int localPlayer, int playerCount);
+
+//renders immunity bar if player is immune
+PUBLIC void renderImmunityBar(SDL_Renderer* renderer, LoadMedia media, Player aPlayer, int* immunityFrames);
+
 //moves a player
 PUBLIC void movePlayerUp(Player aPlayer, int speed);
 PUBLIC void movePlayerDown(Player aPlayer, int speed);
 PUBLIC void movePlayerLeft(Player aPlayer, int speed);
 PUBLIC void movePlayerRight(Player aPlayer, int speed);
-
-//frees player structs from heap, params: list of players and amount of players
-PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 //Adds one to a players score
 PUBLIC void addScore(Player aPlayer);
@@ -135,5 +141,11 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 //render attack
 PUBLIC void renderAttack(SDL_Renderer *renderer, LoadMedia media, Player playerList[], int playerCount, int attackFrame[]);
 
+
+
+/*************** Destructors **************************************/
+
+//frees player structs from heap, params: list of players and amount of players
+PUBLIC void freePlayers(Player playerList[], int playerCount);
 
 #endif /* player_h */
