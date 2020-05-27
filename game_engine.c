@@ -52,10 +52,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //add skin from store
     setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
 
-    printf("size of gamestate: %d\n", sizeof(struct Game_State_Type));
-    printf("size of gamestate send Client: %d\n", sizeof(struct Game_State_Send_Client_Type));
-    printf("size of gamestate send Server: %d\n", sizeof(struct Game_State_Send_Server_Type));
-
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
     {
