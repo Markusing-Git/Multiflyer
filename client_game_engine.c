@@ -112,8 +112,18 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         sendAndReciveClient(current, setup, playerPos, players);
 
         //*********************************  RENDERING  ***********************************************************************************
-        renderEverything(renderer, media, obstacles, players, &immunityFrame, powerUpWrapper, &coinFrame, playerFrame, splashFrame,
-            attackFrame, &nrOfSoundEffects, fonts, current);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[0], 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, media->backgroundTex, NULL, &media->scrollingBackground[1], 0, NULL, SDL_FLIP_NONE);
+        renderObstacles(obstacles, renderer, media->flyTrapTex);
+        renderImmunityBar(renderer, media, players[current->localPlayerNr - 1], &immunityFrame);
+        renderPlayerPower(renderer, media, players, current->localPlayerNr - 1, current->nrOfPlayers);
+        renderPowerUp(renderer, powerUpWrapper, media, &coinFrame);
+        renderPlayers(renderer, players, playerFrame, splashFrame, &nrOfSoundEffects, current->nrOfPlayers, media);
+        renderAttack(renderer,media,players,current->nrOfPlayers,attackFrame);
+        SDL_RenderCopy(renderer, media->scoreBackgroundTex, NULL, &media->scoreBackgroundRect);
+        renderScore(players[current->localPlayerNr-1], media, renderer, fonts);
+        SDL_RenderPresent(renderer);
 
         //scoreboard
         if (gameOver(players, current->nrOfPlayers, &gameOverDelay, &gameOverDelayFlag)) {
