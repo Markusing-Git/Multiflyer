@@ -185,7 +185,7 @@ void sendToClient(TCP_Communication communication, char playerIp[], Game_State c
 //Thread function for the client, waits for new playernames or game start
 int clientLobbyWait(Game_State current);
 
-//sends information to the server that client is leaving lobby.
+//Sends information to the server that client is leaving lobby.
 void disconnectFromServer(char playerIp[], Game_State current);
 
 //Tells clients to quit if server disconnects
@@ -204,13 +204,13 @@ void removePlayerFromLobby(Game_State current, Network_Config setup, int localPl
 
 /***************Struct management functions***********************************/
 
-//copies player pos X to Game_State if diffrent and raises flag.
+//Copies player pos X to Game_State if diffrent and raises flag.
 void SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[]);
 
-//copies player pos X to Game_State if diffrent and raises flag.
+//Copies player pos X to Game_State if diffrent and raises flag.
 void SetGameStatePlayerPosY(Game_State current, SDL_Rect* playerPos[]);
 
-//copies player life status, score, resurected status, power up, skin, attack status if changed to Game_State and raises flag 
+//Copies player life status, score, resurected status, power up, skin, attack status if changed to Game_State and raises flag 
 void SetGameStatePlayerStatus(Game_State current, Player players[]);
 
 //Loads a obstacle in to Game_State

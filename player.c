@@ -418,7 +418,7 @@ PUBLIC void movePlayerRight(Player aPlayer, int speed) {
 
 PUBLIC void initPlayers(Player playerList[], int playerCount) {
 	for (int i = 0; i < playerCount; i++) {
-		playerList[i] = createPlayer(50, 50);
+		playerList[i] = createPlayer(50, 50 + 50 * i);
 	}
 }
 

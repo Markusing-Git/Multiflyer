@@ -112,7 +112,6 @@ PUBLIC int hostLobby(SDL_Renderer* renderer, char playerName[], Game_State curre
 		}
 		if (current->newPlayerFlag) {
 			playerJoined(renderer, hostLobby, fonts, current->playerNames[current->nrOfPlayers - 1]);
-			printf("%d", current->nrOfPlayers); 
 			strncpy(setup->playerIp[current->nrOfPlayers - 2], current->ipAdressCache, IP_LENGTH);
 		
 
