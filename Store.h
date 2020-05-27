@@ -18,6 +18,7 @@
 #define OPTIONS 4
 #define STORE_SURFACES 9
 
+//struct for store
 struct store
 {
     bool done;
@@ -57,7 +58,9 @@ struct store
 };
 typedef struct store* Store;
 
+//Initiation of store
 void initStore(Store status);
+//The store function
 void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store status);
 
 #endif // !STORE_H
