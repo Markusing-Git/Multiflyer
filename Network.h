@@ -33,7 +33,6 @@ struct Game_State_Type
     int playerPosY[MAX_PLAYERS];
     bool playerAlive[MAX_PLAYERS];
     char playerNames[4][NAME_LENGTH];
-    //char *ipAdressCache; //Test Snabbare koppling
     char ipAdressCache[IP_LENGTH];
     int pushAngle[MAX_PLAYERS];
     int connectionTimers[MAX_PLAYERS];
@@ -112,10 +111,13 @@ void init_client_network(char playerIp[], Network_Config setup, Game_State curre
 void init_Server_network(Network_Config setup, Game_State current);
 
 //Resets the network to play again for server.
-int resetServerSDLNet(Network_Config setup, Game_State current);
+void resetServerSDLNet(Network_Config setup, Game_State current);
 
 //Resets the network to play again for client.
-int resetClientSDLNet(Network_Config setup);
+void resetClientSDLNet(Network_Config setup);
+
+//Cleans up all SDL_Net assets
+void Close_SDLNet(Network_Config setup, Game_State current);
 
 /*************************************************************/
 
@@ -123,45 +125,79 @@ int resetClientSDLNet(Network_Config setup);
 /***************UDP network communication***********************************/
 
 //Updating and sending information from Game_State for Client 
-int sendAndReciveClient(Game_State Gupd, Network_Config setup, SDL_Rect* playerPos[], Player players[]);
+void sendAndReciveClient(Game_State Gupd, Network_Config setup, SDL_Rect* playerPos[], Player players[]);
 
 //Updating and sending information from Game_State for Host 
-int sendAndReciveServer(Game_State Gupd, Network_Config setup, SDL_Rect* playerPos[], Player players[]);
+void sendAndReciveServer(Game_State Gupd, Network_Config setup, SDL_Rect* playerPos[], Player players[]);
 
 //Updates the Game_State with current player information from the local player
-int updateGameSending(Game_State current, SDL_Rect* playerPos[], Player players[]);
+void updateGameSending(Game_State current, SDL_Rect* playerPos[], Player players[]);
 
 //Updates the Game_State with player information from the network
-int updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players[]);
+void updateGameReciving(Game_State current, SDL_Rect* playerPos[], Player players[]);
 
 //Sending and reciving for client over the network to the host
-int networkCommunicationClient(Game_State current, Network_Config setup);
+void networkCommunicationClient(Game_State current, Network_Config setup);
 
 //Sending and reciving for host over the network to all clients 
-int networkCommunicationServer(Game_State current, Network_Config setup);
+void networkCommunicationServer(Game_State current, Network_Config setup);
 
 /***************************************************************************/
 
-/***************UDP network communication***********************************/
+/***************TCP network communication***********************************/
 
-int SetGameStatePlayerStatus(Game_State current, Player players[]);
-int SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[]);
-int SetGameStatePlayerPosY(Game_State current, SDL_Rect* playerPos[]);
-int SetObstacle(Game_State Gupd, Obstacle Send_obstacles);
+//Thread function for the server lobby, listens for new players
+void serverLobbyConnection(Game_State current);
+
+//connects client to host lobby and retrives names. 
+void clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
+
+//Sends communication struct to client
+void sendToClient(TCP_Communication communication, char playerIp[], Game_State current);
+
+//Thread function for the client, waits for new playernames or game start
+void clientLobbyWait(Game_State current);
+
+//sends information to the server that client is leaving lobby.
+void disconnectFromServer(char playerIp[], Game_State current);
+
+//Tells clients to quit if server disconnects
+void closeServer(Game_State current, TCP_Communication communication, Network_Config setup);
+
+//Limits the ping to a client, removes player if ping is too high
+void limitPingServer(Game_State current);
+
+//Limits the ping to the server, returns to the menu if ping is too high
+int limitPingClient(Game_State current);
+
+//Removes player from the lobby if they leave
+void removePlayerFromLobby(Game_State current, Network_Config setup, int localPlayerNr);
+
+/***************************************************************************/
+
+/***************Struct management functions***********************************/
+
+//copies player pos X to Game_State if diffrent and raises flag.
+void SetGameStatePlayerPosX(Game_State current, SDL_Rect* playerPos[]);
+
+//copies player pos X to Game_State if diffrent and raises flag.
+void SetGameStatePlayerPosY(Game_State current, SDL_Rect* playerPos[]);
+
+//copies player life status, score, resurected status, power up, skin, attack status if changed to Game_State and raises flag 
+void SetGameStatePlayerStatus(Game_State current, Player players[]);
+
+//Loads a obstacle in to Game_State
+void SetObstacle(Game_State current, Obstacle Send_obstacles);
+
+//Loads power up in to Game_State
 void SetPowerUp(Game_State current, PowerUp aPowerUp);
+
+//Returns obstacle from Game_State
 Obstacle ReciveObstacle(Game_State Gupd);
+
+//Return power up from Game_State
 PowerUp ReceivePowerUp(Game_State current);
 
-/***************TCP network communication***********************************/
-int serverLobbyConnection(Game_State current); 
-int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
-int clientLobbyWait(Game_State current);
-int sendToClient(TCP_Communication communication,char playerIp[], Game_State current);
-void renderConnectionsServer(Game_State current);
-int renderConnectionsClient(Game_State current);
-void removePlayerFromLobby(Game_State current, Network_Config setup, int localPlayerNr);
-int closeServer(Game_State current, TCP_Communication communication, Network_Config setup);
-int disconnectFromServer(char playerIp[], Game_State current);
-
+/*****************************************************************************/
 
 #endif /*Network_h*/

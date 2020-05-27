@@ -131,7 +131,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
             SetGameStatePlayerStatus(current, players);
         }
 
-        renderConnectionsServer(current); 
+        limitPingServer(current); 
 
         //*********************************  RENDERING  ***********************************************************************************
         SDL_RenderClear(renderer);
