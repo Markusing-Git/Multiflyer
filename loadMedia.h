@@ -10,6 +10,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "constants.h"
 
+//Struct for media
 struct loadMedia {
 	SDL_Texture* flyTrapTex;
 	SDL_Texture* flyTex;

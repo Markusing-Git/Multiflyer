@@ -29,6 +29,7 @@ PUBLIC void uppdateInputs(Player aPlayer, Inputs aInput, Game_State current);
 
 //void attack(int nrOfPlayers, int localPlayerNr, int* pushAngle[], Player players[], int* change_flag, Uint32* spaceDelay, bool space, int* nrOfPushes);
 
+//If a push is successfull this funtion moves the player who was pushed
 PUBLIC void playerAttack(Game_State current, Player players[], Uint32* spaceDelay, int* nrOfPushes);
 
 //frees input structure from heap
