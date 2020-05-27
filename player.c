@@ -30,7 +30,7 @@ PRIVATE void addCoinToPlayer(Player aPlayer);
 PRIVATE void clearShield(Player aPlayer, Uint32* powerDurationTimer);
 
 //resurects a player if life powerUp active, needs a timer and a timerflag in parameters.
-PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer);
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, int** nrOfSoundEffects);
 //END OF PRIVATE FUNCTIONS*****************************************************************************************************************************
 
 
@@ -468,7 +468,7 @@ PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos) {
 	return 0;
 }
 
-PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer) {
+PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, int** nrOfSoundEffects) {
 
 	//algorithm to make timing of resurection and obstacle immunity work
 	if ((aPlayer->lifePoints == 1 && aPlayer->alive == false) || (aPlayer->resurected == true)) { //checks if player has extra life and is dead or if resurection process has begun
@@ -490,6 +490,7 @@ PRIVATE void resurectPlayer(Player aPlayer, Uint32* resurectTimer, Uint32* immun
 				aPlayer->lifePoints = 0;
 				aPlayer->resurected = false;
 				aPlayer->immunity = false;
+				(**nrOfSoundEffects) = 0;
 			}
 		}
 	}
@@ -508,8 +509,8 @@ PRIVATE void addCoinToPlayer(Player aPlayer) {
 	}
 }
 
-PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer) {
-	resurectPlayer(aPlayer, resurectTimer, immunityTimer);
+PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer, int* nrOfSoundEffects) {
+	resurectPlayer(aPlayer, resurectTimer, immunityTimer, &nrOfSoundEffects);
 	clearShield(aPlayer, powerDurationTimer);
 	addCoinToPlayer(aPlayer);
 }

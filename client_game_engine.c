@@ -98,7 +98,7 @@ bool startClientGame(SDL_Renderer* renderer, int w, int h, char playerName[], ch
         powerUpExpired(powerUpWrapper);
 
         //handle player powers
-        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
+        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration, &nrOfSoundEffects);
 
         checkIfPassed(getPlayerPosAdr(players[current->localPlayerNr-1]), players[current->localPlayerNr - 1], obstacles);
 

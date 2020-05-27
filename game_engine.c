@@ -109,7 +109,7 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         powerUpTick(powerUpWrapper, w, h);
 
         //handle player powers
-        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
+        handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration, &nrOfSoundEffects);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
 

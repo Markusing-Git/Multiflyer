@@ -121,7 +121,7 @@ PUBLIC void addScore(Player aPlayer);
 PUBLIC int playerContact(SDL_Rect* playerPos, SDL_Rect* opponentPos);
 
 //handles all player power related functions
-PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer);
+PUBLIC void handlePlayerPowers(Player aPlayer, Uint32* resurectTimer, Uint32* immunityTimer, Uint32* powerDurationTimer, int* nrOfSoundEffects);
 
 /*checks if all players are dead and game is over,
 params: list of players and how many
