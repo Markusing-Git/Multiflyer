@@ -76,7 +76,7 @@ void init_client_network(char playerIp[], Network_Config setup, Game_State curre
         exit(EXIT_FAILURE);
     }
 
-    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type)))))
+    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Client_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Server_Type)))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
@@ -107,7 +107,7 @@ void init_Server_network(Network_Config setup, Game_State current)
             }
 
     }
-    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Type)))))
+    if (!((setup->send_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Server_Type))) && (setup->recv_Pack = SDLNet_AllocPacket(sizeof(struct Game_State_Send_Client_Type)))))
     {
         printf("SDLNet_AllocPacket: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
@@ -187,7 +187,7 @@ void networkCommunicationClient(Game_State current, Network_Config setup)
     //checks if there is new information to send
     if (current->changeFlag == 1) {
 
-        Game_State_Send Gupd_Sending = malloc(sizeof(struct Game_State_Send_Type));
+        Game_State_Send_Client Gupd_Sending = malloc(sizeof(struct Game_State_Send_Client_Type));
 
         Gupd_Sending->playerPosX = current->playerPosX[current->localPlayerNr - 1];
         Gupd_Sending->playerPosY = current->playerPosY[current->localPlayerNr - 1];
@@ -217,8 +217,8 @@ void networkCommunicationClient(Game_State current, Network_Config setup)
             }
         }
 
-        memcpy(setup->send_Pack->data, Gupd_Sending, sizeof(struct Game_State_Send_Type));
-        setup->send_Pack->len = sizeof(struct Game_State_Send_Type);
+        memcpy(setup->send_Pack->data, Gupd_Sending, sizeof(struct Game_State_Send_Client_Type));
+        setup->send_Pack->len = sizeof(struct Game_State_Send_Client_Type);
         setup->send_Pack->address.host = setup->sendingIP[0].host;	
         setup->send_Pack->address.port = setup->sendingIP[0].port;	
         SDLNet_UDP_Send(setup->send_Sock, -1, setup->send_Pack);
@@ -237,11 +237,9 @@ void networkCommunicationClient(Game_State current, Network_Config setup)
 
         current->connectionTimers[0] = 0; //Resets the server ping. 
 
-        Game_State Gupd_Recive = malloc(sizeof(struct Game_State_Type));
-
-        initGamestate(Gupd_Recive);
+        Game_State_Send_Server Gupd_Recive = malloc(sizeof(struct Game_State_Send_Server_Type));
       
-        memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Type));
+        memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Server_Type));
 
         for (int i=0; i < current->nrOfPlayers; i++) {
             if (current->localPlayerNr-1 != i) {
@@ -295,8 +293,8 @@ void networkCommunicationServer(Game_State current, Network_Config setup)
 
             current->changeFlag = 1;
 
-            Game_State_Send Gupd_Recive = malloc(sizeof(struct Game_State_Send_Type));
-            memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Type));
+            Game_State_Send_Client Gupd_Recive = malloc(sizeof(struct Game_State_Send_Client_Type));
+            memcpy(Gupd_Recive, setup->recv_Pack->data, sizeof(struct Game_State_Send_Client_Type));
 
             current->connectionTimers[Gupd_Recive->localPlayerNr - 1] = 0; //Resets clients ping if package is recived
             
@@ -328,10 +326,36 @@ void networkCommunicationServer(Game_State current, Network_Config setup)
 
     if (current->changeFlag == 1) {
 
-        memcpy(setup->send_Pack->data, current, sizeof(struct Game_State_Type));
-        setup->send_Pack->len = sizeof(struct Game_State_Type);
+        Game_State_Send_Server Gupd_Send = malloc(sizeof(struct Game_State_Send_Server_Type));
 
         for (int i = 0; current->nrOfPlayers > i; i++) {
+
+            Gupd_Send->playerPosX[i] = current->playerPosX[i];
+            Gupd_Send->playerPosY[i] = current->playerPosY[i];
+            Gupd_Send->playerAlive[i] = current->playerAlive[i];
+            Gupd_Send->pushAngle[i] = current->pushAngle[i];
+
+            Gupd_Send->playerScore[i] = current->playerScore[i];
+
+            Gupd_Send->resurected[i] = current->resurected[i];
+            Gupd_Send->playerPower[i] = current->playerPower[i];
+            Gupd_Send->playerSkin[i] = current->playerSkin[i];
+            Gupd_Send->attack[i] = current->attack[i];
+        }
+
+        Gupd_Send->obstacleChangeFlag = current->obstacleChangeFlag;
+        Gupd_Send->powerUpChangeFlag = current->powerUpChangeFlag;
+        Gupd_Send->obstacle_top = current->obstacle_top;
+        Gupd_Send->obstacle_bottom = current->obstacle_bottom;
+        Gupd_Send->powerUpRect = current->powerUpRect;
+        Gupd_Send->powerUpDir = current->powerUpDir;
+        Gupd_Send->powerUpType = current->powerUpType;
+        Gupd_Send->attackPower = current->attackPower;
+
+        memcpy(setup->send_Pack->data, Gupd_Send, sizeof(struct Game_State_Send_Server_Type));
+        setup->send_Pack->len = sizeof(struct Game_State_Send_Server_Type);
+
+        for (int i = 0; current->nrOfPlayers-1 > i; i++) {
             setup->send_Pack->address.host = setup->sendingIP[i].host;
             setup->send_Pack->address.port = setup->sendingIP[i].port;
             SDLNet_UDP_Send(setup->send_Sock, -1, setup->send_Pack);
@@ -348,7 +372,7 @@ void networkCommunicationServer(Game_State current, Network_Config setup)
 }
 
 
-void serverLobbyConnection(Game_State current)
+int serverLobbyConnection(Game_State current)
 {
 
     IPaddress ip1;
@@ -410,11 +434,13 @@ void serverLobbyConnection(Game_State current)
      free(communication);
      SDLNet_TCP_Close(server);
      SDLNet_Quit();
+
+     return 0;
 }
 
 
 
-void clientLobbyConnection(char playerIp[], char playerName[], Game_State current)
+int clientLobbyConnection(char playerIp[], char playerName[], Game_State current)
 {
     int timer = 0;
     int connectionTime = 1;
@@ -461,6 +487,8 @@ void clientLobbyConnection(char playerIp[], char playerName[], Game_State curren
 
     free(communication);
     SDLNet_TCP_Close(server);
+
+    return 0;
 }
 
 void sendToClient(TCP_Communication communication, char playerIp[], Game_State current)
@@ -484,7 +512,7 @@ void sendToClient(TCP_Communication communication, char playerIp[], Game_State c
     SDLNet_TCP_Close(server);
 }
 
-void clientLobbyWait(Game_State current)
+int clientLobbyWait(Game_State current)
 {
     IPaddress ip1;
     TCP_Communication communication = malloc(sizeof(struct TCP_Communication_Type));
@@ -530,6 +558,8 @@ void clientLobbyWait(Game_State current)
     free(communication);
     SDLNet_TCP_Close(server);
     SDLNet_Quit();
+
+    return 0;
 }
 
 void disconnectFromServer(char playerIp[], Game_State current)

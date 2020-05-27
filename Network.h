@@ -63,8 +63,35 @@ struct Game_State_Type
 }; 
 typedef	struct Game_State_Type* Game_State;
 
+//Smaller version of Game_Sate sent by the server
+struct Game_State_Send_Server_Type
+{
+    int playerPosX[MAX_PLAYERS];
+    int playerPosY[MAX_PLAYERS];
+    bool playerAlive[MAX_PLAYERS];
+    int pushAngle[MAX_PLAYERS];
+
+    int playerScore[MAX_PLAYERS];
+    int obstacleChangeFlag;
+    int powerUpChangeFlag;
+
+    SDL_Rect obstacle_top;
+    SDL_Rect obstacle_bottom;
+
+    SDL_Rect powerUpRect;
+    int powerUpDir;
+    int powerUpType;
+    int resurected[MAX_PLAYERS];
+    int playerPower[MAX_PLAYERS];
+    int playerSkin[MAX_PLAYERS];
+    bool attack[MAX_PLAYERS];
+    bool attackPower;
+
+};
+typedef	struct Game_State_Send_Server_Type* Game_State_Send_Server;
+
 //Smaller version of Game_Sate sent by clients
-struct Game_State_Send_Type
+struct Game_State_Send_Client_Type
 {
     int playerPosX;
     int playerPosY;
@@ -77,7 +104,7 @@ struct Game_State_Send_Type
     int playerSkin;
     bool attack;
 };
-typedef	struct Game_State_Send_Type* Game_State_Send;
+typedef	struct Game_State_Send_Client_Type* Game_State_Send_Client;
 
 //Struct with flags that are sent over TCP for communications
 struct TCP_Communication_Type
@@ -147,16 +174,16 @@ void networkCommunicationServer(Game_State current, Network_Config setup);
 /***************TCP network communication***********************************/
 
 //Thread function for the server lobby, listens for new players
-void serverLobbyConnection(Game_State current);
+int serverLobbyConnection(Game_State current);
 
 //connects client to host lobby and retrives names. 
-void clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
+int clientLobbyConnection(char playerIp[], char playerName[], Game_State current);
 
 //Sends communication struct to client
 void sendToClient(TCP_Communication communication, char playerIp[], Game_State current);
 
 //Thread function for the client, waits for new playernames or game start
-void clientLobbyWait(Game_State current);
+int clientLobbyWait(Game_State current);
 
 //sends information to the server that client is leaving lobby.
 void disconnectFromServer(char playerIp[], Game_State current);

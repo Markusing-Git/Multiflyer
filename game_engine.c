@@ -52,7 +52,9 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
     //add skin from store
     setPlayerSkin(players[current->localPlayerNr - 1], storeStatus->skinChoice);
 
-    printf("size of gamestate: %d", sizeof(struct Game_State_Type));
+    printf("size of gamestate: %d\n", sizeof(struct Game_State_Type));
+    printf("size of gamestate send Client: %d\n", sizeof(struct Game_State_Send_Client_Type));
+    printf("size of gamestate send Server: %d\n", sizeof(struct Game_State_Send_Server_Type));
 
     //***************************************************  STARTING GAME ENGINE  *****************************************************
     while (running)
@@ -114,8 +116,6 @@ bool startGame(SDL_Renderer* renderer, int w, int h, char playerName[], char pla
         handlePlayerPowers(players[current->localPlayerNr - 1], &resurectDelay, &resurectImmunDelay, &powerDuration);
 
         checkIfPassed(getPlayerPosAdr(players[0]), players[0], obstacles);
-
-       // attack(current->nrOfPlayers, current->localPlayerNr, current->pushAngle, players, &current->change_flag, &spaceDelay, space, nrOfPushes);
 
         playerAttack(current, players, &spaceDelay, &nrOfPushes);
 

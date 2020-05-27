@@ -15,14 +15,14 @@
 #include "player.h"
 #include "Network.h"
 
-#define OPTIONS 4
+#define OPTION_STORE 4
 #define STORE_SURFACES 9
 
 struct store
 {
     bool done;
     bool renderText;
-    bool purchasedSkin[OPTIONS];
+    bool purchasedSkin[OPTION_STORE];
     SkinChoices skinChoice;
 
     int playerCoins;
@@ -33,7 +33,7 @@ struct store
     char bank[NAME_LENGTH];
     char purchased[NAME_LENGTH];
     char backToMenu[NAME_LENGTH];
-    char price[OPTIONS][NAME_LENGTH];
+    char price[OPTION_STORE][NAME_LENGTH];
 
     SDL_Surface* surfaces[STORE_SURFACES];
     SDL_Texture* coins_Tex;
@@ -41,16 +41,16 @@ struct store
     SDL_Texture* bank_Tex;
     SDL_Texture* purchased_Tex;
     SDL_Texture* backToMenu_Tex;
-    SDL_Texture* price_Tex[OPTIONS];
+    SDL_Texture* price_Tex[OPTION_STORE];
 
     SDL_Rect coins_Rect;
     SDL_Rect headLine_Rect;
     SDL_Rect bank_Rect;
 	SDL_Rect purchased_Rect;
     SDL_Rect backToMenu_Rect;
-    SDL_Rect price_Rect[OPTIONS];
-    SDL_Rect skins[OPTIONS];
-    SDL_Rect skinBackgroundRect[OPTIONS];
+    SDL_Rect price_Rect[OPTION_STORE];
+    SDL_Rect skins[OPTION_STORE];
+    SDL_Rect skinBackgroundRect[OPTION_STORE];
 
     SDL_Color white;
     SDL_Color green;

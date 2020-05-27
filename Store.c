@@ -20,13 +20,13 @@ void initStore(Store storeStatus)
     storeStatus->green.a = 0;
 
     storeStatus->purchasedSkin[0] = true;
-    for (int i = 1; i < OPTIONS; i++)
+    for (int i = 1; i < OPTION_STORE; i++)
     {
         storeStatus->purchasedSkin[i] = false;
     }
 
     int offset = 0;
-    for (int i = 0; i < OPTIONS; i++)
+    for (int i = 0; i < OPTION_STORE; i++)
     {
         storeStatus->skins[i].x = 85 + offset;
         storeStatus->skins[i].y = 200;
@@ -36,7 +36,7 @@ void initStore(Store storeStatus)
     }
 
     offset = 0;
-    for (int i = 0; i < OPTIONS; i++)
+    for (int i = 0; i < OPTION_STORE; i++)
     {
         storeStatus->skinBackgroundRect[i].x = 65 + offset;
         storeStatus->skinBackgroundRect[i].y = 200;
@@ -72,7 +72,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     storeStatus->surfaces[2] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->coins, storeStatus->white);
     storeStatus->surfaces[3] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->purchased, storeStatus->white);
     storeStatus->surfaces[4] = TTF_RenderText_Solid(fonts->cuvert_48, storeStatus->backToMenu, storeStatus->white);
-    for (int i = 0; i < OPTIONS; i++)
+    for (int i = 0; i < OPTION_STORE; i++)
     {
         storeStatus->surfaces[i+5] = TTF_RenderText_Solid(fonts->cuvert_28, storeStatus->price[i], storeStatus->white);
     }
@@ -83,7 +83,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     storeStatus->coins_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[2]);
     storeStatus->purchased_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[3]);
     storeStatus->backToMenu_Tex = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[4]);
-    for (int i = 0; i < OPTIONS; i++)
+    for (int i = 0; i < OPTION_STORE; i++)
     {
         storeStatus->price_Tex[i] = SDL_CreateTextureFromSurface(renderer, storeStatus->surfaces[i+5]);
     }
@@ -115,7 +115,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     storeStatus->backToMenu_Rect.y = 500;
     SDL_QueryTexture(storeStatus->backToMenu_Tex, NULL, NULL, &storeStatus->backToMenu_Rect.w, &storeStatus->backToMenu_Rect.h);
 
-	for (int i = 0; i < OPTIONS; i++)
+	for (int i = 0; i < OPTION_STORE; i++)
     {
         storeStatus->price_Rect[i].x = (73 + a);
         storeStatus->price_Rect[i].y = 355;
@@ -136,7 +136,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             {
                 x = event.motion.x;
                 y = event.motion.y;
-                for (int i = 1; i < OPTIONS; i++)
+                for (int i = 1; i < OPTION_STORE; i++)
                 {
                     int compare;
                     compare = strcmp(storeStatus->price[i], storeStatus->purchased);
@@ -180,7 +180,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             {
                 x=event.button.x;
                 y=event.button.y;
-                for (int i = 0; i < OPTIONS; i++)
+                for (int i = 0; i < OPTION_STORE; i++)
                 {
                     //Tryck pa nagot skin
                     if (x >= storeStatus->price_Rect[i].x && x <= storeStatus->price_Rect[i].x + storeStatus->price_Rect[i].w && y > storeStatus->price_Rect[i].y && y <= storeStatus->price_Rect[i].y + storeStatus->price_Rect[i].h)
@@ -240,7 +240,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             SDL_RenderCopy(renderer, storeStatus->bank_Tex, NULL, &storeStatus->bank_Rect);
             SDL_RenderCopy(renderer, storeStatus->coins_Tex, NULL, &storeStatus->coins_Rect);
             SDL_RenderCopy(renderer, storeStatus->backToMenu_Tex, NULL, &storeStatus->backToMenu_Rect);
-            for (int i = 0; i < OPTIONS; i++)
+            for (int i = 0; i < OPTION_STORE; i++)
             {
                 if (i == storeStatus->selectedRect)
                 {
@@ -255,7 +255,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
             SDL_RenderCopy(renderer, media->hornedFlyTex, &media->hornedFlyGreen[0], &storeStatus->skins[1]);
             SDL_RenderCopy(renderer, media->goggleEyeFlyTex, &media->goggleEyesFlyGreen[0], &storeStatus->skins[2]);
             SDL_RenderCopy(renderer, media->angryFlyTex, &media->angryFlyGreen[0], &storeStatus->skins[3]);
-            for (int i = 0; i < OPTIONS; i++)
+            for (int i = 0; i < OPTION_STORE; i++)
             {
                 SDL_RenderCopy(renderer, storeStatus->price_Tex[i], NULL, &storeStatus->price_Rect[i]);
             }
@@ -270,7 +270,7 @@ void store(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Store storeStat
     SDL_DestroyTexture(storeStatus->coins_Tex);
     SDL_DestroyTexture(storeStatus->purchased_Tex);
     SDL_DestroyTexture(storeStatus->backToMenu_Tex);
-    for (int i = 0; i < OPTIONS; i++)
+    for (int i = 0; i < OPTION_STORE; i++)
     {
         SDL_DestroyTexture(storeStatus->price_Tex[i]);
     }
