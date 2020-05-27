@@ -859,7 +859,7 @@ void openScoreBoard(SDL_Renderer* renderer, LoadMedia media, Fonts fonts, Game_S
 void initSettings(Audio settings)
 {
     settings->bMusicVolume = 10;
-    settings->sEffectsVolume = 50;
+    settings->sEffectsVolume = 10;
 
     //Coloring
     settings->white.r = 255;
@@ -878,7 +878,7 @@ void initSettings(Audio settings)
     strcpy(settings->bMusic, "Background music volume");
     strcpy(settings->sEffects, "Sound effects volume");
     strcpy(settings->lines[0], "||");
-    strcpy(settings->lines[1], "||||||");
+    strcpy(settings->lines[1], "||");
     for (int i = 0; i < VOL_DUPLICATES; i++)
     {
         strcpy(settings->changing_name[i+1], "+");
